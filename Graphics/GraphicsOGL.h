@@ -10,7 +10,9 @@
 #include "Font.h"
 #include "ShaderController.h"
 #include "FontController.h"
+#include "Camera.h"
 
+class Camera;
 class GraphicsOGL {
 	public:
 		GraphicsOGL(int, char* []);
@@ -18,6 +20,10 @@ class GraphicsOGL {
 
 		void idle();
 		void display();
+
+		//ACCESSOR
+			int getScreenWidth();
+			int getScreenHeight();
 		
 		//DRAWING
 			void setColor(int,int,int);
@@ -43,6 +49,10 @@ class GraphicsOGL {
 		//FONT
 			void setFont(string);
 
+		//PROJECTION
+			void setOrtho();
+			void setPerspective();
+
 	private:
 		void initialize3D(int, char* []);
 
@@ -58,6 +68,8 @@ class GraphicsOGL {
 		//Font Variables
 			FontController* fontController;
 			Font* curFont;
+
+		Camera* glCamera;
 
 		static Texture* tst;
 };

@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o GraphicsOGL.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o FileIO.o
-	g++ `Magick++-config --with-png --cxxflags --cppflags` main.o Math2D.o GraphicsOGL.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o FileIO.o -o main -lglut -lGL `Magick++-config --ldflags --libs`
+main: main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o FileIO.o
+	g++ `Magick++-config --with-png --cxxflags --cppflags` main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o FileIO.o -o main -lglut -lGLU -lGL `Magick++-config --ldflags --libs`
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -17,6 +17,10 @@ Math2D.o: Functions/Math2D.cpp Functions/Math2D.h
 ###############################################################
 GraphicsOGL.o: Graphics/GraphicsOGL.cpp Graphics/GraphicsOGL.h
 	g++ -c Graphics/GraphicsOGL.cpp
+
+Camera.o: Graphics/Camera.cpp Graphics/Camera.h
+	g++ -c Graphics/Camera.cpp
+
 Texture.o: Graphics/Texture.cpp Graphics/Texture.h
 	g++ -c -DMAGICKCORE_QUANTUM_DEPTH=16 -DMAGICKCORE_HDRI_ENABLE=0 Graphics/Texture.cpp
 TextureExt.o: Graphics/TextureExt.cpp Graphics/TextureExt.h

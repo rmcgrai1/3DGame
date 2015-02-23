@@ -9,4 +9,6 @@
 float calcLenX(float, float);
 float calcLenY(float, float);
 
+float calcPtDir(float, float, float, float);
+
 #endif

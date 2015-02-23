@@ -9,6 +9,7 @@
 #include <GL/glut.h>
 #include <GL/glext.h>
 #include "Texture.h"
+#include "Camera.h"
 #include "GraphicsOGL.h"
 #include "Shader.h"
 #include "Font.h"
@@ -66,6 +67,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 
 		tst->load();
+		glCamera = new Camera();
 		fontController = new FontController();
 		shaderController = new ShaderController();
 
@@ -74,6 +76,14 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	glutMainLoop();
+}
+
+int GraphicsOGL :: getScreenWidth() {
+	return SCREEN_WIDTH;
+}
+
+int GraphicsOGL :: getScreenHeight() {
+	return SCREEN_HEIGHT;
 }
 
 void GraphicsOGL :: idle() {
@@ -87,7 +97,7 @@ void GraphicsOGL :: display() {
  	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
 	glAlphaFunc(GL_GREATER, 0);
 
-	setFont("8bit")
+	setFont("8bit");
 
 	globalTime += 1;
 
@@ -95,10 +105,12 @@ void GraphicsOGL :: display() {
 	//enableShader(sh->getProgram());
 
 	glColor3f(1,1,1);
+
+	setOrtho();
 	drawCircle(100,100,30,32);
 	//fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 	//drawTextureScaled(0,0,10,10,tst);
-	drawStringScaled(0,0,.65,.65,"Hello, Shaquille. We are set! ; :");
+	drawStringScaled(0,0,.65,.65,"Hello, Shaquille. We are set!\nThis is pretty cool.");
 
 
 	glFlush(); 
@@ -285,14 +297,41 @@ void GraphicsOGL :: display() {
 		int len = str.length();
 		char c;
 
+		float s = 16;
+
+		float dX = x, dY = y;
+
 		for(int i = 0; i < len; i++) {
 			c = str[i];
 
-			if(c == ' ')
-				x += 16*xS + 1;
+			if(c == '\n') { 
+				dY += s*yS + 1;
+				dX = x;
+			}
+			else if(c == ' ')
+				dX += s*xS + 1;
 			else if(islower(c))
-				x += drawCharScaled(x,y + (16*yS*.25), xS*.75,yS*.75, c) + 1;
+				dX += drawCharScaled(dX,dY + (s*yS*.25), xS*.75,yS*.75, c) + 1;
 			else
-				x += drawCharScaled(x,y, xS, yS, c) + 1;
+				dX += drawCharScaled(dX,dY, xS, yS, c) + 1;
 		}
 	}
+
+//Graphics Mode
+void GraphicsOGL :: setOrtho() {
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glMatrixMode (GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1000, 1000);
+	glMatrixMode (GL_MODELVIEW);
+	glLoadIdentity();
+	glDisable(GL_LIGHTING);
+}
+
+void GraphicsOGL :: setPerspective() {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glCamera->setProjection(this);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
