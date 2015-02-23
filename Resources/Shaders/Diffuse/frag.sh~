@@ -29,5 +29,5 @@ void main() {
 	rad = mod(iRadius*t, iRadius);
 	dir = iGlobalTime*t;
 
-	gl_FragColor = diffuse(tex, iSize.xy, gl_TexCoord[0].st, rad, dir);
+	gl_FragColor = diffuse(tex, iSize.xy, gl_TexCoord[0].st, .0001, 0);
 }

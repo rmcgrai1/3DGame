@@ -1,10 +1,16 @@
 all: main
 
-main: main.o GraphicsOGL.o Texture.o TextureExt.o Font.o Shader.o FileIO.o
-	g++ `Magick++-config --with-png --cxxflags --cppflags` main.o GraphicsOGL.o Texture.o TextureExt.o Font.o Shader.o FileIO.o -o main -lglut -lGL `Magick++-config --ldflags --libs`
+main: main.o Math2D.o GraphicsOGL.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o FileIO.o
+	g++ `Magick++-config --with-png --cxxflags --cppflags` main.o Math2D.o GraphicsOGL.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o FileIO.o -o main -lglut -lGL `Magick++-config --ldflags --libs`
 
 main.o: main.cpp
 	g++ -c main.cpp
+
+# FUNCTIONS
+###############################################################
+Math2D.o: Functions/Math2D.cpp Functions/Math2D.h
+	g++ -c Functions/Math2D.cpp
+
 
 
 # GRAPHICS
@@ -16,9 +22,13 @@ Texture.o: Graphics/Texture.cpp Graphics/Texture.h
 TextureExt.o: Graphics/TextureExt.cpp Graphics/TextureExt.h
 	g++ -c Graphics/TextureExt.cpp
 
+FontController.o: Graphics/Font.cpp Graphics/FontController.h
+	g++ -c Graphics/FontController.cpp
 Font.o: Graphics/Font.cpp Graphics/Font.h
 	g++ -c Graphics/Font.cpp
-	
+
+ShaderController.o: Graphics/ShaderController.cpp Graphics/ShaderController.h
+	g++ -c Graphics/ShaderController.cpp	
 Shader.o: Graphics/Shader.cpp Graphics/Shader.h
 	g++ -c Graphics/Shader.cpp
 

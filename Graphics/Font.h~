@@ -18,6 +18,7 @@ class Font {
 
 		map<char, Texture*> fontMap;
 		bool isCaseEnabled;
+		string fontDir;
 };
 
 #endif

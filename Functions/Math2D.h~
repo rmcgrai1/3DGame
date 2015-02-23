@@ -1,0 +1,12 @@
+// Math2D.h
+
+
+#ifndef MATH2D_H
+#define MATH2D_H
+
+
+
+float calcLenX(float, float);
+float calcLenY(float, float);
+
+#endif

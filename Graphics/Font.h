@@ -15,9 +15,11 @@ class Font {
 
 	private:
 		void addChar(char,string);
+		void addChar(char);
 
 		map<char, Texture*> fontMap;
 		bool isCaseEnabled;
+		string fontDir;
 };
 
 #endif
