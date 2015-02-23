@@ -1,0 +1,7 @@
+// main.cpp
+
+#include "Graphics/GraphicsOGL.h"
+
+int main(int argc, char* argv[]) {
+	GraphicsOGL(argc, argv);
+}
