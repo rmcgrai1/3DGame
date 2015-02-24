@@ -27,6 +27,7 @@ Font :: Font(string fontName, bool ca) {
 		addChar('.');
 		addChar(';');
 		addChar(':');
+		addChar('-');
 	}
 }
 

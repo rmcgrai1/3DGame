@@ -22,11 +22,11 @@ Font :: Font(string fontName, bool ca) {
 		for(int i = 0; i < 10; i++)
 			addChar('0' + i);
 
-
 		addChar(',');
 		addChar('!');
 		addChar('.');
-		addChar('.');
+		addChar(';');
+		addChar(':');
 	}
 }
 

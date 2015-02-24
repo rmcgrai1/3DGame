@@ -11,4 +11,6 @@ float calcLenY(float, float);
 
 float calcPtDir(float, float, float, float);
 
+float calcTurnToDir(float, float);
+
 #endif

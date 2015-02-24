@@ -23,11 +23,14 @@
 #include "../Functions/Math2D.h"
 #include <ctime>
 #include "../Environment/Heightmap.h"
+
+#include "../Characters/Player.h"
 using namespace std;
 using namespace std::chrono;
 
 
 Heightmap* hm;
+Player* p;
 Texture* GraphicsOGL::tst = new Texture("Resources/Images/test.png");
 
 GraphicsOGL* ogl;
@@ -81,6 +84,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 	glEnable(GL_TEXTURE_2D);
 
 
+		p = new Player(0,0,0);
 		hm = new Heightmap(32,32,1);
 		tst->load();
 		//Load Resources, Create GraphicsOGL's Objects
@@ -114,6 +118,10 @@ int GraphicsOGL :: getMouseX() {
 
 int GraphicsOGL :: getMouseY() {
 	return inputController->getMouseY();
+}
+
+float GraphicsOGL :: getWASDDir() {
+	return inputController->getWASDDir();
 }
 
 void GraphicsOGL :: idle() {
@@ -158,12 +166,10 @@ void GraphicsOGL :: display() {
 	glColor3f(1,1,1);
 
 
-	glCamera->setProjectionPrep(calcLenX(100,globalTime),calcLenY(100,globalTime),10,0,0,0);
-
 	setPerspective();
 		draw3DWall(-16,0,32,16,0,0,NULL);
 
-		enableShader("Galaxy");	
+		enableShader("RainbowTexture");	
 		Drawable :: drawAll(this, 1);
 	setOrtho();
 
@@ -171,15 +177,25 @@ void GraphicsOGL :: display() {
 			//fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 		disableShaders();
 
-		string fpsStr = "FPS: ";
+		string fpsStr = "FPS: ", dirStr = "Dir: ";
 			fpsStr = fpsStr + to_string(fps);
+			dirStr = dirStr + to_string(getCamDir());
 
 		drawStringScaled(0,0,.65,.65,fpsStr);
-
+		drawStringScaled(0,20,.65,.65,dirStr);
 
 	glFlush(); 
     	glutSwapBuffers();
 }
+
+//CAMERA FUNCTIONS
+	float GraphicsOGL :: getCamDir() {
+		return glCamera->getCamDir();
+	}
+
+	void GraphicsOGL :: setProjectionPrep(float cX, float cY, float cZ, float tX, float tY, float tZ) {
+		glCamera->setProjectionPrep(cX,cY,cZ,tX,tY,tZ);
+	}
 
 //DRAWING FUNCTIONS
 	void GraphicsOGL :: setColor(int R, int G, int B) {
@@ -240,7 +256,7 @@ void GraphicsOGL :: display() {
 			for(float i = 0; i < vertNum; i++) {
 				dir = i/vertNum*360;
 				xN = calcLenX(1,dir);
-				yN = calcLenY(1,dir);
+				yN = -calcLenY(1,dir);
 	
 				glTexCoord2f(xN,yN);
 					glVertex3f(x + r*xN, y + r*yN, depth);
@@ -257,7 +273,7 @@ void GraphicsOGL :: display() {
 			for(float i = 0; i < vertNum+1; i++) {
 				dir = i/vertNum*360;
 				xN = calcLenX(1,dir);
-				yN = calcLenY(1,dir);
+				yN = -calcLenY(1,dir);
 	
 				glTexCoord2f(xN,yN);
 					glVertex3f(x + r*xN, y + r*yN, depth);
@@ -272,7 +288,7 @@ void GraphicsOGL :: display() {
 			for(float i = 0; i < vertNum; i++) {
 				dir = angle + i/vertNum*360;
 				xN = calcLenX(1,dir);
-				yN = calcLenY(1,dir);
+				yN = -calcLenY(1,dir);
 	
 				glTexCoord2f(xN,yN);
 					glVertex3f(x + r*xN, y + r*yN, depth);
@@ -289,7 +305,7 @@ void GraphicsOGL :: display() {
 			for(float i = 0; i < vertNum+1; i++) {
 				dir = angle + i/vertNum*360;
 				xN = calcLenX(1,dir);
-				yN = calcLenY(1,dir);
+				yN = -calcLenY(1,dir);
 	
 				glTexCoord2f(xN,yN);
 					glVertex3f(x + r*xN, y + r*yN, depth);
@@ -323,6 +339,7 @@ void GraphicsOGL :: display() {
 		glEnd();
 
 		glDisable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 //3D DRAWING
@@ -364,6 +381,7 @@ void GraphicsOGL :: display() {
 			//glColor4f(1f, 1f, 1f, 1f);
 
 		glDisable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void GraphicsOGL :: draw3DFloor(float x1, float y1, float x2, float y2, float z, Texture* tex) {
@@ -406,6 +424,7 @@ void GraphicsOGL :: display() {
 			//glColor4f(1f, 1f, 1f, 1f);
 
 		glDisable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 //SHADERS

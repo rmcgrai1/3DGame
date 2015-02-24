@@ -27,6 +27,11 @@ class GraphicsOGL {
 			int getScreenHeight();
 			int getMouseX();
 			int getMouseY();
+			float getWASDDir();
+
+		//CAMERA
+			float getCamDir();
+			void setProjectionPrep(float,float,float,float,float,float);
 		
 		//DRAWING
 			void setColor(int,int,int);

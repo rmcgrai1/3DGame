@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Heightmap.o FileIO.o InputController.o
-	g++ `Magick++-config --with-png --cxxflags --cppflags` main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Heightmap.o FileIO.o InputController.o -o main -lglut -lGLU -lGL `Magick++-config --ldflags --libs`
+main: main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Player.o Heightmap.o FileIO.o InputController.o
+	g++ `Magick++-config --with-png --cxxflags --cppflags` main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Player.o Heightmap.o FileIO.o InputController.o -o main -lglut -lGLU -lGL `Magick++-config --ldflags --libs`
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -37,7 +37,7 @@ Shader.o: Graphics/Shader.cpp Graphics/Shader.h
 	g++ -c Graphics/Shader.cpp
 
 
-# PRIMITIVE
+# PRIMITIVES
 ###############################################################
 Updateable.o: Primitives/Updateable.cpp Primitives/Updateable.h
 	g++ -c Primitives/Updateable.cpp
@@ -45,6 +45,16 @@ Drawable.o: Primitives/Drawable.cpp Primitives/Drawable.h
 	g++ -c Primitives/Drawable.cpp
 Instantiable.o: Primitives/Instantiable.cpp Primitives/Instantiable.h
 	g++ -c Primitives/Instantiable.cpp
+Physical.o: Primitives/Physical.cpp Primitives/Physical.h
+	g++ -c Primitives/Physical.cpp
+
+
+# CHARACTERS
+###############################################################
+
+
+Player.o: Characters/Player.cpp Characters/Player.h
+	g++ -c Characters/Player.cpp
 
 
 # ENVIRONMENT

@@ -3,12 +3,21 @@
 #ifndef INPUTCONTROLLER_H
 #define INPUTCONTROLLER_H
 
+#include <map>
+using namespace std;
+
 class InputController {
 
 	public:
 		InputController();
 		void updateMouse(int,int,int,int);
 		void updatePassiveMouse(int,int);
+		void updateKeyboard(unsigned char, int, int);
+		void updateKeyboardUp(unsigned char, int, int);
+
+		float getWASDDir();
+		bool getWASD();
+		void setWASD(char, bool);
 
 		int getMouseX();
 		int getMouseY();
@@ -18,6 +27,8 @@ class InputController {
 		bool* leftMouse;
 		bool* middleMouse;
 		bool* rightMouse;
+
+		bool* wasdArray;
 
 		int mouseX;
 		int mouseY;

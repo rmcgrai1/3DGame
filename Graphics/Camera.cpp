@@ -23,7 +23,7 @@ void Camera :: setProjectionPrep(float cX, float cY, float cZ, float tX, float t
 	toY = tY;
 	toZ = tZ;
 	
-	camDir = calcPtDir(camX, camY, toX, toY);
+	camDir = calcPtDir(newCamX, newCamY, toX, toY);
 }
 		
 float Camera :: getCamDir() {
@@ -64,10 +64,10 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 	/*float add, d;
 	add = Math2D.calcProjDis(cX-camX, cY-camY, Math2D.lengthdirX(1,camDir+90),Math2D.lengthdirY(1,camDir+90));
 	d = (Math2D.angleDifference(Math2D.pointDirection(camX, camY, cX, cY), camDir) > 0) ? 1 : -1;
-	bgX += .25*d*add;
+	bgX += .25*d*add;*/
 		camX = cX;	focusX = camX;
 		camY = cY;	focusY = camY;
-		//camZ = cZ;*/
+		camZ = cZ;
 
 	camDir = calcPtDir(camX,camY,toX,toY);
 

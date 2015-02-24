@@ -3,7 +3,7 @@
 #ifndef GRAPHICSOGL_H
 #define GRAPHICSOGL_H
 
-#include <GL/freeglut.h>
+x#include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
 #include "Texture.h"
@@ -27,6 +27,11 @@ class GraphicsOGL {
 			int getScreenHeight();
 			int getMouseX();
 			int getMouseY();
+			float getWASDDir();
+
+		//CAMERA
+			float getCamDir();
+			void setProjectionPrep(float,float,float,float,float,float);
 		
 		//DRAWING
 			void setColor(int,int,int);
@@ -42,7 +47,7 @@ class GraphicsOGL {
 		//3D DRAWING
 
 			void draw3DWall(float,float,float,float,float,float, Texture*);
-			void draw3DFloor(float,float,float,float,float,float, Texture*);
+			void draw3DFloor(float,float,float,float,float, Texture*);
 
 			void drawTexture(float, float, Texture*);
 			void drawTextureScaled(float, float, float, float, Texture*);

@@ -1,6 +1,7 @@
 // Drawable.cpp
 
 
+#include <map>
 #include <deque>
 #include "../Graphics/GraphicsOGL.h"
 #include "Updateable.h"
@@ -20,7 +21,7 @@ void Drawable :: drawAll(GraphicsOGL* gl, float deltaTime) {
 }
 
 void Drawable :: update(GraphicsOGL* gl, float deltaTime) {
-	Updatable :: update(gl, deltaTime);
+	Updateable :: update(gl, deltaTime);
 }
 
 void Drawable :: draw(GraphicsOGL* gl, float deltaTime) {

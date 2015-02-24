@@ -24,7 +24,10 @@ GLuint ShaderController :: getProgram(string name) {
 void ShaderController :: initialize() {
 	addShader("Diffuse");
 	addShader("Invert");
+	addShader("Grayscale");
 	addShader("Galaxy");
+	addShader("Rainbow");
+	addShader("GalaxyTexture");
 }
 void ShaderController :: addShader(string name) {
 	shaderMap[name] = new Shader(name);
