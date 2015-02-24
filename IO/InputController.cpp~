@@ -1,16 +1,16 @@
-//InputController.h
+// InputController.cpp
 
 #include "InputController.h"
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
 
-InputController* inp;
+InputController InputController* inp;
 void mouseCallback(int button, int state, int x, int y) {
-	inp->idle(button, state, x, y);
+	inp->updateMouse(button, state, x, y);
 }
 void passiveMouseCallback(int x, int y) {
-	inp->idle(x, y);
+	inp->updatePassiveMouse(x, y);
 }
 
 

@@ -39,6 +39,11 @@ class GraphicsOGL {
 			void drawPolygon(float,float,float,int,float);
 			void fillPolygon(float,float,float,int,float);
 
+		//3D DRAWING
+
+			void draw3DWall(float,float,float,float,float,float, Texture*);
+			void draw3DFloor(float,float,float,float,float,float, Texture*);
+
 			void drawTexture(float, float, Texture*);
 			void drawTextureScaled(float, float, float, float, Texture*);
 			float drawChar(float, float, char);

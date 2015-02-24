@@ -1,4 +1,4 @@
-//InputController.h
+// InputController.cpp
 
 #include "InputController.h"
 #include <GL/freeglut.h>

@@ -14,6 +14,7 @@ class InputController {
 		int getMouseY();
 
 	private:
+		static InputController* mainInp;
 		bool* leftMouse;
 		bool* middleMouse;
 		bool* rightMouse;

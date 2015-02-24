@@ -120,8 +120,6 @@ void GraphicsOGL :: idle() {
 	glutPostRedisplay();
 
 
-	for(int i = 0; i < 1000; i++);
-
 	fpsEnd = getTime();
 
 
@@ -148,23 +146,24 @@ void GraphicsOGL :: display() {
 	globalTime += 1;
 
 
-	enableShader("Galaxy");
-
+	
 	glColor3f(1,1,1);
 
+
+	glCamera->setProjectionPrep(calcLenX(100,globalTime),calcLenY(100,globalTime),10,0,0,0);
+
+	setPerspective();
+		draw3DWall(-16,0,32,16,0,0,NULL);
 	setOrtho();
-	fillPolygon(getMouseX(),getMouseY(),30,3, globalTime);
-	//fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-	//drawTextureScaled(0,0,10,10,tst);
+		enableShader("Galaxy");
+			fillPolygon(getMouseX(),getMouseY(),30,3, globalTime);
+			//fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+		disableShaders();
 
+		string fpsStr = "FPS: ";
+			fpsStr = fpsStr + to_string(fps);
 
-	disableShaders();
-
-
-	string fpsStr = "FPS: ";
-		fpsStr = fpsStr + to_string(fps);
-
-	drawStringScaled(0,0,.65,.65,fpsStr);
+		drawStringScaled(0,0,.65,.65,fpsStr);
 
 
 	glFlush(); 
@@ -311,6 +310,89 @@ void GraphicsOGL :: display() {
 			glTexCoord2f(0,1);
 				glVertex3f(x, y+h, depth);
 		glEnd();
+
+		glDisable(GL_TEXTURE_2D);
+	}
+
+//3D DRAWING
+
+	void GraphicsOGL :: draw3DWall(float x1, float y1, float z1, float x2, float y2, float z2, Texture* tex) {
+
+			if(tex != NULL) {
+				glEnable(GL_TEXTURE_2D);
+				
+				tex->bind();
+				
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+			}
+						
+			/*glColor4f(1f, 1f, 1f, (float) alpha);
+			
+			gl.glTranslated(sx+xScale*x,sy+yScale*y,sz+zScale*z);
+			gl.glRotated(rotZ, 0, 0, 1);
+			gl.glRotated(rotY, 0, 1, 0);
+			gl.glRotated(rotX, 1, 0, 0);
+			
+			gl.glScalef(xScale, yScale, zScale);*/
+			
+			glBegin(GL_QUADS);
+				glTexCoord2d(0.0, 0.0); 	
+					glVertex3d(x1, y1, z1);
+				glTexCoord2d(1.0, 0.0);
+					glVertex3d(x2, y2, z1);
+				glTexCoord2d(1.0, 1.0);
+					glVertex3d(x2, y2, z2);
+				glTexCoord2d(0.0, 1.0);
+					glVertex3d(x1, y1, z2);
+			glEnd();
+			
+			//glLoadIdentity();
+			
+			
+			//glColor4f(1f, 1f, 1f, 1f);
+
+		glDisable(GL_TEXTURE_2D);
+	}
+
+	void GraphicsOGL :: draw3DFloor(float x1, float y1, float z1, float x2, float y2, float z2, Texture* tex) {
+
+			if(tex != NULL) {
+				glEnable(GL_TEXTURE_2D);
+				
+				tex->bind();
+				
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+			}
+						
+			/*glColor4f(1f, 1f, 1f, (float) alpha);
+			
+			gl.glTranslated(sx+xScale*x,sy+yScale*y,sz+zScale*z);
+			gl.glRotated(rotZ, 0, 0, 1);
+			gl.glRotated(rotY, 0, 1, 0);
+			gl.glRotated(rotX, 1, 0, 0);
+			
+			gl.glScalef(xScale, yScale, zScale);*/
+			
+			glBegin(GL_QUADS);
+				glTexCoord2d(0.0, 0.0);
+					glVertex3d(x1, y1, z1);
+				glTexCoord2d(1.0, 0.0);
+					glVertex3d(x2, y1, z1);
+				glTexCoord2d(1.0, 1.0);
+					glVertex3d(x2, y2, z1);
+				glTexCoord2d(0.0, 1.0);
+					glVertex3d(x1, y2, z1);
+			glEnd();
+			
+			
+			//glLoadIdentity();
+			
+			
+			//glColor4f(1f, 1f, 1f, 1f);
 
 		glDisable(GL_TEXTURE_2D);
 	}

@@ -8,7 +8,7 @@
 #include <GL/glext.h>
 #include "Texture.h"
 #include "Font.h"
-#include "InputController.h"
+#include "../IO/InputController.h"
 #include "ShaderController.h"
 #include "FontController.h"
 #include "Camera.h"
@@ -38,6 +38,10 @@ class GraphicsOGL {
 			void fillCircle(float,float,float,int);
 			void drawPolygon(float,float,float,int,float);
 			void fillPolygon(float,float,float,int,float);
+
+		//3D DRAWING
+
+			void draw3DWall(float,float,float,float,float,float, Texture*);
 
 			void drawTexture(float, float, Texture*);
 			void drawTextureScaled(float, float, float, float, Texture*);
