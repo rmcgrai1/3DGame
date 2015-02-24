@@ -8,10 +8,12 @@
 #include <GL/glext.h>
 #include "Texture.h"
 #include "Font.h"
+#include "InputController.h"
 #include "ShaderController.h"
 #include "FontController.h"
 #include "Camera.h"
 
+class Camera;
 class GraphicsOGL {
 	public:
 		GraphicsOGL(int, char* []);
@@ -23,6 +25,8 @@ class GraphicsOGL {
 		//ACCESSOR
 			int getScreenWidth();
 			int getScreenHeight();
+			int getMouseX();
+			int getMouseY();
 		
 		//DRAWING
 			void setColor(int,int,int);
@@ -32,6 +36,8 @@ class GraphicsOGL {
 			void fillRect(float,float,float,float);
 			void drawCircle(float,float,float,int);
 			void fillCircle(float,float,float,int);
+			void drawPolygon(float,float,float,int,float);
+			void fillPolygon(float,float,float,int,float);
 
 			void drawTexture(float, float, Texture*);
 			void drawTextureScaled(float, float, float, float, Texture*);
@@ -41,6 +47,7 @@ class GraphicsOGL {
 			void drawStringScaled(float, float, float, float, string);
 
 		//SHADERS
+			void disableShaders();
 			void enableShader(GLuint);
 			void enableShader(string);
 			void setCurrentTextureSize(int,int);
@@ -52,11 +59,21 @@ class GraphicsOGL {
 			void setOrtho();
 			void setPerspective();
 
+		//TIME
+			long getTime();
+
 	private:
 		void initialize3D(int, char* []);
 
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;
+
+		//FPS Variables
+			long fpsStart, fpsEnd;
+			int fps;
+
+		//Input Variables
+			InputController* inputController;
 
 		//Shader Variables
 			ShaderController* shaderController;

@@ -23,6 +23,8 @@ GLuint ShaderController :: getProgram(string name) {
 
 void ShaderController :: initialize() {
 	addShader("Diffuse");
+	//addShader("Invert");
+	addShader("Galaxy");
 }
 void ShaderController :: addShader(string name) {
 	shaderMap[name] = new Shader(name);
