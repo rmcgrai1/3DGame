@@ -1,7 +1,13 @@
 // Heightmap.h
 
+#ifndef HEIGHTMAP_H
+#define HEIGHTMAP_H
 
-class Heightmap {
+#include "../Graphics/GraphicsOGL.h"
+#include "../Primitives/Drawable.h"
+
+class GraphicsOGL;
+class Heightmap : public Drawable {
 	public:
 		Heightmap(float, float, float);
 		Heightmap(float, float, int**);
@@ -9,10 +15,18 @@ class Heightmap {
 		float getHeight(int, int);
 		void getNormal(float, float, float*);
 		bool isFloor(float, float);
-		bool isWall(float, float);		
+		bool isWall(float, float);
+		void draw(GraphicsOGL*, float);
 
 	private:
 		void setHeight(int, int, float);
 		void load(string);
 		float** heightGrid;
-}
+		float xSize;
+		float ySize;
+		float xNum;
+		float yNum;
+		float scale;
+};
+
+#endif

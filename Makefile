@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o FileIO.o InputController.o
-	g++ `Magick++-config --with-png --cxxflags --cppflags` main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o FileIO.o InputController.o -o main -lglut -lGLU -lGL `Magick++-config --ldflags --libs`
+main: main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Heightmap.o FileIO.o InputController.o
+	g++ `Magick++-config --with-png --cxxflags --cppflags` main.o Math2D.o GraphicsOGL.o Camera.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Heightmap.o FileIO.o InputController.o -o main -lglut -lGLU -lGL `Magick++-config --ldflags --libs`
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -46,6 +46,13 @@ Drawable.o: Primitives/Drawable.cpp Primitives/Drawable.h
 Instantiable.o: Primitives/Instantiable.cpp Primitives/Instantiable.h
 	g++ -c Primitives/Instantiable.cpp
 
+
+# ENVIRONMENT
+###############################################################
+Heightmap.o: Environment/Heightmap.cpp Environment/Heightmap.h
+	g++ -c Environment/Heightmap.cpp
+
+
 # INPUT/OUTPUT
 ###############################################################
 FileIO.o: IO/FileIO.cpp IO/FileIO.h
@@ -53,8 +60,6 @@ FileIO.o: IO/FileIO.cpp IO/FileIO.h
 
 InputController.o: IO/InputController.cpp IO/InputController.h
 	g++ -c IO/InputController.cpp
-
-
 
 
 clean:

@@ -3,6 +3,7 @@
 
 #include <GL/freeglut.h>
 #include <GL/glut.h>
+#include <GL/glu.h>
 #include <GL/glext.h>
 #include "../Functions/Math2D.h"
 #include "GraphicsOGL.h"
@@ -56,7 +57,7 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 
 	// Perspective.
 	float widthHeightRatio = (float) gl->getScreenWidth() / (float) gl->getScreenHeight();
-	gluPerspective(45, widthHeightRatio, 1, 1000);
+	gluPerspective(45, widthHeightRatio, 3, 1000);
 	gluLookAt(cX, cY, camZ, toX, toY, focusZ, 0, 0, 1);
 
 	// Move Background!

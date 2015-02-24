@@ -42,6 +42,7 @@ class GraphicsOGL {
 		//3D DRAWING
 
 			void draw3DWall(float,float,float,float,float,float, Texture*);
+			void draw3DFloor(float,float,float,float,float,float, Texture*);
 
 			void drawTexture(float, float, Texture*);
 			void drawTextureScaled(float, float, float, float, Texture*);
