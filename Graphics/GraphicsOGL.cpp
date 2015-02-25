@@ -85,7 +85,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 
 		p = new Player(0,0,0);
-		hm = new Heightmap(32,32,1);
+		hm = new Heightmap(1028,1028,1/32.);
 		tst->load();
 		//Load Resources, Create GraphicsOGL's Objects
 		glCamera = new Camera();
@@ -120,6 +120,10 @@ int GraphicsOGL :: getMouseY() {
 	return inputController->getMouseY();
 }
 
+
+bool GraphicsOGL :: getShift() {
+	return inputController->getShift();
+}
 float GraphicsOGL :: getWASDDir() {
 	return inputController->getWASDDir();
 }
@@ -129,6 +133,7 @@ void GraphicsOGL :: idle() {
 	//Get Start Time
 	fpsStart = getTime();
 
+		p->collideHeightmap(hm);
 		Updateable :: updateAll(this, 1);
 
 		//Draw Current Frame
@@ -140,6 +145,7 @@ void GraphicsOGL :: idle() {
 
 	double runTime = (fpsEnd-fpsStart)/1000.;
 	long sleepTime = 1000.*1000/60 - runTime;
+
 
 	fps = 1000.*1000/(runTime);
 	if(fps > 60)
@@ -169,7 +175,7 @@ void GraphicsOGL :: display() {
 	setPerspective();
 		draw3DWall(-16,0,32,16,0,0,NULL);
 
-		enableShader("RainbowTexture");	
+		enableShader("GalaxyTexture");	
 		Drawable :: drawAll(this, 1);
 	setOrtho();
 

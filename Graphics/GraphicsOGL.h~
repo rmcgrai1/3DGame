@@ -3,7 +3,7 @@
 #ifndef GRAPHICSOGL_H
 #define GRAPHICSOGL_H
 
-x#include <GL/freeglut.h>
+#include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
 #include "Texture.h"

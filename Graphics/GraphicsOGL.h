@@ -27,6 +27,7 @@ class GraphicsOGL {
 			int getScreenHeight();
 			int getMouseX();
 			int getMouseY();
+			bool getShift();
 			float getWASDDir();
 
 		//CAMERA

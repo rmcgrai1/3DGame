@@ -21,6 +21,9 @@ void keyboardCallback(unsigned char key, int x, int y) {
 void keyboardUpCallback(unsigned char key, int x, int y) {
 	inp->updateKeyboardUp(key, x, y);
 }
+void keyboardSpecialCallback(int key, int x, int y) {
+	inp->updateKeyboardSpecial(key, x, y);
+}
 
 
 InputController :: InputController() {
@@ -32,10 +35,15 @@ InputController :: InputController() {
 	wasdArray[2] = false;
 	wasdArray[3] = false;
 
+	isShiftDown = false;
+
+	glutSetKeyRepeat(0);
+
 	glutMouseFunc(mouseCallback);
 	glutPassiveMotionFunc(passiveMouseCallback);
 	glutKeyboardFunc(keyboardCallback);
 	glutKeyboardUpFunc(keyboardUpCallback);
+	glutSpecialFunc(keyboardSpecialCallback);
 }
 
 int InputController :: getMouseX() {
@@ -57,27 +65,37 @@ void InputController :: updatePassiveMouse(int x, int y) {
 	mouseY = y;
 }
 void InputController :: updateKeyboard(unsigned char key, int x, int y) {
-	switch(key) {
+	char lKey = tolower(key);
+
+	isShiftDown = (glutGetModifiers() == GLUT_ACTIVE_SHIFT);
+
+	switch(lKey) {
 		case 'w':
 		case 'a':
 		case 's':
-		case 'd':	setWASD(key, true);
+		case 'd':	setWASD(lKey, true);
 			break;
 	}
 }
 void InputController :: updateKeyboardUp(unsigned char key, int x, int y) {
-	switch(key) {
+	char lKey = tolower(key);
+
+	switch(lKey) {
 		case 'w':
 		case 'a':
 		case 's':
-		case 'd':	setWASD(key, false);
+		case 'd':	setWASD(lKey, false);
 			break;
 	}
+}
+void InputController :: updateKeyboardSpecial(int key, int x, int y) {
+	isShiftDown = (glutGetModifiers() == GLUT_ACTIVE_SHIFT);
 }
 
 float InputController :: getWASDDir() {
 	int hDir, vDir;
 
+	// Get Horizontal Combination of A & D Keys
 	if(getWASD('a') && !getWASD('d'))
 		hDir = -1;
 	else if(!getWASD('a') && getWASD('d'))
@@ -85,6 +103,7 @@ float InputController :: getWASDDir() {
 	else
 		hDir = 0;
 
+	// Get Vertical Combination of W & S Keys
 	if(getWASD('w') && !getWASD('s'))
 		vDir = 1;
 	else if(!getWASD('w') && getWASD('s'))
@@ -92,10 +111,16 @@ float InputController :: getWASDDir() {
 	else
 		vDir = 0;
 
+	// If No Keys are Held, or Only <> and/or ^v, Return -1
 	if(hDir == 0 && vDir == 0)
 		return -1;
+	//Otherwise, Return the Direction Given by the Points
 	else
 		return calcPtDir(0,0,hDir,vDir);
+}
+
+bool InputController :: getShift() {
+	return isShiftDown;
 }
 
 bool InputController :: getWASD(char key) {

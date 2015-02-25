@@ -12,14 +12,17 @@ class Heightmap : public Drawable {
 		Heightmap(float, float, float);
 		Heightmap(float, float, int**);
 		Heightmap(float, float, float**);
-		float getHeight(int, int);
+
+		void draw(GraphicsOGL*, float);
+
+		float getHeightIJ(int, int);
+		float getHeightXY(float, float);
 		void getNormal(float, float, float*);
 		bool isFloor(float, float);
 		bool isWall(float, float);
-		void draw(GraphicsOGL*, float);
-
 	private:
 		void setHeight(int, int, float);
+
 		void load(string);
 		float** heightGrid;
 		float xSize;

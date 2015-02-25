@@ -47,7 +47,8 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 	Physical :: draw(gl, deltaTime);
 
-	float dir, xN, yN;
+	float sideNum = 4;
+	float ang = 45, dir, xN, yN;
 
 	glTranslatef(x,y,z+hopZ);
 	glRotated(direction, 0, 0, 1);
@@ -56,12 +57,13 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 	
 	glScalef(hopSc,hopSc,1/hopSc);
 
+	// Draw Top of Player Model
 	glBegin(GL_TRIANGLE_FAN);
 		glTexCoord2d(.5, .5);
 			glVertex3d(0,0,h);
 
-		for(int i = 0; i <= 6; i++) {
-			dir = i/6.*360;
+		for(int i = 0; i <= sideNum; i++) {
+			dir = ang + i/sideNum*360;
 
 			xN = calcLenX(1,dir);
 			yN = calcLenY(1,dir);
@@ -71,10 +73,11 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 		}
 	glEnd();
 
-	for(int i = 0; i < 6; i++) {
-		glBegin(GL_TRIANGLE_STRIP);
+	// Draw Side Faces of Player Model
+	for(int i = 0; i < sideNum; i++) {
+		glBegin(GL_QUADS);
 
-			dir = i/6.*360;
+			dir = ang + i/sideNum*360;
 				xN = calcLenX(1,dir);
 				yN = calcLenY(1,dir);
 
@@ -84,14 +87,14 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 				glVertex3d(xN*s, yN*s, 0);
 
 
-			dir = (i+1)/6.*360;
+			dir = ang + (i+1)/sideNum*360;
 				xN = calcLenX(1,dir);
 				yN = calcLenY(1,dir);
 
-			glTexCoord2d(0,0);
-				glVertex3d(xN*s, yN*s, h);
-			glTexCoord2d(0,1);
+			glTexCoord2d(1,1);
 				glVertex3d(xN*s, yN*s, 0);
+			glTexCoord2d(1,0);
+				glVertex3d(xN*s, yN*s, h);
 		glEnd();
 	}
 	

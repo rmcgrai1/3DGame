@@ -14,9 +14,11 @@ class InputController {
 		void updatePassiveMouse(int,int);
 		void updateKeyboard(unsigned char, int, int);
 		void updateKeyboardUp(unsigned char, int, int);
+		void updateKeyboardSpecial(unsigned char, int, int);
 
+		bool getShift();
 		float getWASDDir();
-		bool getWASD();
+		bool getWASD(char);
 		void setWASD(char, bool);
 
 		int getMouseX();
@@ -32,6 +34,8 @@ class InputController {
 
 		int mouseX;
 		int mouseY;
+
+		bool isShiftDown;
 };
 
 #endif
