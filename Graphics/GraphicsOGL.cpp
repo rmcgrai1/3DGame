@@ -29,7 +29,6 @@ using namespace std;
 using namespace std::chrono;
 
 
-Heightmap* hm;
 Player* p;
 Texture* GraphicsOGL::tst = new Texture("Resources/Images/test.png");
 
@@ -85,7 +84,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 
 		p = new Player(0,0,0);
-		hm = new Heightmap(1028,1028,1/32.);
+		curHeightmap = new Heightmap(1028,1028,1/32.);
 		tst->load();
 		//Load Resources, Create GraphicsOGL's Objects
 		glCamera = new Camera();
@@ -128,12 +127,16 @@ float GraphicsOGL :: getWASDDir() {
 	return inputController->getWASDDir();
 }
 
+Heightmap* GraphicsOGL :: getHeightmap() {
+	return curHeightmap;
+}
+
 void GraphicsOGL :: idle() {
 
 	//Get Start Time
 	fpsStart = getTime();
 
-		p->collideHeightmap(hm);
+
 		Updateable :: updateAll(this, 1);
 
 		//Draw Current Frame

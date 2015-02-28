@@ -12,8 +12,11 @@
 #include "ShaderController.h"
 #include "FontController.h"
 #include "Camera.h"
+#include "../Environment/Heightmap.h"
+
 
 class Camera;
+class Heightmap;
 class GraphicsOGL {
 	public:
 		GraphicsOGL(int, char* []);
@@ -66,6 +69,9 @@ class GraphicsOGL {
 		//FONT
 			void setFont(string);
 
+		//HEIGHTMAP
+			Heightmap* getHeightmap();
+
 		//PROJECTION
 			void setOrtho();
 			void setPerspective();
@@ -82,6 +88,9 @@ class GraphicsOGL {
 		//FPS Variables
 			long fpsStart, fpsEnd;
 			int fps;
+
+		//Heightmap Variables
+			Heightmap* curHeightmap;
 
 		//Input Variables
 			InputController* inputController;

@@ -19,6 +19,7 @@ void Physical :: update(GraphicsOGL* gl, float deltaTime) {
 	Instantiable :: update(gl, deltaTime);
 
 	updateMotion(deltaTime);
+	collideHeightmap(gl->getHeightmap());
 }
 	
 void Physical :: draw(GraphicsOGL* gl, float deltaTime) {

@@ -22,6 +22,7 @@ class Heightmap : public Drawable {
 		bool isWall(float, float);
 	private:
 		void setHeight(int, int, float);
+
 		void load(string);
 		float** heightGrid;
 		float xSize;

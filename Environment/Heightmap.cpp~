@@ -77,8 +77,70 @@ float Heightmap :: getHeightXY(float x, float y) {
 	return (1-xP)*(1-yP)*h1 + (xP)*(1-yP)*h2 + (1-xP)*(yP)*h3 + (xP)*(yP)*h4;
 }
 
-//void getNormal(float, float, float*);
+void Heightmap :: getNormal(float x, float y, float vec[3]) {
+	float h1, h2, h3, h4;
+	int jC, jF, iC, iF;
+
+	//Get (i,j) Coordinates of (x,y) point
+	float jP, iP;
+	jP = x/scale;
+	iP = y/scale;
+
+	//Get (i,j) Coordinates of Corners
+	jC = ceil(jP);
+	jF = jC-1;
+	iC = ceil(iP);
+	iF = iC-1;
+
+	//Get Distance Into Square from Left Corner
+	float xP, yP;
+	xP = (jP - jF);
+	yP = (iP - iF);	
+
+
+	// Get Heights at Four Corners
+	h1 = getHeightIJ(iF,jF);
+	h2 = getHeightIJ(iF,jC);
+	h3 = getHeightIJ(iC,jF);
+	h4 = getHeightIJ(iC,jC);
+
+
+	/*
+		A --- o
+		|     |
+		|     |
+		B ----C
+
+	*/
+
+	// Get Coords of Three Points
+		float Ax, Ay, Az, Bx, By, Bz, Cx, Cy, Cz;
+		Ax = jF*scale;	Ay = iF*scale;	Az = h1;
+		Bx = jF*scale;	By = iC*scale;	Bz = h3;
+		Cx = jC*scale;	Cy = iC*scale;	Cz = h4;
+
+	// (B-A) x (C-A)
+		float BAx, BAy, BAz, CAx, CAy, CAz;
+		BAx = Bx-Ax;	CAx = Cx-Ax;
+		BAy = By-Ay;	CAy = Cy-Ay;
+		BAz = Bz-Az;	CAz = Cz-Az;
+
+		float Dx, Dy, Dz;
+		Dx = BAy*CAz - BAz*CAy;
+		Dy = -(BAx*CAz - BAz*CAx);
+		Dz = BAx*CAy - BAy*CAx;
+
+	// Normalize
+		float len = sqrt(Dx*Dx + Dy*Dy + Dz*Dz);
+
+		Dx /= len;	Dy /= len;	Dz /= len;
+
+	// Set Values in Vector
+		vec[0] = Dx;	vec[1] = Dy;	vec[2] = Dz;
+}
 //bool isFloor(float, float);
+
+
 //bool isWall(float, float);
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {

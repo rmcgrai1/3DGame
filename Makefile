@@ -54,7 +54,7 @@ Physical.o: Primitives/Physical.cpp Primitives/Physical.h
 
 
 Player.o: Characters/Player.cpp Characters/Player.h
-	g++ -c Characters/Player.cpp
+	g++ -c Characters/Player.cpp -std=c++11
 
 
 # ENVIRONMENT

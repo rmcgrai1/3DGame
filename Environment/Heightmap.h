@@ -17,7 +17,7 @@ class Heightmap : public Drawable {
 
 		float getHeightIJ(int, int);
 		float getHeightXY(float, float);
-		void getNormal(float, float, float*);
+		void getNormal(float, float, float [3]);
 		bool isFloor(float, float);
 		bool isWall(float, float);
 	private:

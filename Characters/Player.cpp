@@ -5,11 +5,17 @@
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
+#include <string>
+#include <iostream>
 #include "../Graphics/GraphicsOGL.h"
 #include "../Primitives/Physical.h"
 #include "Player.h"
+#include <cmath>
 #include "../Functions/Math2D.h"
+#include "../Environment/Heightmap.h"
+using namespace std;
 
+int spin = 0;
 
 float nCDir = 0, s = 6, h = 8;
 
@@ -40,20 +46,55 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
 
 	float len = 50, dir = nCDir;
-	
-	gl->setProjectionPrep(x-calcLenX(len,nCDir),y-calcLenY(len,nCDir),z+8+10,x,y,z+8);
+
+
+	Heightmap* h = gl->getHeightmap();
+	float cX, cY;
+	cX = x-calcLenX(len,nCDir);
+	cY = y-calcLenY(len,nCDir);	
+
+	gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,x,y,z+8);
 }
 
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 	Physical :: draw(gl, deltaTime);
 
-	float sideNum = 4;
+	float sideNum = 6;
 	float ang = 45, dir, xN, yN;
 
+	float normal[3];
+	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
+
+		gl->getHeightmap()->getNormal(x,y,normal);
+		
+			nX = normal[0];
+			nY = normal[1];
+			nZ = normal[2];
+
+	gl->setOrtho();
+	
+	string normStr = "";
+		normStr = normStr + to_string(nX) + ", " + to_string(nY) + ", " + to_string(nZ);
+	gl->drawStringScaled(0,40,.65,.65,normStr);
+
+	gl->setPerspective();
+
+		xyDis = sqrt(nX*nX + nY*nY);
+		xRot = 90 - (180-(90+calcPtDir(0,0,nX,nZ)));
+		yRot = calcPtDir(0,0,nY,nZ);
+
+		setupRot = 90+calcPtDir(0,0,nX,nY);
+		xyRot = 90-calcPtDir(0,0,xyDis,nZ);
+
 	glTranslatef(x,y,z+hopZ);
-	glRotated(direction, 0, 0, 1);
-	//gl.glRotated(rotY, 0, 1, 0);
-	//gl.glRotated(rotX, 1, 0, 0);
+
+	//glRotated(xRot, 1, 0, 0);
+	glRotated(setupRot, 0, 0, 1);	
+	glRotated(xyRot, 1, 0, 0);
+	glRotated(direction-setupRot, 0, 0, 1);	
+
+	//glRotated(direction, 0, 0, 1);
+
 	
 	glScalef(hopSc,hopSc,1/hopSc);
 
