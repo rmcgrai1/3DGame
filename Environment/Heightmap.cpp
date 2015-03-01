@@ -144,7 +144,7 @@ void Heightmap :: getNormal(float x, float y, float vec[3]) {
 //bool isWall(float, float);
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
-	Drawable :: draw(gl, deltaTime);
+	Drawable2 :: draw(gl, deltaTime);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 

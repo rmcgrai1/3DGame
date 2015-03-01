@@ -7,7 +7,7 @@
 #include "../Primitives/Drawable.h"
 
 class GraphicsOGL;
-class Heightmap : public Drawable {
+class Heightmap : public Drawable2 {
 	public:
 		Heightmap(float, float, float);
 		Heightmap(float, float, int**);

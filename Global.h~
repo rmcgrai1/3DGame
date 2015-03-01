@@ -1,0 +1,9 @@
+// Global.h
+
+//#ifndef GLOBAL_H
+//#define GLOBALH
+
+extern int argc;
+extern char** argv;
+
+//#endif

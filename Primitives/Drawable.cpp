@@ -7,22 +7,22 @@
 #include "Updateable.h"
 #include "Drawable.h"
 
-deque<Drawable*> Drawable :: drawableList;
+deque<Drawable2*> Drawable2 :: drawableList;
 
-Drawable :: Drawable() : Updateable() {
+Drawable2 :: Drawable2() : Updateable() {
 	drawableList.push_back(this);
 }
 
-void Drawable :: drawAll(GraphicsOGL* gl, float deltaTime) {
+void Drawable2 :: drawAll(GraphicsOGL* gl, float deltaTime) {
 	int si = drawableList.size();
 
 	for(int i = 0; i < si; i++)
 		drawableList[i]->draw(gl, deltaTime);
 }
 
-void Drawable :: update(GraphicsOGL* gl, float deltaTime) {
+void Drawable2 :: update(GraphicsOGL* gl, float deltaTime) {
 	Updateable :: update(gl, deltaTime);
 }
 
-void Drawable :: draw(GraphicsOGL* gl, float deltaTime) {
+void Drawable2 :: draw(GraphicsOGL* gl, float deltaTime) {
 }

@@ -131,7 +131,7 @@ void Heightmap :: getNormal(float x, float y, float vec[3]) {
 		Dz = BAx*CAy - BAy*CAx;
 
 	// Normalize
-		float len = sqrt(Dx*Dx + Dy*Dy + Dz*Dz);
+		float len = -sqrt(Dx*Dx + Dy*Dy + Dz*Dz);
 
 		Dx /= len;	Dy /= len;	Dz /= len;
 

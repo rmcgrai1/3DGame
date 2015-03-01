@@ -9,7 +9,7 @@
 #include "Drawable.h"
 
 class GraphicsOGL;
-class Instantiable : public Drawable {
+class Instantiable : public Drawable2 {
 	public:
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);

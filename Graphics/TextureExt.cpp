@@ -6,11 +6,9 @@
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
-#include <ImageMagick-6/Magick++.h>
 #include "TextureExt.h"
 #include "Texture.h"
 using namespace std;
-using namespace Magick;
 
 
 TextureExt :: TextureExt(string fileName) {
@@ -19,7 +17,7 @@ TextureExt :: TextureExt(string fileName) {
 		loadMultiframe(fileName);
 	}*/
 	//else {
-		addFrame(new Texture(fileName));
+		//addFrame(new Texture(fileName));
 	//}
 }
 

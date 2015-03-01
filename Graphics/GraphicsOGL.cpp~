@@ -30,7 +30,7 @@ using namespace std::chrono;
 
 
 Player* p;
-Texture* GraphicsOGL::tst = new Texture("Resources/Images/test.png");
+Texture* GraphicsOGL::tst;
 
 GraphicsOGL* ogl;
 void idleCallback() {
@@ -64,8 +64,7 @@ GraphicsOGL :: ~GraphicsOGL() {
 
 void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
-	//Initialize Magick and OpenGL
-	Magick::InitializeMagick(*argv);    
+	//Initialize OpenGL
 	glutInit(&argc, argv);
 
 	//Initialize OpenGL Window
@@ -85,11 +84,11 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 		p = new Player(0,0,0);
 		curHeightmap = new Heightmap(1028,1028,1/32.);
-		tst->load();
+		tst = new Texture("test.png",false);
 		//Load Resources, Create GraphicsOGL's Objects
 		glCamera = new Camera();
 		inputController = new InputController();
-		fontController = new FontController();
+		fontController = new FontController(argc,argv);
 		shaderController = new ShaderController();
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
@@ -127,7 +126,7 @@ float GraphicsOGL :: getWASDDir() {
 	return inputController->getWASDDir();
 }
 
-Heightmap* getHeightmap() {
+Heightmap* GraphicsOGL :: getHeightmap() {
 	return curHeightmap;
 }
 
@@ -179,7 +178,7 @@ void GraphicsOGL :: display() {
 		draw3DWall(-16,0,32,16,0,0,NULL);
 
 		enableShader("GalaxyTexture");	
-		Drawable :: drawAll(this, 1);
+		Drawable2 :: drawAll(this, 1);
 	setOrtho();
 
 			fillPolygon(getMouseX(),getMouseY(),30,3, globalTime);

@@ -10,7 +10,7 @@
 using namespace std;
 
 
-Font :: Font(string fontName, bool ca) {
+Font2D :: Font2D(string fontName, bool ca, int argc, char** argv) {
 	isCaseEnabled = ca;
 
 	fontDir = "Resources/Fonts/" + fontName + "/";
@@ -18,20 +18,20 @@ Font :: Font(string fontName, bool ca) {
 
 	if(!isCaseEnabled) {
 		for(int i = 0; i < 26; i++)
-			addChar('a' + i);
+			addChar('a' + i,argc,argv);
 		for(int i = 0; i < 10; i++)
-			addChar('0' + i);
+			addChar('0' + i,argc,argv);
 
-		addChar(',');
-		addChar('!');
-		addChar('.');
-		addChar(';');
-		addChar(':');
-		addChar('-');
+		addChar(',',argc,argv);
+		addChar('!',argc,argv);
+		addChar('.',argc,argv);
+		addChar(';',argc,argv);
+		addChar(':',argc,argv);
+		addChar('-',argc,argv);
 	}
 }
 
-Texture* Font :: getChar(char c) {
+Texture* Font2D :: getChar(char c) {
 	if(isalpha(c)) {
 		if(!isCaseEnabled)
 			return fontMap[tolower(c)];
@@ -44,13 +44,12 @@ Texture* Font :: getChar(char c) {
 	//return NULL;
 }
 
-void Font :: addChar(char c) {
-	addChar(c, (fontDir + c) + ".png");
+void Font2D :: addChar(char c, int argc, char** argv) {
+	addChar(c, (fontDir + c) + ".png", argc, argv);
 }
 
-void Font :: addChar(char c, string fileName) {
-	Texture* t = new Texture(fileName);
-	t->loadFont();
+void Font2D :: addChar(char c, string fileName, int argc, char** argv) {
+	Texture* t = new Texture(fileName, true, argc, argv);
 
 	fontMap[c] = t;
 }

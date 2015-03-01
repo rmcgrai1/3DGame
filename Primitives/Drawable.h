@@ -9,16 +9,16 @@
 #include "Updateable.h"
 
 class GraphicsOGL;
-class Drawable : public Updateable {
+class Drawable2 : public Updateable {
 	public:
 		static void drawAll(GraphicsOGL*, float);
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 
 	protected:
-		Drawable();
+		Drawable2();
 
-		static deque<Drawable*> drawableList;
+		static deque<Drawable2*> drawableList;
 };
 
 #endif

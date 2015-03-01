@@ -7,12 +7,12 @@
 #include "Instantiable.h"
 
 
-Instantiable :: Instantiable() : Drawable() {	
+Instantiable :: Instantiable() : Drawable2() {	
 }
 
 void Instantiable :: update(GraphicsOGL* gl, float deltaTime) {
-	Drawable :: update(gl, deltaTime);
+	Drawable2 :: update(gl, deltaTime);
 }
 void Instantiable :: draw(GraphicsOGL* gl, float deltaTime) {
-	Drawable :: draw(gl, deltaTime);
+	Drawable2 :: draw(gl, deltaTime);
 }

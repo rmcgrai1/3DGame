@@ -13,6 +13,6 @@ Instantiable :: Instantiable() : Drawable() {
 void Instantiable :: update(GraphicsOGL* gl, float deltaTime) {
 	Drawable :: update(gl, deltaTime);
 }
-void Instantiable :: draw(GraphicsOGL* gl) {
+void Instantiable :: draw(GraphicsOGL* gl, float deltaTime) {
 	Drawable :: draw(gl, deltaTime);
 }

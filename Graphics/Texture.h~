@@ -8,33 +8,29 @@
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
-#include <ImageMagick-6/Magick++.h>
+#include "CImg.h"
+#include "Image.h"
+using namespace cimg_library;
 using namespace std;
 
 class Texture {
 	public:
-		Texture(Magick::Image mImg);
-		Texture(const std::string&);
-		Texture(GLenum, const std::string&);
-		void bind();
-		void bind(GLenum);
-		bool load();
-
+		Texture(const string&, bool, int, char**);
+		
 		int getWidth();
 		int getHeight();
+
+		void bind();
+		void bind(GLenum);
 		
 	private:
 
 		static int texNum;
 
-		string m_fileName;
+		string fileName;
 
-		int width;
-		int height;
-		GLenum m_textureTarget;
 		GLuint m_textureObj;
-		Magick::Image m_image;
-		Magick::Blob m_blob;
+		Image* image;
 };
 
 #endif

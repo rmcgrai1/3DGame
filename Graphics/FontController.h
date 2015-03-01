@@ -10,14 +10,14 @@ using namespace std;
 
 class FontController {
 	public:
-		FontController();
-		Font* getFont(string);
+		FontController(int,char**);
+		Font2D* getFont(string);
 		
 	private:
-		void initialize();
-		void addFont(string,bool);
+		void initialize(int,char**);
+		void addFont(string,bool,int,char**);
 
-		map<string, Font*> fontMap;
+		map<string, Font2D*> fontMap;
 };
 
 #endif

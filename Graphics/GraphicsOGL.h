@@ -103,7 +103,7 @@ class GraphicsOGL {
 
 		//Font Variables
 			FontController* fontController;
-			Font* curFont;
+			Font2D* curFont;
 
 		Camera* glCamera;
 

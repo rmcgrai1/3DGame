@@ -12,7 +12,7 @@ class GraphicsOGL;
 class Instantiable : public Drawable {
 	public:
 		virtual void update(GraphicsOGL*, float);
-		virtual void draw(GraphicsOGL*);
+		virtual void draw(GraphicsOGL*, float);
 
 	protected:
 		Instantiable();

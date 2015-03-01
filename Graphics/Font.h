@@ -8,14 +8,14 @@
 #include "Texture.h"
 using namespace std;
 
-class Font {
+class Font2D {
 	public:
-		Font(string,bool);
+		Font2D(string,bool,int,char**);
 		Texture* getChar(char);
 
 	private:
-		void addChar(char,string);
-		void addChar(char);
+		void addChar(char,string,int,char**);
+		void addChar(char,int,char**);
 
 		map<char, Texture*> fontMap;
 		bool isCaseEnabled;

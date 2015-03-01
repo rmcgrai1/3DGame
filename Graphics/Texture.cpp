@@ -6,110 +6,45 @@
 #include <GL/glut.h>
 #include <GL/glext.h>
 #include "Texture.h"
-#include <ImageMagick-6/Magick++.h>
+#include "Image.h"
 using namespace std;
 
 int Texture :: texNum = 0;
 
 
-Texture::Texture(Magick::Image mImg) {
 
-	m_image = mImg;
+Texture::Texture(const string& fileName, bool isFont, int argc, char** argv) {
 
-	m_image.write(&m_blob, "RGBA");
-	
-	glGenTextures(++texNum, &m_textureObj);
-	glBindTexture(m_textureTarget, m_textureObj);
+	image = new Image(fileName, argc, argv);
+
+	glGenTextures(1, &m_textureObj);
+	glBindTexture(GL_TEXTURE_2D, m_textureObj);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-	glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D(m_textureTarget, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_blob.data());
-	glBindTexture(m_textureTarget, 0);
+
+	if(isFont) {
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	}
+	else {
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image->getData());   	
+	glBindTexture(GL_TEXTURE_2D, 0);	
 }
 
-Texture::Texture(const string& FileName) {
-
-	m_textureTarget = GL_TEXTURE_2D;
-	m_fileName      = FileName;
-}
-
-Texture::Texture(GLenum TextureTarget, const std::string& FileName)
-{
-	m_textureTarget = TextureTarget;
-	m_fileName      = FileName;
-}
 
 int Texture :: getWidth() {
-	return width;
+	return image->getWidth();
 }
 
 int Texture :: getHeight() {
-	return height;
-}
-
-
-bool Texture::load()
-{
-	try {
-		m_image.read(m_fileName);
-		m_image.write(&m_blob, "RGBA");
-	}
-	catch (Magick::Error& Error) {
-		std::cout << "Error loading texture '" << m_fileName << "': " << Error.what() << std::endl;
-		return false;
-	}
-
-
-
-
-	width = m_image.columns();
-	height = m_image.rows();
-
-
-	glGenTextures(1, &m_textureObj);
-	glBindTexture(m_textureTarget, m_textureObj);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-	glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D(m_textureTarget, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_blob.data());   	
-	glBindTexture(m_textureTarget, 0);
-
-	return true;
-}
-
-
-bool Texture::loadFont() {
-	try {
-		m_image.read(m_fileName);
-		m_image.write(&m_blob, "RGBA");
-	}
-	catch (Magick::Error& Error) {
-		std::cout << "Error loading texture '" << m_fileName << "': " << Error.what() << std::endl;
-		return false;
-	}
-
-
-	width = m_image.columns();
-	height = m_image.rows();
-
-	glGenTextures(1, &m_textureObj);
-	glBindTexture(m_textureTarget, m_textureObj);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-	glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(m_textureTarget, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_blob.data());   	
-	glBindTexture(m_textureTarget, 0);
-
-	return true;
+	return image->getHeight();
 }
 
 
@@ -119,6 +54,6 @@ void Texture::bind() {
 
 void Texture::bind(GLenum TextureUnit) {
     glActiveTexture(TextureUnit);
-    glBindTexture(m_textureTarget, m_textureObj);
+    glBindTexture(GL_TEXTURE_2D, m_textureObj);
 }
 

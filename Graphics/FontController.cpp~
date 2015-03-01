@@ -11,15 +11,14 @@ FontController :: FontController() {
 	initialize();
 }
 
-Font* FontController :: getFont(string name) {
+Font2D* FontController :: getFont(string name) {
 	return fontMap[name];
 }		
 
-void FontController :: initialize() {
-	addFont("8bit",false);
+void FontController :: initialize(int argc, char** argv) {
+	addFont("8bit",false, argc, argv);
 }
 
-void FontController :: addFont(string name, bool hasCaps) {
-	fontMap[name] = new Font(name, hasCaps);
+void FontController :: addFont(string name, bool hasCaps, int argc, char** argv) {
+	fontMap[name] = new Font2D(name, hasCaps, argc, argv);
 }
-
