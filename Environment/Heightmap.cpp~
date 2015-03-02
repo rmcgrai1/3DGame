@@ -32,6 +32,8 @@ Heightmap :: Heightmap(float xS, float yS, float resolution) {
 	}
 
 	tex = NULL;
+
+	generateNormals();
 }
 
 Heightmap :: Heightmap(float xS, float yS, string fileName) {
@@ -59,6 +61,8 @@ Heightmap :: Heightmap(float xS, float yS, string fileName) {
 	}
 
 	tex = new Texture(fileName,false);
+
+	generateNormals();
 }
 
 //		Heightmap(float, float, int**);
@@ -109,6 +113,7 @@ float Heightmap :: getHeightXY(float x, float y) {
 	return (1-xP)*(1-yP)*h1 + (xP)*(1-yP)*h2 + (1-xP)*(yP)*h3 + (xP)*(yP)*h4;
 }
 
+
 void Heightmap :: getNormal(float x, float y, float vec[3]) {
 	float h1, h2, h3, h4;
 	int jC, jF, iC, iF;
@@ -137,13 +142,13 @@ void Heightmap :: getNormal(float x, float y, float vec[3]) {
 	h4 = getHeightIJ(iC,jC);
 
 
-	/*
-		A --- o
-		|     |
-		|     |
-		B ----C
+	
+	//	A --- o
+	//	|     |
+	//	|     |
+	//	B ----C
 
-	*/
+	
 
 	// Get Coords of Three Points
 		float Ax, Ay, Az, Bx, By, Bz, Cx, Cy, Cz;
@@ -172,15 +177,52 @@ void Heightmap :: getNormal(float x, float y, float vec[3]) {
 }
 //bool isFloor(float, float);
 
+void Heightmap :: generateNormals() {
+	float n1[3],n2[3],n3[3],n4[3];
+
+	normGrid = new float**[yNum];
+
+	float s = scale;
+
+	for(int y = 0; y < yNum; y++) {
+		normGrid[y] = new float*[xNum];
+
+		for(int x = 0; x < xNum; x++) {
+			normGrid[y][x] = new float[3];
+
+			
+		        // The ? : and ifs are necessary for the border cases.
+
+			float sx = getHeightIJ(y, x<xNum-1 ? x+1 : x) - getHeightIJ(y, x > 0 ? x-1 : x);
+			if (x == 0 || x == xNum-1)
+			    sx *= 2;
+
+			float sy = getHeightIJ(y<yNum-1 ? y+1 : y, x) - getHeightIJ(y > 0 ? y-1 : y,x);
+			if (y == 0 || y == yNum -1)
+			    sy *= 2;
+
+			normGrid[y][x][0] = -sx*scale;
+			normGrid[y][x][1] == sy*scale;
+			normGrid[y][x][2] = 2;//*xzScale;
+
+			float len = sqrt(pow(normGrid[y][x][0],2) + pow(normGrid[y][x][1],2) + pow(normGrid[y][x][2],2));
+
+			normGrid[y][x][0] /= len;
+			normGrid[y][x][1] /= len;
+			normGrid[y][x][2] /= len;
+		}
+	}
+}
+
 
 //bool isWall(float, float);
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
+
 	if(tex != NULL) {
 		glEnable(GL_TEXTURE_2D);
 	
 		tex->bind();
-	
 	}
 
 	Drawable2 :: draw(gl, deltaTime);
@@ -191,31 +233,19 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
 
 	// Draw Heightmap as Triangle Strips
-	/*for(float i = 0; i < yNum-1; i++) {
+
+	for(int i = 0; i < yNum-1; i++) {
+
 		glBegin(GL_TRIANGLE_STRIP);
 
-		for(float j = 0; j < xNum; j++) {
-			glTexCoord2d(j/xNum,i/yNum);
-				glVertex3d(j*scale, i*scale, getHeightIJ(i,j));
-			glTexCoord2d(j/xNum, (i+1)/yNum);
-				glVertex3d(j*scale, (i+1)*scale, getHeightIJ(i+1,j));
-		}
+		for(int j = 0; j < xNum; j++) {
 
-		glEnd();
-	}*/
-
-	for(float i = 0; i < yNum-1; i++) {
-		glBegin(GL_QUADS);
-
-		for(float j = 0; j < xNum-1; j++) {
-			glTexCoord2d(j/xNum,i/yNum);
-				glVertex3d(j*scale, i*scale, getHeightIJ(i,j));
-			glTexCoord2d(j/xNum, (i+1)/yNum);
-				glVertex3d(j*scale, (i+1)*scale, getHeightIJ(i+1,j));
-			glTexCoord2d((j+1)/xNum,(i+1)/yNum);
-				glVertex3d((j+1)*scale, (i+1)*scale, getHeightIJ(i,j));
-			glTexCoord2d((j+1)/xNum, i/yNum);
-				glVertex3d((j+1)*scale, i*scale, getHeightIJ(i+1,j));
+			glTexCoord2f(j/xNum,i/yNum);
+			//glNormal3f(normGrid[i][j][0],normGrid[i][j][1],normGrid[i][j][2]);
+				glVertex3f(j*scale, i*scale, getHeightIJ(i,j));
+			glTexCoord2f(j/xNum, (i+1)/yNum);
+			//glNormal3f(normGrid[i][j][0],normGrid[i][j][1],normGrid[i][j][2]);
+				glVertex3f(j*scale, (i+1)*scale, getHeightIJ(i+1,j));
 		}
 
 		glEnd();

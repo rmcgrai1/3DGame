@@ -7,6 +7,7 @@
 #include <deque>
 #include "../Graphics/GraphicsOGL.h"
 #include "../Primitives/Physical.h"
+#include "../Graphics/Texture.h"
 
 class GraphicsOGL;
 class Player : public Physical {
@@ -21,6 +22,8 @@ class Player : public Physical {
 		float hopZ;
 		float hopZVel;
 		float hopSc;
+
+		static Texture* shTex;
 };
 
 #endif

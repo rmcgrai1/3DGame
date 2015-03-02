@@ -28,11 +28,13 @@ class Heightmap : public Drawable2 {
 		bool isWall(float, float);
 	private:
 		void setHeight(int, int, float);
+		void generateNormals();
 
 		Texture* tex;
 		Image* hmImg;
 		void load(string);
 		float** heightGrid;
+		float*** normGrid;
 		float xSize;
 		float ySize;
 		int xNum;

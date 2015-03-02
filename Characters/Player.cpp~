@@ -7,6 +7,7 @@
 #include <GL/glext.h>
 #include <string>
 #include <iostream>
+#include "../Graphics/Texture.h"
 #include "../Graphics/GraphicsOGL.h"
 #include "../Primitives/Physical.h"
 #include "Player.h"
@@ -19,16 +20,29 @@ int spin = 0;
 
 float nCDir = 0, s = 6, h = 8;
 
+
+Texture* Player :: shTex;
+
 Player :: Player(float x, float y, float z) : Physical(x,y,z) {
-	hopZ = 0;
+	hopZ = 
 	hopZVel = 0;
 	hopSc = 1;
+
+ 	shTex = new Texture("Resources/Images/shadow.png",false);
 }
 
 void Player :: update(GraphicsOGL* gl, float deltaTime) {
 	Physical :: update(gl, deltaTime);
 
 	updateControl(gl,deltaTime);
+
+
+
+	/*glEnable(GL_LIGHT0);
+	GLfloat lightpos[] = {x, y, z, 1};
+	//GLfloat lightpos[] = {0,0,-1, 0};
+	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);*/
+
 
 
 	float hopZVelP = hopZVel;
@@ -59,7 +73,7 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 	Physical :: draw(gl, deltaTime);
 
-	float sideNum = 4;
+	float sideNum = 6;
 	float ang = 45, dir, xN, yN;
 
 	float normal[3];
@@ -71,13 +85,6 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 			nY = normal[1];
 			nZ = normal[2];
 
-	gl->setOrtho();
-	
-	string normStr = "";
-		normStr = normStr + to_string(nX) + ", " + to_string(nY) + ", " + to_string(nZ);
-	gl->drawStringScaled(0,40,.65,.65,normStr);
-
-	gl->setPerspective();
 
 		xyDis = sqrt(nX*nX + nY*nY);
 		xRot = 90 - (180-(90+calcPtDir(0,0,nX,nZ)));
@@ -85,6 +92,18 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 
 		setupRot = 90+calcPtDir(0,0,nX,nY);
 		xyRot = 90-calcPtDir(0,0,xyDis,nZ);
+
+
+
+	//DRAW SHADOW
+		glTranslatef(x,y,z);
+		glRotated(setupRot, 0, 0, 1);	
+		glRotated(xyRot, 1, 0, 0);
+	
+		gl->draw3DFloor(-8,-8,8,8,0,shadowTex);
+
+		glLoadIdentity();
+
 
 	glTranslatef(x,y,z+hopZ);
 

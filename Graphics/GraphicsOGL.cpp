@@ -198,7 +198,7 @@ void GraphicsOGL :: display() {
 			//fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 		//disableShaders();
 
-		string fpsStr = "FPS: ", dirStr = "Dir: ";
+		string fpsStr = "FPS ", dirStr = "Dir ";
 			fpsStr = fpsStr + to_string(fps);
 			dirStr = dirStr + to_string(getCamDir());
 
@@ -416,8 +416,10 @@ void GraphicsOGL :: display() {
 				glEnable(GL_TEXTURE_2D);
 				
 				tex->bind();
-				
+
+				cout << "What" << endl;
 			}
+			
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -544,6 +546,7 @@ void GraphicsOGL :: setPerspective() {
 	glCamera->setProjection(this);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	//glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH);
 }
 

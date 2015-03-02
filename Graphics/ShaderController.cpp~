@@ -26,8 +26,9 @@ void ShaderController :: initialize() {
 	addShader("Invert");
 	addShader("Grayscale");
 	addShader("Galaxy");
-	addShader("Rainbow");
+	addShader("RainbowTexture");
 	addShader("GalaxyTexture");
+	addShader("Rimlighting");
 }
 void ShaderController :: addShader(string name) {
 	shaderMap[name] = new Shader(name);
