@@ -11,6 +11,7 @@
 #include <GL/glut.h>
 #include <GL/glext.h>
 #include "Texture.h"
+#include "Image.h"
 #include "Camera.h"
 #include "GraphicsOGL.h"
 #include "Shader.h"
@@ -28,6 +29,8 @@
 using namespace std;
 using namespace std::chrono;
 
+
+bool isDrawing = false;
 
 Player* p;
 Texture* GraphicsOGL::tst;
@@ -83,12 +86,13 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 
 		p = new Player(0,0,0);
-		curHeightmap = new Heightmap(1028,1028,1/32.);
-		tst = new Texture("test.png",false,argc,argv);
+		//curHeightmap = new Heightmap(1028,1028,1/32.);
+		curHeightmap = new Heightmap(2048,2048,"Resources/Images/test.png");
+		tst = new Texture("Resources/Images/test.png",false);
 		//Load Resources, Create GraphicsOGL's Objects
 		glCamera = new Camera();
 		inputController = new InputController();
-		fontController = new FontController(argc,argv);
+		fontController = new FontController();
 		shaderController = new ShaderController();
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
@@ -135,18 +139,19 @@ void GraphicsOGL :: idle() {
 	//Get Start Time
 	fpsStart = getTime();
 
-
 		Updateable :: updateAll(this, 1);
 
 		//Draw Current Frame
 		glutPostRedisplay();
 
-
 	fpsEnd = getTime();
+
 
 
 	double runTime = (fpsEnd-fpsStart)/1000.;
 	long sleepTime = 1000.*1000/60 - runTime;
+
+	cout << 1000.*1000/60 << ": " << runTime << ", " << sleepTime << endl;
 
 
 	fps = 1000.*1000/(runTime);
@@ -156,9 +161,17 @@ void GraphicsOGL :: idle() {
 
 	if(sleepTime > 0)
 		usleep(sleepTime);
+
+	isDrawing = false;
 }
 
 void GraphicsOGL :: display() {
+
+
+	long start = getTime();
+
+	
+
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
  	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
@@ -177,13 +190,13 @@ void GraphicsOGL :: display() {
 	setPerspective();
 		draw3DWall(-16,0,32,16,0,0,NULL);
 
-		enableShader("GalaxyTexture");	
+		//enableShader("GalaxyTexture");	
 		Drawable2 :: drawAll(this, 1);
 	setOrtho();
 
 			fillPolygon(getMouseX(),getMouseY(),30,3, globalTime);
 			//fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-		disableShaders();
+		//disableShaders();
 
 		string fpsStr = "FPS: ", dirStr = "Dir: ";
 			fpsStr = fpsStr + to_string(fps);
@@ -194,6 +207,11 @@ void GraphicsOGL :: display() {
 
 	glFlush(); 
     	glutSwapBuffers();
+
+
+	long end = getTime();
+
+	cout << (end-start)/1000. << endl;
 }
 
 //CAMERA FUNCTIONS
@@ -529,7 +547,7 @@ void GraphicsOGL :: setPerspective() {
 	glEnable(GL_DEPTH);
 }
 
-long GraphicsOGL :: getTime() {
+unsigned long GraphicsOGL :: getTime() {
 
 	nanoseconds ms = duration_cast< nanoseconds >(
  		high_resolution_clock::now().time_since_epoch()

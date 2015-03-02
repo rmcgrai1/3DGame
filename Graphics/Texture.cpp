@@ -13,9 +13,9 @@ int Texture :: texNum = 0;
 
 
 
-Texture::Texture(const string& fileName, bool isFont, int argc, char** argv) {
+Texture::Texture(const string& fileName, bool isFont) {
 
-	image = new Image(fileName, argc, argv);
+	image = new Image(fileName);
 
 	glGenTextures(1, &m_textureObj);
 	glBindTexture(GL_TEXTURE_2D, m_textureObj);
@@ -34,8 +34,18 @@ Texture::Texture(const string& fileName, bool isFont, int argc, char** argv) {
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image->getData());   	
-	glBindTexture(GL_TEXTURE_2D, 0);	
+		
+		glPixelStoref(GL_PACK_ROW_LENGTH,1);
+		glPixelStoref(GL_PACK_SKIP_PIXELS,1);
+		glPixelStoref(GL_PACK_SKIP_ROWS,1);
+		glPixelStoref(GL_PACK_ALIGNMENT,1);
+
+
+	unsigned char* data = new unsigned char[getWidth()*getHeight()*4];
+	image->interleave(data);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 

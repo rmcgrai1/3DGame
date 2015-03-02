@@ -1,7 +1,7 @@
 all: main
 
 main: main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Player.o Heightmap.o FileIO.o InputController.o
-	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Player.o Heightmap.o FileIO.o InputController.o -o main -lglut -lGLU -lGL -lX11 -lpthread
+	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Player.o Heightmap.o FileIO.o InputController.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -22,7 +22,7 @@ Camera.o: Graphics/Camera.cpp Graphics/Camera.h
 	g++ -c Graphics/Camera.cpp
 
 Image.o: Graphics/Image.cpp Graphics/Image.h
-	g++ -c Graphics/Image.cpp -lX11 -lpthread
+	g++ -c Graphics/Image.cpp -lX11 -lpthread -lpng
 
 Texture.o: Graphics/Texture.cpp Graphics/Texture.h
 	g++ -c Graphics/Texture.cpp

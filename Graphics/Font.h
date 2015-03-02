@@ -10,12 +10,12 @@ using namespace std;
 
 class Font2D {
 	public:
-		Font2D(string,bool,int,char**);
+		Font2D(string,bool);
 		Texture* getChar(char);
 
 	private:
-		void addChar(char,string,int,char**);
-		void addChar(char,int,char**);
+		void addChar(char,string);
+		void addChar(char);
 
 		map<char, Texture*> fontMap;
 		bool isCaseEnabled;

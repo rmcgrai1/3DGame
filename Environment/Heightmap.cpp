@@ -9,6 +9,9 @@
 #include "../Primitives/Drawable.h"
 #include <cmath>
 #include "Heightmap.h"
+#include "../Graphics/Texture.h"
+#include "../Global.h"
+#include "../Graphics/Image.h"
 using namespace std;
 
 Heightmap :: Heightmap(float xS, float yS, float resolution) {
@@ -17,7 +20,7 @@ Heightmap :: Heightmap(float xS, float yS, float resolution) {
 
 	scale = 1/resolution;
 
-	xNum = xS*resolution, yNum = yS*resolution;
+	xNum = xS*resolution; yNum = yS*resolution;
 
 	heightGrid = new float*[yNum];
 
@@ -27,6 +30,35 @@ Heightmap :: Heightmap(float xS, float yS, float resolution) {
 		for(int j = 0; j < xNum; j++)
 			setHeight(i,j,i*j);
 	}
+
+	tex = NULL;
+}
+
+Heightmap :: Heightmap(float xS, float yS, string fileName) {
+	xSize = xS;
+	ySize = yS;
+
+
+	hmImg = new Image(fileName);
+
+	scale = xS/hmImg->getWidth();
+
+	xNum = hmImg->getWidth();
+	yNum = hmImg->getHeight();
+
+		cout << xNum << ", " << yNum << endl;
+
+	heightGrid = new float*[yNum];
+
+	for(int i = 0; i < yNum; i++) {
+		heightGrid[i] = new float[xNum];
+
+		for(int j = 0; j < xNum; j++) {
+			setHeight(i,j,hmImg->getValue(j,i));
+		}
+	}
+
+	tex = new Texture(fileName,false);
 }
 
 //		Heightmap(float, float, int**);
@@ -144,6 +176,13 @@ void Heightmap :: getNormal(float x, float y, float vec[3]) {
 //bool isWall(float, float);
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
+	if(tex != NULL) {
+		glEnable(GL_TEXTURE_2D);
+	
+		tex->bind();
+	
+	}
+
 	Drawable2 :: draw(gl, deltaTime);
 
 	glEnable(GL_BLEND);
@@ -164,6 +203,9 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
 		glEnd();
 	}
+
+	glDisable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Heightmap :: setHeight(int i, int j, float height) {

@@ -8,14 +8,12 @@
 #include <GL/freeglut.h>
 #include <GL/glut.h>
 #include <GL/glext.h>
-#include "CImg.h"
 #include "Image.h"
-using namespace cimg_library;
 using namespace std;
 
 class Texture {
 	public:
-		Texture(const string&, bool, int, char**);
+		Texture(const string&, bool);
 		
 		int getWidth();
 		int getHeight();

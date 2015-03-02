@@ -86,7 +86,7 @@ class GraphicsOGL {
 		int SCREEN_HEIGHT;
 
 		//FPS Variables
-			long fpsStart, fpsEnd;
+			unsigned long fpsStart, fpsEnd;
 			int fps;
 
 		//Heightmap Variables
@@ -103,7 +103,7 @@ class GraphicsOGL {
 
 		//Font Variables
 			FontController* fontController;
-			Font* curFont;
+			Font2D* curFont;
 
 		Camera* glCamera;
 

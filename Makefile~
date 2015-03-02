@@ -22,7 +22,7 @@ Camera.o: Graphics/Camera.cpp Graphics/Camera.h
 	g++ -c Graphics/Camera.cpp
 
 Image.o: Graphics/Image.cpp Graphics/Image.h
-	g++ -c Graphics/Image.cpp
+	g++ -c Graphics/Image.cpp -lX11 -lpthread
 
 Texture.o: Graphics/Texture.cpp Graphics/Texture.h
 	g++ -c Graphics/Texture.cpp

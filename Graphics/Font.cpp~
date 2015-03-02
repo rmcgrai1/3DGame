@@ -44,12 +44,12 @@ Texture* Font2D :: getChar(char c) {
 	//return NULL;
 }
 
-void Font2D :: addChar(char c, int argc, char** argv) {
-	addChar(c, (fontDir + c) + ".png", argc, argv);
+void Font2D :: addChar(char c) {
+	addChar(c, (fontDir + c) + ".png");
 }
 
-void Font2D :: addChar(char c, string fileName, int argc, char** argv) {
-	Texture* t = new Texture(fileName, true, argc, argv);
+void Font2D :: addChar(char c, string fileName) {
+	Texture* t = new Texture(fileName, true);
 
 	fontMap[c] = t;
 }

@@ -4,6 +4,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#define cimg_use_png
+
 #include <string>
 #include "CImg.h"
 using namespace cimg_library;
@@ -15,10 +17,17 @@ class Image {
 		int getWidth();
 		int getHeight();
 		void* getData();
+		int getValue(int, int);
 		void getPixelData();		
 
 	private:
+		void interleave(unsigned char*);
+
 		CImg<unsigned char> image;
+		//CImg<unsigned char> iImg;
+
+		int width;
+		int height;
 };
 
 #endif

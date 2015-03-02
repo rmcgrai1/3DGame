@@ -77,7 +77,7 @@ class GraphicsOGL {
 			void setPerspective();
 
 		//TIME
-			long getTime();
+			unsigned long getTime();
 
 	private:
 		void initialize3D(int, char* []);
@@ -86,7 +86,7 @@ class GraphicsOGL {
 		int SCREEN_HEIGHT;
 
 		//FPS Variables
-			long fpsStart, fpsEnd;
+			unsigned long fpsStart, fpsEnd;
 			int fps;
 
 		//Heightmap Variables
