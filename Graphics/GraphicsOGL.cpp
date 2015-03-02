@@ -148,7 +148,7 @@ void GraphicsOGL :: idle() {
 
 
 
-	double runTime = (fpsEnd-fpsStart)/1000.;
+	double runTime = ((fpsEnd-fpsStart) + (drawEnd-drawStart))/1000.;
 	long sleepTime = 1000.*1000/60 - runTime;
 
 	cout << 1000.*1000/60 << ": " << runTime << ", " << sleepTime << endl;
@@ -168,7 +168,7 @@ void GraphicsOGL :: idle() {
 void GraphicsOGL :: display() {
 
 
-	long start = getTime();
+	drawStart = getTime();
 
 	
 
@@ -209,9 +209,7 @@ void GraphicsOGL :: display() {
     	glutSwapBuffers();
 
 
-	long end = getTime();
-
-	cout << (end-start)/1000. << endl;
+	drawEnd = getTime();
 }
 
 //CAMERA FUNCTIONS

@@ -87,6 +87,7 @@ class GraphicsOGL {
 
 		//FPS Variables
 			unsigned long fpsStart, fpsEnd;
+			unsigned long drawStart, drawEnd;
 			int fps;
 
 		//Heightmap Variables

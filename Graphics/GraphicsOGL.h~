@@ -77,7 +77,7 @@ class GraphicsOGL {
 			void setPerspective();
 
 		//TIME
-			long getTime();
+			unsigned long getTime();
 
 	private:
 		void initialize3D(int, char* []);
