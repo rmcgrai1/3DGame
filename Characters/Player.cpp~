@@ -125,11 +125,23 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 	}
 
 
+	// Draw Sky
+	gl->enableSkyShader();
+		glTranslatef(x,y,z);
 
+		float sc = 400;
+
+		gl->draw3DFloor(-sc,-sc,sc,sc,sc,NULL);
+		gl->draw3DWall(-sc,-sc,sc,sc,-sc,-sc,NULL);
+		gl->draw3DWall(-sc,sc,sc,sc,sc,-sc,NULL);
+		gl->draw3DWall(-sc,-sc,sc,-sc,sc,-sc,NULL);
+		gl->draw3DWall(sc,-sc,sc,sc,sc,-sc,NULL);
+		glLoadIdentity();
+	gl->disableShaders();
+
+	// Draw Water
 	gl->enableWaterShader();
-
-			gl->draw3DFloor(-128,-128,128,128,64,NULL);	
-
+		gl->draw3DFloor(0,0,2048,2048,200,NULL);	
 	gl->disableShaders();
 
 

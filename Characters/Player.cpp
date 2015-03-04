@@ -104,7 +104,7 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 
 
 	// Draw Several Shadows
-	for(int i = 0; i < 4; i++) {
+	/*for(int i = 0; i < 4; i++) {
 		float shNorm[3];
 		float l = s, d = i*90., shadowX = x + calcLenX(l,d), shadowY = y + calcLenY(l,d), shadowZ = hm->getHeightXY(shadowX,shadowY);
 		float shadowSetupRot, shadowXYRot;
@@ -122,14 +122,26 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 			gl->draw3DFloor(-8,-8,8,8,0,shTex);
 
 			glLoadIdentity();
-	}
+	}*/
 
 
+	// Draw Sky
+	gl->enableSkyShader();
+		glTranslatef(x,y,z);
 
+		float sc = 400;
+
+		gl->draw3DFloor(-sc,-sc,sc,sc,sc,NULL);
+		gl->draw3DWall(-sc,-sc,sc,sc,-sc,-sc,NULL);
+		gl->draw3DWall(-sc,sc,sc,sc,sc,-sc,NULL);
+		gl->draw3DWall(-sc,-sc,sc,-sc,sc,-sc,NULL);
+		gl->draw3DWall(sc,-sc,sc,sc,sc,-sc,NULL);
+		glLoadIdentity();
+	gl->disableShaders();
+
+	// Draw Water
 	gl->enableWaterShader();
-
-			gl->draw3DFloor(0,0,2048,2048,200,NULL);	
-
+		gl->draw3DFloor(0,0,2048,2048,200,NULL);	
 	gl->disableShaders();
 
 

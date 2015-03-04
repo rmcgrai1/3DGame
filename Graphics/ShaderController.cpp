@@ -30,6 +30,7 @@ void ShaderController :: initialize() {
 	addShader("GalaxyTexture");
 	addShader("Rimlighting");
 	addShader("Water");
+	addShader("Sky");
 }
 void ShaderController :: addShader(string name) {
 	shaderMap[name] = new Shader(name);

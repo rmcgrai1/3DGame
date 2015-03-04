@@ -481,7 +481,17 @@ void GraphicsOGL :: display() {
 		glCamera->getPosition(camPos);
 		glCamera->getDirection(camDir);
 
-		camPos[1] -= 200;
+		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, camPos);
+		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);
+	}
+
+	void GraphicsOGL :: enableSkyShader() {
+		enableShader("Sky");
+
+		float camPos[3], camDir[3];
+
+		glCamera->getPosition(camPos);
+		glCamera->getDirection(camDir);
 
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, camPos);
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);
