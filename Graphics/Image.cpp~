@@ -18,6 +18,10 @@ Image :: Image(string fileName) {
 
 	width = image.width();
 	height = image.height();
+
+	cout << fileName << ": " << image.spectrum() << endl;
+
+	//image.display();
 }
 
 int Image :: getWidth() {
@@ -35,6 +39,7 @@ void Image :: interleave(unsigned char* out) {
 	i = 0;
 	numChannels = image.spectrum();
 
+	// If One Channel, Only Grayscale, no Alpha
 	if(numChannels == 1) {
 		for(int y = 0; y < height; y++)
 			for(int x = 0; x < width; x++) {
@@ -47,6 +52,8 @@ void Image :: interleave(unsigned char* out) {
 				i += 4;
 			}
 	}
+
+	// If Two Channels, Grayscale and Alpha
 	else if(numChannels == 2) {
 		for(int y = 0; y < height; y++)
 			for(int x = 0; x < width; x++) {
@@ -54,7 +61,7 @@ void Image :: interleave(unsigned char* out) {
 				for(int c = 0; c < 3; c++) {
 					out[i+c] = image(x,y,0);
 				}
-				out[i+3] = image(x,y,1);
+				out[i+3] = 128;//image(x,y,1);
 
 				i += 4;
 			}
@@ -75,9 +82,10 @@ void Image :: interleave(unsigned char* out) {
 		for(int y = 0; y < height; y++)
 			for(int x = 0; x < width; x++) {
 
-				for(int c = 0; c < 4; c++) {
+				for(int c = 0; c < 4; c++)
 					out[i+c] = image(x,y,c);
-				}
+
+				out[i+3] = image(x,y,0);
 
 				i += 4;
 			}

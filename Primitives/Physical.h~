@@ -13,7 +13,7 @@ class GraphicsOGL;
 class Physical : public Instantiable {
 	public:
 		virtual void update(GraphicsOGL*, float);
-		virtual void draw(GraphicsOGL*, float);'
+		virtual void draw(GraphicsOGL*, float);
 
 		void setZ(float);
 

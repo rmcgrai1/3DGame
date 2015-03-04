@@ -10,6 +10,7 @@
 #include <cmath>
 #include "Heightmap.h"
 #include "../Graphics/Texture.h"
+#include "../Functions/Math2D.h"
 #include "../Global.h"
 #include "../Graphics/Image.h"
 using namespace std;
@@ -143,18 +144,25 @@ void Heightmap :: getNormal(float x, float y, float vec[3]) {
 
 
 	
-	//	A --- o
+	//	A --- C
 	//	|     |
 	//	|     |
-	//	B ----C
+	//	B ----D
 
 	
 
+	float Ax, Ay, Az, Bx, By, Bz, Cx, Cy, Cz;
 	// Get Coords of Three Points
-		float Ax, Ay, Az, Bx, By, Bz, Cx, Cy, Cz;
-		Ax = jF*scale;	Ay = iF*scale;	Az = h1;
-		Bx = jF*scale;	By = iC*scale;	Bz = h3;
-		Cx = jC*scale;	Cy = iC*scale;	Cz = h4;
+		if(calcPtDis(jP,iP,jF,iF) < calcPtDis(jP,iP,jC,iC)) {		
+			Ax = jF*scale;	Ay = iF*scale;	Az = h1;
+			Bx = jF*scale;	By = iC*scale;	Bz = h3;
+			Cx = jC*scale;	Cy = iF*scale;	Cz = h2;
+		}
+		else {
+			Ax = jC*scale;	Ay = iF*scale;	Az = h2;
+			Bx = jF*scale;	By = iC*scale;	Bz = h3;
+			Cx = jC*scale;	Cy = iC*scale;	Cz = h4;
+		}
 
 	// (B-A) x (C-A)
 		float BAx, BAy, BAz, CAx, CAy, CAz;
@@ -190,10 +198,30 @@ void Heightmap :: generateNormals() {
 		for(int x = 0; x < xNum; x++) {
 			normGrid[y][x] = new float[3];
 
+
+			float dList[6] = {30,60,135,210,240,315};
+
+			float nX=0,nY=0,nZ=0;
+			for(int i = 0; i < 4; i++) {
+				float curNorm[3];
+				float d = dList[i], aX, aY;
+				aX = calcLenX(3,d);
+				aY = calcLenY(3,d);
+
+				getNormal(x*scale+aX,y*scale+aY,curNorm);
+
+				nX += curNorm[0];
+				nY += curNorm[1];
+				nZ += curNorm[2];
+			}
+
+			normGrid[y][x][0] = nX;
+			normGrid[y][x][1] = nY;
+			normGrid[y][x][2] = nZ;
 			
 		        // The ? : and ifs are necessary for the border cases.
 
-			float sx = getHeightIJ(y, x<xNum-1 ? x+1 : x) - getHeightIJ(y, x > 0 ? x-1 : x);
+			/*float sx = getHeightIJ(y, x<xNum-1 ? x+1 : x) - getHeightIJ(y, x > 0 ? x-1 : x);
 			if (x == 0 || x == xNum-1)
 			    sx *= 2;
 
@@ -202,10 +230,10 @@ void Heightmap :: generateNormals() {
 			    sy *= 2;
 
 			normGrid[y][x][0] = -sx*scale;
-			normGrid[y][x][1] == sy*scale;
-			normGrid[y][x][2] = 2;//*xzScale;
+			normGrid[y][x][1] = sy*scale;
+			normGrid[y][x][2] = 1;//*xzScale;*/
 
-			float len = sqrt(pow(normGrid[y][x][0],2) + pow(normGrid[y][x][1],2) + pow(normGrid[y][x][2],2));
+			float len = -sqrt(sqr(normGrid[y][x][0]) + sqr(normGrid[y][x][1]) + sqr(normGrid[y][x][2]));
 
 			normGrid[y][x][0] /= len;
 			normGrid[y][x][1] /= len;
@@ -218,6 +246,8 @@ void Heightmap :: generateNormals() {
 //bool isWall(float, float);
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
+
+	gl->enableShader("Rimlighting");
 
 	if(tex != NULL) {
 		glEnable(GL_TEXTURE_2D);
@@ -241,10 +271,10 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 		for(int j = 0; j < xNum; j++) {
 
 			glTexCoord2f(1.*j/xNum,1.*i/yNum);
-			//glNormal3f(normGrid[i][j][0],normGrid[i][j][1],normGrid[i][j][2]);
+			glNormal3f(normGrid[i][j][0],normGrid[i][j][1],normGrid[i][j][2]);
 				glVertex3f(j*scale, i*scale, getHeightIJ(i,j));
 			glTexCoord2f(1.*j/xNum, 1.*(i+1)/yNum);
-			//glNormal3f(normGrid[i][j][0],normGrid[i][j][1],normGrid[i][j][2]);
+			glNormal3f(normGrid[i+1][j][0],normGrid[i+1][j][1],normGrid[i+1][j][2]);
 				glVertex3f(j*scale, (i+1)*scale, getHeightIJ(i+1,j));
 		}
 
@@ -253,6 +283,8 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	gl->disableShaders();
 }
 
 void Heightmap :: setHeight(int i, int j, float height) {

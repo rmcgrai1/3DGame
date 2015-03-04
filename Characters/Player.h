@@ -16,6 +16,7 @@ class Player : public Physical {
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);
 
+
 	private:
 		void updateControl(GraphicsOGL*, float);
 

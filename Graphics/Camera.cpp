@@ -75,3 +75,17 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();	
 }
+
+
+void Camera :: getPosition(float vec[3]) {
+	vec[0] = -camY;
+	vec[2] = -camX;
+	vec[1] = camZ;
+}
+
+
+void Camera :: getDirection(float vec[3]) {
+	vec[0] = 0;//toX-camX;
+	vec[1] = -calcPtDir(0,camZ,calcPtDis(camX,camY,toX,toY),focusZ)/180.*3.14159;//toY-camY;
+	vec[2] = -calcPtDir(camX,camY,toX,toY)/180.*3.14159;//0;//toZ-camZ;
+}

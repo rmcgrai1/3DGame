@@ -64,14 +64,28 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 	/*float add, d;
 	add = Math2D.calcProjDis(cX-camX, cY-camY, Math2D.lengthdirX(1,camDir+90),Math2D.lengthdirY(1,camDir+90));
 	d = (Math2D.angleDifference(Math2D.pointDirection(camX, camY, cX, cY), camDir) > 0) ? 1 : -1;
-	bgX += .25*d*add;
+	bgX += .25*d*add;*/
 		camX = cX;	focusX = camX;
 		camY = cY;	focusY = camY;
-		//camZ = cZ;*/
+		camZ = cZ;
 
 	camDir = calcPtDir(camX,camY,toX,toY);
 
 	// Change back to model view matrix.
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();	
+}
+
+
+void Camera :: getPosition(float vec[3]) {
+	vec[0] = camY;
+	vec[2] = camX;
+	vec[1] = camZ;
+}
+
+
+void Camera :: getDirection(float vec[3]) {
+	vec[0] = 0;//toX-camX;
+	vec[1] = -calcPtDir(0,camZ,calcPtDis(camX,camY,toX,toY),focusZ)/180.*3.14159;//toY-camY;
+	vec[2] = -calcPtDir(camX,camY,toX,toY)/180.*3.14159;//0;//toZ-camZ;
 }

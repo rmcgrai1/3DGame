@@ -24,6 +24,7 @@ float nCDir = 0, s = 6, h = 8;
 Texture* Player :: shTex;
 
 Player :: Player(float x, float y, float z) : Physical(x,y,z) {
+
 	hopZ = 
 	hopZVel = 0;
 	hopSc = 1;
@@ -32,8 +33,11 @@ Player :: Player(float x, float y, float z) : Physical(x,y,z) {
 }
 
 void Player :: update(GraphicsOGL* gl, float deltaTime) {
+
+	// Update Physics/Collisions
 	Physical :: update(gl, deltaTime);
 
+	// Update User Control of Player
 	updateControl(gl,deltaTime);
 
 
@@ -62,16 +66,20 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 	float len = 50, dir = nCDir;
 
 
-	Heightmap* h = gl->getHeightmap();
-	float cX, cY;
-	cX = x-calcLenX(len,nCDir);
-	cY = y-calcLenY(len,nCDir);	
+	// Place Camera on Heightmap
+		Heightmap* h = gl->getHeightmap();
+		float cX, cY;
+		cX = x-calcLenX(len,nCDir);
+		cY = y-calcLenY(len,nCDir);	
 
-	gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,x,y,z+8);
+		gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,x,y,z+8);
 }
 
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {
-	Physical :: draw(gl, deltaTime);
+
+	//Physical :: draw(gl, deltaTime);
+
+	Heightmap* hm = gl->getHeightmap();
 
 	float sideNum = 6;
 	float ang = 45, dir, xN, yN;
@@ -79,7 +87,7 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 	float normal[3];
 	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
 
-		gl->getHeightmap()->getNormal(x,y,normal);
+		hm->getNormal(x,y,normal);
 		
 			nX = normal[0];
 			nY = normal[1];
@@ -95,43 +103,68 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 
 
 
-	//DRAW SHADOW
-		glTranslatef(x,y,z);
-		glRotated(setupRot, 0, 0, 1);	
-		glRotated(xyRot, 1, 0, 0);
-	
-		gl->draw3DFloor(-8,-8,8,8,0,shadowTex);
+	// Draw Several Shadows
+	for(int i = 0; i < 4; i++) {
+		float shNorm[3];
+		float l = s, d = i*90., shadowX = x + calcLenX(l,d), shadowY = y + calcLenY(l,d), shadowZ = hm->getHeightXY(shadowX,shadowY);
+		float shadowSetupRot, shadowXYRot;
 
-		glLoadIdentity();
+			hm->getNormal(shadowX, shadowY, shNorm);
+
+		shadowSetupRot = 90+calcPtDir(0,0,shNorm[0],shNorm[1]);
+		shadowXYRot = 90-calcPtDir(0,0,calcPtDis(0,0,shNorm[0],shNorm[1]),shNorm[2]);
+
+		//DRAW SHADOW
+			glTranslatef(x,y,z+.3);
+			glRotated(shadowSetupRot, 0, 0, 1);	
+			glRotated(shadowXYRot, 1, 0, 0);
+	
+			gl->draw3DFloor(-8,-8,8,8,0,shTex);
+
+			glLoadIdentity();
+	}
+
+
+
+	gl->enableWaterShader();
+
+			gl->draw3DFloor(-128,-128,128,128,64,NULL);	
+
+	gl->disableShaders();
+
+
 
 
 	glTranslatef(x,y,z+hopZ);
 
 	//glRotated(xRot, 1, 0, 0);
-	glRotated(setupRot, 0, 0, 1);	
-	glRotated(xyRot, 1, 0, 0);
-	glRotated(direction-setupRot, 0, 0, 1);	
 
+	if(hopZ <= 0) {
+		glRotated(setupRot, 0, 0, 1);	
+		glRotated(xyRot, 1, 0, 0);
+		glRotated(direction-setupRot, 0, 0, 1);	
+	}
+	else
+		glRotated(direction, 0, 0, 1);	
 	//glRotated(direction, 0, 0, 1);
-
 	
 	glScalef(hopSc,hopSc,1/hopSc);
 
 	// Draw Top of Player Model
-	glBegin(GL_TRIANGLE_FAN);
-		glTexCoord2d(.5, .5);
-			glVertex3d(0,0,h);
+		glBegin(GL_TRIANGLE_FAN);
+			glTexCoord2d(.5, .5);
+				glVertex3d(0,0,h);
 
-		for(int i = 0; i <= sideNum; i++) {
-			dir = ang + i/sideNum*360;
+			for(int i = 0; i <= sideNum; i++) {
+				dir = ang + i/sideNum*360;
 
-			xN = calcLenX(1,dir);
-			yN = calcLenY(1,dir);
+				xN = calcLenX(1,dir);
+				yN = calcLenY(1,dir);
 
-			glTexCoord2d(.5 + .5*xN,.5 + .5*yN);
-				glVertex3d(xN*s, yN*s, h);
-		}
-	glEnd();
+				glTexCoord2d(.5 + .5*xN,.5 + .5*yN);
+					glVertex3d(xN*s, yN*s, h);
+			}
+		glEnd();
 
 	// Draw Side Faces of Player Model
 	for(int i = 0; i < sideNum; i++) {
@@ -157,6 +190,8 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 				glVertex3d(xN*s, yN*s, h);
 		glEnd();
 	}
+
+	gl->disableShaders();
 	
 	glLoadIdentity();
 }

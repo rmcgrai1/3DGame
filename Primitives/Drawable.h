@@ -17,8 +17,12 @@ class Drawable2 : public Updateable {
 
 	protected:
 		Drawable2();
+		Drawable2(int);
 
 		static deque<Drawable2*> drawableList;
+
+		static int TYPE_NONE;
+		static int TYPE_ENVIRONMENT;
 };
 
 #endif

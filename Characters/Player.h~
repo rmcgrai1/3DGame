@@ -23,7 +23,7 @@ class Player : public Physical {
 		float hopZVel;
 		float hopSc;
 
-		Texture* shTex;
+		static Texture* shTex;
 };
 
 #endif

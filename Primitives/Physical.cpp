@@ -10,9 +10,12 @@
 
 
 Physical :: Physical(float myX, float myY, float myZ) : Instantiable() {
-	x = myX;
-	y = myY;
-	z = myZ;
+	xP = x = myX;
+	yP = y = myY;
+	zP = z = myZ;
+
+	vel = 0;
+	direction = 0;
 }
 
 void Physical :: update(GraphicsOGL* gl, float deltaTime) {
@@ -26,9 +29,22 @@ void Physical :: draw(GraphicsOGL* gl, float deltaTime) {
 	Instantiable :: draw(gl, deltaTime);
 }
 
-void Physical :: setZ(float newZ) {
-	z = newZ;
-}
+
+//ACCESSOR/MUTATOR
+	void Physical :: setZ(float newZ) {
+		z = newZ;
+	}
+
+	float Physical :: getX() {
+		return x;
+	}
+	float Physical :: getY() {
+		return y;
+	}
+	float Physical :: getZ() {
+		return z;
+	}
+
 
 bool Physical :: collideHeightmap(Heightmap* hm) {
 	float h;

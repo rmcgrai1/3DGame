@@ -23,8 +23,8 @@
 #include "FontController.h"
 #include "../Functions/Math2D.h"
 #include <ctime>
+#include "../Functions/linmath.h"
 #include "../Environment/Heightmap.h"
-
 #include "../Characters/Player.h"
 using namespace std;
 using namespace std::chrono;
@@ -85,9 +85,9 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 	glEnable(GL_TEXTURE_2D);
 
 
-		p = new Player(0,0,0);
-		//curHeightmap = new Heightmap(1028,1028,1/32.);
 		curHeightmap = new Heightmap(2048,2048,"Resources/Images/test.png");
+		p = new Player(1028,1028,0);
+		//curHeightmap = new Heightmap(1028,1028,1/32.);
 		tst = new Texture("Resources/Images/test.png",false);
 		//Load Resources, Create GraphicsOGL's Objects
 		glCamera = new Camera();
@@ -151,7 +151,6 @@ void GraphicsOGL :: idle() {
 	double runTime = ((fpsEnd-fpsStart) + (drawEnd-drawStart))/1000.;
 	long sleepTime = 1000.*1000/60 - runTime;
 
-	cout << 1000.*1000/60 << ": " << runTime << ", " << sleepTime << endl;
 
 
 	fps = 1000.*1000/(runTime);
@@ -198,12 +197,14 @@ void GraphicsOGL :: display() {
 			//fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 		//disableShaders();
 
-		string fpsStr = "FPS ", dirStr = "Dir ";
+		string fpsStr = "FPS ", dirStr = "Dir ", posStr = "Pos ";
 			fpsStr = fpsStr + to_string(fps);
 			dirStr = dirStr + to_string(getCamDir());
+			posStr = posStr + to_string(p->getX()) + ", " + to_string(p->getY()) + ", " + to_string(p->getZ());
 
 		drawStringScaled(0,0,.65,.65,fpsStr);
 		drawStringScaled(0,20,.65,.65,dirStr);
+		drawStringScaled(0,40,.65,.65,posStr);
 
 	glFlush(); 
     	glutSwapBuffers();
@@ -414,14 +415,12 @@ void GraphicsOGL :: display() {
 				glEnable(GL_TEXTURE_2D);
 				
 				tex->bind();
-
-				cout << "What" << endl;
 			}
 			
+			glAlphaFunc(GL_GREATER, 0);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	
 						
 			/*glColor4f(1f, 1f, 1f, (float) alpha);
 			
@@ -442,7 +441,7 @@ void GraphicsOGL :: display() {
 				glTexCoord2d(0.0, 1.0);
 					glVertex3d(x1, y2, z);
 			glEnd();
-			
+
 			
 			//glLoadIdentity();
 			
@@ -455,6 +454,7 @@ void GraphicsOGL :: display() {
 
 //SHADERS
 
+
 	void GraphicsOGL :: disableShaders() {
 		glUseProgram(0);
 	}
@@ -464,11 +464,27 @@ void GraphicsOGL :: display() {
 	}
 
 	void GraphicsOGL :: enableShader(GLuint program) {
+		curProgram = program;
+
 		glUseProgram(program);
 
 		glUniform2fv(glGetUniformLocation(program, "iResolution"), 1, resolution);			
     		glUniform1f(glGetUniformLocation(program, "iGlobalTime"), globalTime/50.);      
-		glUniform1f(glGetUniformLocation(program, "iRadius"), 3);        
+		glUniform1f(glGetUniformLocation(program, "iRadius"), 3);    
+	}
+
+	void GraphicsOGL :: enableWaterShader() {
+		enableShader("Water");
+
+		float camPos[3], camDir[3];
+
+		glCamera->getPosition(camPos);
+		glCamera->getDirection(camDir);
+
+		camPos[1] -= 200;
+
+		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, camPos);
+		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);
 	}
 
 	void GraphicsOGL :: setCurrentTextureSize(int w, int h) {
@@ -547,6 +563,34 @@ void GraphicsOGL :: setPerspective() {
 	//glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH);
 }
+
+
+/*void GraphicsOGL :: calcOrthoMatrix(mat4x4* mat) {
+	mat *= 0;
+
+	mat[0][0] = 2/(SCREEN_WIDTH-0);
+	mat[1][1] = 2/(0-SCREEN_HEIGHT);
+	mat[2][2] = -2/(1000-(-1000));
+	mat[3][3] = 1;
+
+	mat[0][3] = -(SCREEN_WIDTH+0)/(SCREEN_WIDTH-0);
+	mat[1][3] = -(0+SCREEN_HEIGHT)/(0-SCREEN_HEIGHT);
+	mat[2][3] = -(1000+(-1000))/(1000-(-1000));
+}
+
+void GraphicsOGL :: calcPerspectiveMatrix(mat4x4* mat) {
+	float f = 1/tan(45/2/180*3.14159);
+
+	mat *= 0;
+
+	mat[0][0] = f/(SCREEN_WIDTH/SCREEN_HEIGHT);
+	mat[1][1] = f;
+	mat[2][2] = (1000+1)/(1-1000);
+	mat[3][2] = -1;
+
+	mat[2][3] = 2*1000*1/(1-1000);
+}*/
+
 
 unsigned long GraphicsOGL :: getTime() {
 

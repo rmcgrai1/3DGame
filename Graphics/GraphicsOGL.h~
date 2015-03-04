@@ -61,8 +61,10 @@ class GraphicsOGL {
 			void drawStringScaled(float, float, float, float, string);
 
 		//SHADERS
+			GLuint curProgram;
 			void disableShaders();
 			void enableShader(GLuint);
+			void enableWaterShader();
 			void enableShader(string);
 			void setCurrentTextureSize(int,int);
 
@@ -87,6 +89,7 @@ class GraphicsOGL {
 
 		//FPS Variables
 			unsigned long fpsStart, fpsEnd;
+			unsigned long drawStart, drawEnd;
 			int fps;
 
 		//Heightmap Variables

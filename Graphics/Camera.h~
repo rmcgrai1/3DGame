@@ -19,12 +19,15 @@ class Camera {
 		float camX;
 		float camY;
 		float camZ;
-		float toX;
-		float toY;
-		float toZ;
+		float focusX;
+		float focusY;
+		float focusZ;
 		float newCamX;
 		float newCamY;
 		float newCamZ;
+		float toX;
+		float toY;
+		float toZ;
 		float camDir;
 };
 

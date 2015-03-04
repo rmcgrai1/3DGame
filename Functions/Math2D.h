@@ -6,11 +6,19 @@
 
 #define PI 3.14159265
 
-float calcLenX(float, float);
-float calcLenY(float, float);
 
-float calcPtDir(float, float, float, float);
+// BASIC
+	float sqr(float);
 
-float calcTurnToDir(float, float);
+// GEOMETRIC
+	float calcPtDis(float, float, float, float);
+
+// TRIG
+	float calcLenX(float, float);
+	float calcLenY(float, float);
+	float calcPtDir(float, float, float, float);
+
+// MAGICAL!!
+	float calcTurnToDir(float, float);
 
 #endif

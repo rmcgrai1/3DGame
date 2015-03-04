@@ -15,6 +15,9 @@ class Physical : public Instantiable {
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 
+		float getX();
+		float getY();
+		float getZ();
 		void setZ(float);
 
 		//COLLISION

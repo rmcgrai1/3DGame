@@ -63,6 +63,7 @@ class GraphicsOGL {
 		//SHADERS
 			void disableShaders();
 			void enableShader(GLuint);
+			void enableWaterShader();
 			void enableShader(string);
 			void setCurrentTextureSize(int,int);
 

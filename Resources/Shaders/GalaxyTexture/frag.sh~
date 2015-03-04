@@ -43,5 +43,5 @@ void main()
 	vec4 color = texture2D(tex,gl_TexCoord[0].st);
 	float value = 0.21*color.r + 0.72*color.g + 0.07*color.b;
 
-	gl_FragColor=vec4(color.rgb*(value) + (1-value)*min(pow(abs(col), vec3(1.2)), 1.0), color.a);
+	gl_FragColor=vec4(color.rgb*(value) + (1.-value)*min(pow(abs(col), vec3(1.2)), 1.0), color.a);
 }
