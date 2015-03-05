@@ -1,5 +1,6 @@
 // Drawable.h
 
+														|
 
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
@@ -21,8 +22,8 @@ class Drawable2 : public Updateable {
 
 		static deque<Drawable2*> drawableList;
 
-		static int TYPE_NONE = 0;
-		static int TYPE_ENVIRONMENT = 1;
+		static int TYPE_NONE;
+		static int TYPE_ENVIRONMENT;
 };
 
 #endif

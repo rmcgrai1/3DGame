@@ -239,3 +239,6 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	else
 		vel = 0;
 }
+
+void Player :: land() {
+}

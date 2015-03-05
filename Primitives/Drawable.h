@@ -1,5 +1,6 @@
 // Drawable.h
 
+														|
 
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
@@ -23,6 +24,8 @@ class Drawable2 : public Updateable {
 
 		static int TYPE_NONE;
 		static int TYPE_ENVIRONMENT;
+		static int TYPE_OBJECT;
+		static int TYPE_HUD;
 };
 
 #endif

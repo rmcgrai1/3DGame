@@ -21,8 +21,8 @@
 #include "../Primitives/Drawable.h"
 #include "../Primitives/Updateable.h"
 #include "FontController.h"
-#include "../Functions/Math2D.h"
 #include <ctime>
+#include "../Functions/Math2D.h"
 #include "../Functions/linmath.h"
 #include "../Environment/Heightmap.h"
 #include "../Characters/Player.h"
@@ -30,13 +30,14 @@ using namespace std;
 using namespace std::chrono;
 
 
-bool isDrawing = false;
+
 
 Player* p;
 Texture* GraphicsOGL::tst;
 
 GraphicsOGL* ogl;
 void idleCallback() {
+
 	ogl->idle();
 }
 void displayCallback() {
@@ -48,16 +49,19 @@ void displayCallback() {
 GraphicsOGL :: GraphicsOGL(int argc, char* argv[]) {
 	ogl = this;
 
-	resolution = new float[2];
 
+	// Establish Screen Resolution Variables
+	resolution = new float[2];
 	SCREEN_WIDTH = resolution[0] = 640;
 	SCREEN_HEIGHT = resolution[1] = 480;
 
-	fps = 1;
 
+	fps = 1;
 	curProgram = 0;
 	globalTime = 0;
 
+
+	// Intialize 3D Variables
 	initialize3D(argc, argv);
 }
 
@@ -114,20 +118,9 @@ int GraphicsOGL :: getScreenHeight() {
 	return SCREEN_HEIGHT;
 }
 
-int GraphicsOGL :: getMouseX() {
-	return inputController->getMouseX();
-}
 
-int GraphicsOGL :: getMouseY() {
-	return inputController->getMouseY();
-}
-
-
-bool GraphicsOGL :: getShift() {
-	return inputController->getShift();
-}
-float GraphicsOGL :: getWASDDir() {
-	return inputController->getWASDDir();
+InputController* GraphicsOGL :: getInputController() {
+	return inputController;
 }
 
 Heightmap* GraphicsOGL :: getHeightmap() {
@@ -136,32 +129,37 @@ Heightmap* GraphicsOGL :: getHeightmap() {
 
 void GraphicsOGL :: idle() {
 
-	//Get Start Time
+	// Get Start Time
 	fpsStart = getTime();
 
+		// Update All Updateable Objects
 		Updateable :: updateAll(this, 1);
 
-		//Draw Current Frame
+		// Draw Current Frame
 		glutPostRedisplay();
 
+
+	// Get End Time
 	fpsEnd = getTime();
 
 
 
+	// Determine Time the Game Took to Process Current Frame
 	double runTime = ((fpsEnd-fpsStart) + (drawEnd-drawStart))/1000.;
+
+	// Calculate Time Required to Sleep to Stay at 60 FPS
 	long sleepTime = 1000.*1000/60 - runTime;
 
 
-
+	// Calculate FPS
 	fps = 1000.*1000/(runTime);
 	if(fps > 60)
 		fps = 60;
 
 
+	// If Sleep Time is Positive (Not Running Slow), Sleep for # Nanoseconds
 	if(sleepTime > 0)
 		usleep(sleepTime);
-
-	isDrawing = false;
 }
 
 void GraphicsOGL :: display() {
@@ -177,35 +175,34 @@ void GraphicsOGL :: display() {
 	glAlphaFunc(GL_GREATER, 0);
 
 
-	setFont("8bit");
-
 	globalTime += 1;
-
-
 	
 	glColor3f(1,1,1);
 
 
+	// DRAW WORLD
+
 	setPerspective();
-		draw3DWall(-16,0,32,16,0,0,NULL);
 
-		//enableShader("GalaxyTexture");	
+		// Draw All Drawable Objects
 		Drawable2 :: drawAll(this, 1);
+	
+
+	// DRAW HUD
+
 	setOrtho();
-
-			fillPolygon(getMouseX(),getMouseY(),30,3, globalTime);
-			//fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
-		//disableShaders();
-
 		string fpsStr = "FPS ", dirStr = "Dir ", posStr = "Pos ";
 			fpsStr = fpsStr + to_string(fps);
 			dirStr = dirStr + to_string(getCamDir());
 			posStr = posStr + to_string(p->getX()) + ", " + to_string(p->getY()) + ", " + to_string(p->getZ());
 
+		setFont("8bit");
 		drawStringScaled(0,0,.65,.65,fpsStr);
 		drawStringScaled(0,20,.65,.65,dirStr);
 		drawStringScaled(0,40,.65,.65,posStr);
 
+
+	// Flush Graphics to Screen
 	glFlush(); 
     	glutSwapBuffers();
 
@@ -230,6 +227,7 @@ void GraphicsOGL :: display() {
 	void GraphicsOGL :: drawPoint(float x, float y) {
 		float depth = 0;
 	
+		// Create Point Primitive at Point (x,y)
 		glBegin(GL_POINTS);
 			glVertex3f(x, y, depth);
 		glEnd();
@@ -238,6 +236,7 @@ void GraphicsOGL :: display() {
 	void GraphicsOGL :: drawLine(float x1, float y1, float x2, float y2) {
 		float depth = 0;
 	
+		// Create Line Primitive from (x1,y1) to (x2,y2)
 		glBegin(GL_LINES);
 			glVertex3f(x1, y1, depth);
 			glVertex3f(x2, y2, depth);
@@ -464,37 +463,27 @@ void GraphicsOGL :: display() {
 	}
 
 	void GraphicsOGL :: enableShader(GLuint program) {
+
+		// Set Current Shader Program
 		curProgram = program;
 
+		// Enable Current Shader
 		glUseProgram(program);
 
-		glUniform2fv(glGetUniformLocation(program, "iResolution"), 1, resolution);			
-    		glUniform1f(glGetUniformLocation(program, "iGlobalTime"), globalTime/50.);      
-		glUniform1f(glGetUniformLocation(program, "iRadius"), 3);    
-	}
+		// ** Pass Screen Resolution and Time Value (Used in Animations) to Shader
+		glUniform2fv(glGetUniformLocation(curProgram, "iResolution"), 1, resolution);			
+    		glUniform1f(glGetUniformLocation(curProgram, "iGlobalTime"), globalTime/50.);      
+		glUniform1f(glGetUniformLocation(curProgram, "iRadius"), 0);
 
-	void GraphicsOGL :: enableWaterShader() {
-		enableShader("Water");
 
+		// Get Camera Position and Direction
 		float camPos[3], camDir[3];
-
 		glCamera->getPosition(camPos);
 		glCamera->getDirection(camDir);
 
+		// ** Pass Camera Position and Direction to Shader
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, camPos);
-		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);
-	}
-
-	void GraphicsOGL :: enableSkyShader() {
-		enableShader("Sky");
-
-		float camPos[3], camDir[3];
-
-		glCamera->getPosition(camPos);
-		glCamera->getDirection(camDir);
-
-		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, camPos);
-		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);
+		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);    
 	}
 
 	void GraphicsOGL :: setCurrentTextureSize(int w, int h) {
@@ -573,33 +562,6 @@ void GraphicsOGL :: setPerspective() {
 	//glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH);
 }
-
-
-/*void GraphicsOGL :: calcOrthoMatrix(mat4x4* mat) {
-	mat *= 0;
-
-	mat[0][0] = 2/(SCREEN_WIDTH-0);
-	mat[1][1] = 2/(0-SCREEN_HEIGHT);
-	mat[2][2] = -2/(1000-(-1000));
-	mat[3][3] = 1;
-
-	mat[0][3] = -(SCREEN_WIDTH+0)/(SCREEN_WIDTH-0);
-	mat[1][3] = -(0+SCREEN_HEIGHT)/(0-SCREEN_HEIGHT);
-	mat[2][3] = -(1000+(-1000))/(1000-(-1000));
-}
-
-void GraphicsOGL :: calcPerspectiveMatrix(mat4x4* mat) {
-	float f = 1/tan(45/2/180*3.14159);
-
-	mat *= 0;
-
-	mat[0][0] = f/(SCREEN_WIDTH/SCREEN_HEIGHT);
-	mat[1][1] = f;
-	mat[2][2] = (1000+1)/(1-1000);
-	mat[3][2] = -1;
-
-	mat[2][3] = 2*1000*1/(1-1000);
-}*/
 
 
 unsigned long GraphicsOGL :: getTime() {

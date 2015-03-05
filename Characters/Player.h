@@ -19,6 +19,7 @@ class Player : public Physical {
 
 	private:
 		void updateControl(GraphicsOGL*, float);
+		void land();
 
 		float hopZ;
 		float hopZVel;
