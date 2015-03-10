@@ -8,14 +8,15 @@
 #include "../Primitives/Drawable.h"
 #include "../Graphics/Image.h"
 #include "../Graphics/Texture.h"
+#include "../Graphics/TextureController.h"
 using namespace std;
 
-class GraphicsOGL;
+class Controller;
 class Heightmap : public Drawable2 {
 
 	public:
 		Heightmap(float, float, float);
-		Heightmap(float, float, string);
+		Heightmap(TextureController*, float, float, string);
 		Heightmap(float, float, int**);
 		Heightmap(float, float, float**);
 
@@ -30,7 +31,8 @@ class Heightmap : public Drawable2 {
 		void setHeight(int, int, float);
 		void generateNormals();
 
-		Texture* tex;
+		Texture* texGrass;
+		Texture* texSand;
 		Image* hmImg;
 		void load(string);
 		float** heightGrid;

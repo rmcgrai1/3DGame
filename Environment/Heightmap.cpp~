@@ -6,6 +6,7 @@
 #include <GL/glut.h>
 #include <GL/glext.h>
 #include "../Graphics/GraphicsOGL.h"
+#include "../Graphics/TextureController.h"
 #include "../Primitives/Drawable.h"
 #include <cmath>
 #include "Heightmap.h"
@@ -32,36 +33,43 @@ Heightmap :: Heightmap(float xS, float yS, float resolution) {
 			setHeight(i,j,i*j);
 	}
 
-	tex = NULL;
+	texGrass = NULL;
+	texSand = NULL;
 
 	generateNormals();
 }
 
-Heightmap :: Heightmap(float xS, float yS, string fileName) {
+Heightmap :: Heightmap(TextureController* tc, float xS, float yS, string fileName) {
 	xSize = xS;
 	ySize = yS;
 
 
 	hmImg = new Image(fileName);
 
+	// Determine XY Scale
 	scale = xS/hmImg->getWidth();
 
+	// Set # of Points
 	xNum = hmImg->getWidth();
 	yNum = hmImg->getHeight();
 
-		cout << xNum << ", " << yNum << endl;
 
+	// Create Array
 	heightGrid = new float*[yNum];
 
+
+	// Set Heights
 	for(int i = 0; i < yNum; i++) {
 		heightGrid[i] = new float[xNum];
 
-		for(int j = 0; j < xNum; j++) {
+		// Set Height to Value of Current Pixel
+		for(int j = 0; j < xNum; j++)
 			setHeight(i,j,hmImg->getValue(j,i));
-		}
 	}
 
-	tex = new Texture(fileName,false);
+	texGrass = tc->getTexture("Grass");
+	texSand = tc->getTexture("Sand");
+
 
 	generateNormals();
 }
@@ -238,8 +246,6 @@ void Heightmap :: generateNormals() {
 			normGrid[y][x][0] /= len;
 			normGrid[y][x][1] /= len;
 			normGrid[y][x][2] /= len;
-
-			cout << normGrid[y][x][0] << ", " << normGrid[y][x][1] << ", " << normGrid[y][x][2] << endl;
 		}
 	}
 }
@@ -249,19 +255,30 @@ void Heightmap :: generateNormals() {
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
-	gl->enableShader("Rimlighting");
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	//GLfloat lightpos[] = {x, y, z, 1};
+	GLfloat lightpos[] = {0,.6,-.8, 0};
+	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
-	if(tex != NULL) {
+	gl->enableShader("Terrain");
+
+	if(texGrass != NULL) {
 		glEnable(GL_TEXTURE_2D);
 	
-		tex->bind();
+		texGrass->bind(GL_TEXTURE0);
+		texSand->bind(GL_TEXTURE1);
 	}
 
-	Drawable2 :: draw(gl, deltaTime);
+	Drawable2 :: draw(c, deltaTime);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+
+	
+	float num = xSize/32.;
 
 
 	// Draw Heightmap as Triangle Strips
@@ -272,10 +289,10 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
 		for(int j = 0; j < xNum; j++) {
 
-			glTexCoord2f(1.*j/xNum,1.*i/yNum);
+			glTexCoord2f(num*1.*j/xNum, num*1.*i/yNum);
 			glNormal3f(normGrid[i][j][0],normGrid[i][j][1],normGrid[i][j][2]);
 				glVertex3f(j*scale, i*scale, getHeightIJ(i,j));
-			glTexCoord2f(1.*j/xNum, 1.*(i+1)/yNum);
+			glTexCoord2f(num*1.*j/xNum, num*1.*(i+1)/yNum);
 			glNormal3f(normGrid[i+1][j][0],normGrid[i+1][j][1],normGrid[i+1][j][2]);
 				glVertex3f(j*scale, (i+1)*scale, getHeightIJ(i+1,j));
 		}
@@ -283,10 +300,13 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 		glEnd();
 	}
 
-	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
+	
 
 	gl->disableShaders();
+
+	glDisable(GL_LIGHTING);
 }
 
 void Heightmap :: setHeight(int i, int j, float height) {

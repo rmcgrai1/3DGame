@@ -2,8 +2,11 @@
 
 
 #include <deque>
-#include "../Graphics/GraphicsOGL.h"
+#include "../Controller.h"
 #include "Updateable.h"
+
+
+deque<Updateable*> Updateable :: updateableList;
 
 Updateable :: Updateable() {
 	updateableList.push_back(this);

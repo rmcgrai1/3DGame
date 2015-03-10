@@ -5,12 +5,11 @@
 #define PLAYER_H
 
 #include <deque>
-#include "../Graphics/GraphicsOGL.h"
-#include "../Primitives/Physical.h"
+#include "../Characters/Character.h"
 #include "../Graphics/Texture.h"
+#include "../Graphics/GraphicsOGL.h"
 
-class GraphicsOGL;
-class Player : public Physical {
+class Player : public Character {
 	public:
 		Player(float, float, float);
 		void update(GraphicsOGL*, float);
@@ -20,12 +19,6 @@ class Player : public Physical {
 	private:
 		void updateControl(GraphicsOGL*, float);
 		void land();
-
-		float hopZ;
-		float hopZVel;
-		float hopSc;
-
-		static Texture* shTex;
 };
 
 #endif

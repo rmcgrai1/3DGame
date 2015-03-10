@@ -1,10 +1,12 @@
 all: main
 
-main: main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Player.o Heightmap.o FileIO.o InputController.o
-	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Player.o Heightmap.o FileIO.o InputController.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o Heightmap.o Tree.o Branch.o FileIO.o InputController.o
+	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o Heightmap.o Tree.o Branch.o FileIO.o InputController.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
+
+
 
 # FUNCTIONS
 ###############################################################
@@ -28,6 +30,8 @@ Texture.o: Graphics/Texture.cpp Graphics/Texture.h
 	g++ -c Graphics/Texture.cpp
 TextureExt.o: Graphics/TextureExt.cpp Graphics/TextureExt.h
 	g++ -c Graphics/TextureExt.cpp
+TextureController.o: Graphics/TextureController.cpp Graphics/TextureController.h
+	g++ -c Graphics/TextureController.cpp
 
 FontController.o: Graphics/Font.cpp Graphics/FontController.h
 	g++ -c Graphics/FontController.cpp
@@ -55,7 +59,8 @@ Physical.o: Primitives/Physical.cpp Primitives/Physical.h
 # CHARACTERS
 ###############################################################
 
-
+Character.o: Characters/Character.cpp Characters/Character.h
+	g++ -c Characters/Character.cpp -std=c++11
 Player.o: Characters/Player.cpp Characters/Player.h
 	g++ -c Characters/Player.cpp -std=c++11
 
@@ -64,6 +69,11 @@ Player.o: Characters/Player.cpp Characters/Player.h
 ###############################################################
 Heightmap.o: Environment/Heightmap.cpp Environment/Heightmap.h
 	g++ -c Environment/Heightmap.cpp
+
+Tree.o: Environment/Tree.cpp Environment/Tree.h
+	g++ -c Environment/Tree.cpp
+Branch.o: Environment/Branch.cpp Environment/Branch.h
+	g++ -c Environment/Branch.cpp
 
 
 # INPUT/OUTPUT

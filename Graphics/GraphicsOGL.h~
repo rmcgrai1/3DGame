@@ -10,6 +10,7 @@
 #include "Font.h"
 #include "../IO/InputController.h"
 #include "ShaderController.h"
+#include "TextureController.h"
 #include "FontController.h"
 #include "Camera.h"
 #include "../Environment/Heightmap.h"
@@ -22,16 +23,18 @@ class GraphicsOGL {
 		GraphicsOGL(int, char* []);
 		~GraphicsOGL();
 
+
+		bool gluInvertMatrix(const float [16], float [16]);
 		void idle();
 		void display();
+
+		InputController* getInputController();
+		TextureController* getTextureController();
 
 		//ACCESSOR
 			int getScreenWidth();
 			int getScreenHeight();
-			int getMouseX();
-			int getMouseY();
-			bool getShift();
-			float getWASDDir();
+			
 
 		//CAMERA
 			float getCamDir();
@@ -52,6 +55,7 @@ class GraphicsOGL {
 
 			void draw3DWall(float,float,float,float,float,float, Texture*);
 			void draw3DFloor(float,float,float,float,float, Texture*);
+			void draw3DLine(float,float,float,float,float,float);
 
 			void drawTexture(float, float, Texture*);
 			void drawTextureScaled(float, float, float, float, Texture*);
@@ -63,8 +67,9 @@ class GraphicsOGL {
 		//SHADERS
 			void disableShaders();
 			void enableShader(GLuint);
-			void enableWaterShader();
 			void enableShader(string);
+			void enableWaterShader();
+			void enableSkyShader();
 			void setCurrentTextureSize(int,int);
 
 		//FONT
@@ -93,23 +98,20 @@ class GraphicsOGL {
 
 		//Heightmap Variables
 			Heightmap* curHeightmap;
-
-		//Input Variables
 			InputController* inputController;
+			TextureController* textureController;
+			ShaderController* shaderController;
+			FontController* fontController;
 
 		//Shader Variables
-			ShaderController* shaderController;
 			GLuint curProgram;
 			float* resolution;
 			float globalTime;
 
 		//Font Variables
-			FontController* fontController;
 			Font2D* curFont;
 
 		Camera* glCamera;
-
-		static Texture* tst;
 };
 
 #endif

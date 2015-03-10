@@ -41,7 +41,7 @@ void Physical :: update(GraphicsOGL* gl, float deltaTime) {
 void Physical :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	// Run Parent Class's Function
-	Instantiable :: draw(gl, deltaTime);
+	Instantiable :: draw(gl, deltaTime);	
 }
 
 

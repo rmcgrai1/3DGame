@@ -7,10 +7,11 @@
 #include <deque>
 #include "../Graphics/GraphicsOGL.h"
 
+class Controller;
 class Updateable {
 	public:
-		static void updateAll(GraphicsOGL, float);
-		virtual void update(GraphicsOGL, float);
+		static void updateAll(GraphicsOGL*, float);
+		virtual void update(GraphicsOGL*, float);
 
 	protected:
 		Updateable();
