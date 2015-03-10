@@ -189,5 +189,5 @@ void main() {
     	pow(smoothstep(0.0,-0.05,dir.y),0.3));
         
     // post
-	gl_FragColor = vec4(pow(color,vec3(0.75)), 1.0);
+	gl_FragColor = vec4(pow(color,vec3(0.75)), .8);
 }

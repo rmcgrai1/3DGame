@@ -28,6 +28,7 @@
 #include "../Environment/Heightmap.h"
 #include "../Characters/Player.h"
 #include "../Environment/Tree.h"
+#include "../Environment/Terrain.h"
 using namespace std;
 using namespace std::chrono;
 
@@ -96,7 +97,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		textureController = new TextureController();
 		shaderController = new ShaderController();
 
-		curHeightmap = new Heightmap(textureController,2048,2048, "Resources/Images/test.png");
+		terrain = new Terrain(textureController,2048,2048, "Resources/Images/test.png",150);
 		p = new Player(1028,1028,0);
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
@@ -122,7 +123,7 @@ InputController* GraphicsOGL :: getInputController() {
 	return inputController;
 }
 Heightmap* GraphicsOGL :: getHeightmap() {
-	return curHeightmap;
+	return terrain->getHeightmap();
 }
 TextureController* GraphicsOGL :: getTextureController() {
 	return textureController;
@@ -187,8 +188,9 @@ void GraphicsOGL :: display() {
 	setPerspective();
 
 		// Draw All Drawable Objects
+		terrain->drawFirst(this, 1);
 		Drawable2 :: drawAll(this, 1);
-	
+		terrain->drawLast(this, 1);
 
 	// DRAW HUD
 
@@ -496,6 +498,8 @@ void GraphicsOGL :: display() {
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, camPos);
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);  
 
+		glUniform1f(glGetUniformLocation(curProgram, "seaLevel"), terrain->getSeaLevel());  
+
 		// Pass Texture(s) to Shader
 		glUniform1i(glGetUniformLocation(curProgram, "Texture0"), 0);
     		glUniform1i(glGetUniformLocation(curProgram, "Texture1"), 1);
@@ -609,7 +613,7 @@ unsigned long GraphicsOGL :: getTime() {
 }
 
 
-bool gluInvertMatrix(const float m[16], float invOut[16]) {
+bool GraphicsOGL :: gluInvertMatrix(const float m[16], float invOut[16]) {
     float inv[16], det;
     int i;
  

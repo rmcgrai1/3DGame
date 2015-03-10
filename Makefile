@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o Heightmap.o Tree.o Branch.o FileIO.o InputController.o
-	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o Heightmap.o Tree.o Branch.o FileIO.o InputController.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o
+	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -63,13 +63,18 @@ Character.o: Characters/Character.cpp Characters/Character.h
 	g++ -c Characters/Character.cpp -std=c++11
 Player.o: Characters/Player.cpp Characters/Player.h
 	g++ -c Characters/Player.cpp -std=c++11
+NPC.o: Characters/NPC.cpp Characters/NPC.h
+	g++ -c Characters/NPC.cpp -std=c++11
 
 
 # ENVIRONMENT
 ###############################################################
+Terrain.o: Environment/Terrain.cpp Environment/Terrain.h
+	g++ -c Environment/Terrain.cpp
 Heightmap.o: Environment/Heightmap.cpp Environment/Heightmap.h
 	g++ -c Environment/Heightmap.cpp
-
+Water.o: Environment/Water.cpp Environment/Water.h
+	g++ -c Environment/Water.cpp
 Tree.o: Environment/Tree.cpp Environment/Tree.h
 	g++ -c Environment/Tree.cpp
 Branch.o: Environment/Branch.cpp Environment/Branch.h

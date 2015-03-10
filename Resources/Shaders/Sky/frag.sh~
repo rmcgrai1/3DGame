@@ -101,7 +101,7 @@ void main() {
 
   // get camera position and view direction
   float time = 0.;//(iGlobalTime+13.5+44.)*.05;
-  vec3 campos = iCamPos - vec3(0.,vVertex.y,0.);//camera( time );
+  vec3 campos = iCamPos - vec3(0.,seaLevel,0.);//camera( time );
 
 
     vec3 ang = iCamDir;   
@@ -126,7 +126,7 @@ void main() {
      // CLOUDS
     vec2 shift = vec2( iGlobalTime*80.0, iGlobalTime*60.0 );
     vec4 sum = vec4(0,0,0,0); 
-    for (int q=1000; q<1050; q++) // 100 layers
+    for (int q=1000; q<1030; q++) // 100 layers
     {
       float c = (float(q-1000)*12.0+350.0-campos.y) / dir.y; // cloud height
       vec3 cpos = campos + c*dir + vec3(831.0, 321.0+float(q-1000)*.15-shift.x*0.2, 1330.0+shift.y*3.0); // cloud position

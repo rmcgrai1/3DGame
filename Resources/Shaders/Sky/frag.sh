@@ -18,6 +18,7 @@ uniform float iGlobalTime;
 uniform vec3 iCamPos;
 uniform vec3 iCamDir;
 varying vec3 vVertex;
+uniform float seaLevel;
 
 
 
@@ -101,7 +102,7 @@ void main() {
 
   // get camera position and view direction
   float time = 0.;//(iGlobalTime+13.5+44.)*.05;
-  vec3 campos = iCamPos - vec3(0.,vVertex.y,0.);//camera( time );
+  vec3 campos = iCamPos - vec3(0.,seaLevel,0.);//camera( time );
 
 
     vec3 ang = iCamDir;   

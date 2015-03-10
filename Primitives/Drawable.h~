@@ -9,16 +9,20 @@
 #include "../Graphics/GraphicsOGL.h"
 #include "Updateable.h"
 
-class Controller;
+class GraphicsOGL;
 class Drawable2 : public Updateable {
 	public:
 		static void drawAll(GraphicsOGL*, float);
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 
+		void setVisible(bool);
+
 	protected:
 		Drawable2();
 		Drawable2(int);
+
+		int visible;
 
 		static int TYPE_NONE;
 		static int TYPE_ENVIRONMENT;

@@ -168,6 +168,10 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->disableShaders();
 	
 	glLoadIdentity();
+
+gl->enableShader("Water");
+		gl->draw3DFloor(0,0,2048,2048,200,NULL);	
+	gl->disableShaders();
 }
 
 

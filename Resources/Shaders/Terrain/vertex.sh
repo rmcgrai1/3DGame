@@ -11,6 +11,7 @@ varying float sandWeight;
 
 varying vec4 vWVertex;
 uniform mat4 uMMatrix;
+uniform float seaLevel;
 
 
 
@@ -23,7 +24,7 @@ void main()
 
 
 	height = gl_Vertex.z;
-	float tDis = 1. - pow(height/(200.+10.),40.);
+	float tDis = 1. - pow(height/(seaLevel+10.),40.);
     
 	tDis = max(0., min(1., tDis));
 

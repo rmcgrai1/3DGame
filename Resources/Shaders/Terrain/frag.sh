@@ -9,6 +9,7 @@ uniform vec3 lights[1];
 
 varying vec4 vWVertex;
 varying mat4 uMMatrix;
+uniform float seaLevel;
 
 
 
@@ -60,7 +61,7 @@ vec4 caustics(vec4 fragColor, vec2 uv) {
 
 
 
-	float hDis = 1. - (height)/200.;
+	float hDis = 1. - (height)/seaLevel;
 	hDis = max(0., min(1., hDis));
 
 	vec2 p = mod(uv*TAU, TAU)-250.0;
@@ -94,7 +95,7 @@ void main() {
 
 	gl_FragColor = mixColors(grassColor, sandColor);
 
-	if(height < 200.)
+	if(height < seaLevel)
 		gl_FragColor = caustics(gl_FragColor, gl_TexCoord[0].xy);
 
 	gl_FragColor = addLighting(gl_FragColor);

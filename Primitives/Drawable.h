@@ -16,9 +16,13 @@ class Drawable2 : public Updateable {
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 
+		void setVisible(int);
+
 	protected:
 		Drawable2();
 		Drawable2(int);
+
+		int visible;
 
 		static int TYPE_NONE;
 		static int TYPE_ENVIRONMENT;

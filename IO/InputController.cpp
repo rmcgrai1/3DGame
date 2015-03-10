@@ -35,6 +35,15 @@ InputController :: InputController() {
 	wasdArray[2] = false;
 	wasdArray[3] = false;
 
+	letterArray = new bool[26];
+	for(int i = 0; i < 26; i++)
+		letterArray[i] = false;
+
+	mouseArray = new bool[3];
+	for(int i = 0; i < 3; i++)
+		mouseArray[i] = false;
+
+
 	isShiftDown = false;
 
 	glutSetKeyRepeat(0);
@@ -56,9 +65,18 @@ int InputController :: getMouseY() {
 
 		
 void InputController :: updateMouse(int button, int state, int x, int y) {
-	//bool* leftMouse;
-	//bool* middleMouse;
-	//bool* rightMouse;
+	//GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, or GLUT_RIGHT_BUTTON.  GLUT_UP or GLUT_DOWN
+
+	bool isPressed = (state == GLUT_DOWN);
+
+	switch(button) {
+		case GLUT_LEFT_BUTTON:		mouseArray[0] = isPressed;
+						break;
+		case GLUT_RIGHT_BUTTON:		mouseArray[1] = isPressed;
+						break;
+		case GLUT_MIDDLE_BUTTON:	mouseArray[2] = isPressed;
+						break;
+	}
 }
 void InputController :: updatePassiveMouse(int x, int y) {
 	mouseX = x;
@@ -69,6 +87,7 @@ void InputController :: updateKeyboard(unsigned char key, int x, int y) {
 
 	isShiftDown = (glutGetModifiers() == GLUT_ACTIVE_SHIFT);
 
+	setLetter(key, true);
 	switch(lKey) {
 		case 'w':
 		case 'a':
@@ -80,6 +99,7 @@ void InputController :: updateKeyboard(unsigned char key, int x, int y) {
 void InputController :: updateKeyboardUp(unsigned char key, int x, int y) {
 	char lKey = tolower(key);
 
+	setLetter(key, false);
 	switch(lKey) {
 		case 'w':
 		case 'a':
@@ -96,17 +116,17 @@ float InputController :: getWASDDir() {
 	int hDir, vDir;
 
 	// Get Horizontal Combination of A & D Keys
-	if(getWASD('a') && !getWASD('d'))
+	if(checkWASD('a') && !checkWASD('d'))
 		hDir = -1;
-	else if(!getWASD('a') && getWASD('d'))
+	else if(!checkWASD('a') && checkWASD('d'))
 		hDir = 1;
 	else
 		hDir = 0;
 
 	// Get Vertical Combination of W & S Keys
-	if(getWASD('w') && !getWASD('s'))
+	if(checkWASD('w') && !checkWASD('s'))
 		vDir = 1;
-	else if(!getWASD('w') && getWASD('s'))
+	else if(!checkWASD('w') && checkWASD('s'))
 		vDir = -1;
 	else
 		vDir = 0;
@@ -123,7 +143,17 @@ bool InputController :: getShift() {
 	return isShiftDown;
 }
 
-bool InputController :: getWASD(char key) {
+bool InputController :: checkLeftMouse() {
+
+	return mouseArray[0];
+}
+
+bool InputController :: checkRightMouse() {
+
+	return mouseArray[1];
+}
+
+bool InputController :: checkWASD(char key) {
 	switch(key) {
 		case 'w':	return wasdArray[0];
 			break;
@@ -149,6 +179,21 @@ void InputController :: setWASD(char key, bool down) {
 		case 'd':	wasdArray[3] = down;
 			break;
 	}
+}
+
+bool InputController :: checkLetter(char key) {
+
+	if(!isalpha(key))
+		return false;
+	else
+		return letterArray[tolower(key)-'a'];
+}
+
+void InputController :: setLetter(char key, bool down) {
+	if(!isalpha(key))
+		return;
+	else
+		letterArray[tolower(key)-'a'] = down;
 }
 
 

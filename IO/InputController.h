@@ -16,9 +16,14 @@ class InputController {
 		void updateKeyboardUp(unsigned char, int, int);
 		void updateKeyboardSpecial(int, int, int);
 
+		bool checkLeftMouse();
+		bool checkRightMouse();
+
+		bool checkLetter(char);
+		void setLetter(char, bool);
 		bool getShift();
 		float getWASDDir();
-		bool getWASD(char);
+		bool checkWASD(char);
 		void setWASD(char, bool);
 
 		int getMouseX();
@@ -26,11 +31,10 @@ class InputController {
 
 	private:
 		static InputController* mainInp;
-		bool* leftMouse;
-		bool* middleMouse;
-		bool* rightMouse;
 
 		bool* wasdArray;
+		bool* letterArray;
+		bool* mouseArray;
 
 		int mouseX;
 		int mouseY;

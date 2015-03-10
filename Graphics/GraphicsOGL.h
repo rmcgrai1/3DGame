@@ -14,6 +14,7 @@
 #include "FontController.h"
 #include "Camera.h"
 #include "../Environment/Heightmap.h"
+#include "../Environment/Terrain.h"
 
 
 class Camera;
@@ -97,7 +98,7 @@ class GraphicsOGL {
 			int fps;
 
 		//Heightmap Variables
-			Heightmap* curHeightmap;
+			Terrain* terrain;
 			InputController* inputController;
 			TextureController* textureController;
 			ShaderController* shaderController;
