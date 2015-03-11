@@ -19,6 +19,8 @@ class Player : public Character {
 	private:
 		void updateControl(GraphicsOGL*, float);
 		void land();
+
+		float camDis;
 };
 
 #endif

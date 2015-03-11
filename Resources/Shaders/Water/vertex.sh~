@@ -9,5 +9,6 @@ void main() {
 	gl_Position = ftransform();
 
 	vColor = vPosition;
-	vVertex = vec3(0.,200.,0.); //vPosition.xyz;
+	vVertex = vec3(0.,seaLevel,0.); //vPosition.xyz;
+	vWVertex = gl_Vertex;//uMMatrix * gl_ModelViewMatrix * gl_Position;
 }

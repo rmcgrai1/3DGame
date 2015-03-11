@@ -11,6 +11,7 @@
 #include "../Graphics/Camera.h"
 #include "../Graphics/Texture.h"
 #include "../Graphics/GraphicsOGL.h"
+#include "../Primitives/Physical.h"
 #include "Character.h"
 #include "Player.h"
 #include <cmath>
@@ -20,8 +21,12 @@ using namespace std;
 
 
 float nCDir = 0;
+float jumpSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*24));
+
 
 Player :: Player(float x, float y, float z) : Character(x,y,z) {
+	
+	camDis = 70;
 }
 
 void Player :: update(GraphicsOGL* gl, float deltaTime) {
@@ -40,15 +45,15 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
 
 
-	float len = 50, dir = nCDir;
+	float dir = nCDir;
 
 	// Place Camera on Heightmap
 		Heightmap* h = gl->getHeightmap();
 		float cX, cY;
-		cX = x-calcLenX(len,nCDir);
-		cY = y-calcLenY(len,nCDir);	
+		cX = x-calcLenX(camDis,nCDir);
+		cY = y-calcLenY(camDis,nCDir);	
 
-		gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,x,y,z+8);
+		gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,x,y,floorZ+8);
 }
 
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {
@@ -61,6 +66,16 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	float dir = i->getWASDDir(), cDir = gl->getCamDir(), aDir;
 	aDir = dir-90;
 
+	// If Jump Button Pressed...
+	if(i->checkLetter('u')) {
+		if(onGround) {
+			zVel = jumpSpeed;
+			onGround = false;
+		}
+	}
+	else if(!onGround && zVel > 0) {
+		zVel += (0 - zVel)/3;
+	}
 
 	// If a Button is Held...
 	if(dir != -1) {

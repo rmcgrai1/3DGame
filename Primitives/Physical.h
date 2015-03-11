@@ -31,6 +31,8 @@ class Physical : public Instantiable {
 		float getY();						// Get Y
 		float getZ();						// Get Z
 
+								// CONSTANTS
+		static const float GRAVITY_ACCELERATION;		// Acceleration due to Gravity
 
 	private:
 								// UPDATE FUNCTIONS
@@ -39,8 +41,6 @@ class Physical : public Instantiable {
 								// COLLISION FUNCTIONS
 		bool collideHeightmap(Heightmap*);			// Collide with Heightmap
 
-								// CONSTANTS
-		static const float GRAVITY_ACCELERATION;		// Acceleration due to Gravity
 
 	protected:
 								// CONSTRUCTOR(S)
@@ -48,6 +48,10 @@ class Physical : public Instantiable {
 		
 								// VIRTUAL FUNCTIONS
 		virtual void land() = 0;				// What Happens when Landing
+
+
+
+
 
 								// VARIABLES
 		float x;						// X Coordinate
@@ -59,6 +63,9 @@ class Physical : public Instantiable {
 		float vel;						// XY Velocity
 		float zVel;						// Z Velocity
 		float direction;					// Direction
+		float floorZ;
+
+		bool onGround;
 };
 
 #endif

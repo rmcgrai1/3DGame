@@ -10,10 +10,16 @@
 // BASIC
 	float sqr(float);
 
+// GEOMETRIC
+	float calcPtDis(float, float, float, float);
+
 // TRIG
 	float calcLenX(float, float);
 	float calcLenY(float, float);
 	float calcPtDir(float, float, float, float);
+
+	float modf() {
+	}
 
 // MAGICAL!!
 	float calcTurnToDir(float, float);

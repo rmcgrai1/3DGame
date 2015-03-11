@@ -20,8 +20,6 @@ Image :: Image(string fileName) {
 	height = image.height();
 
 	cout << fileName << ": " << image.spectrum() << endl;
-
-	//image.display();
 }
 
 int Image :: getWidth() {

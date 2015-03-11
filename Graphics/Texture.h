@@ -13,6 +13,7 @@ using namespace std;
 
 class Texture {
 	public:
+		Texture(const string&);
 		Texture(const string&, bool);
 		
 		int getWidth();
@@ -20,6 +21,9 @@ class Texture {
 
 		void bind();
 		void bind(GLenum);
+
+		void unbind();
+		void unbind(GLenum);
 		
 	private:
 

@@ -2,9 +2,6 @@
 
 
 #include <deque>
-#include <GL/freeglut.h>
-#include <GL/glut.h>
-#include <GL/glext.h>
 #include <string>
 #include <iostream>
 #include "../Graphics/Texture.h"
@@ -18,6 +15,7 @@ using namespace std;
 
 
 
+float hopSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*3));
 float s = 6, h = 8;
 
 Texture* Character :: shTex;
@@ -47,7 +45,6 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	Heightmap* hm = gl->getHeightmap();
 
 	float sideNum = 6;
-	float ang = 45, dir, xN, yN;
 
 	float normal[3];
 	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
@@ -92,107 +89,64 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	// Draw Sky
 	gl->enableShader("Sky");
-		glTranslatef(x,y,z);
+		gl->transformTranslation(x,y,z);
 
-		float sc = 400;
+		float sc = 2000;
 
-		gl->draw3DFloor(-sc,-sc,sc,sc,sc,NULL);
-		gl->draw3DWall(-sc,-sc,sc,sc,-sc,-sc,NULL);
-		gl->draw3DWall(-sc,sc,sc,sc,sc,-sc,NULL);
-		gl->draw3DWall(-sc,-sc,sc,-sc,sc,-sc,NULL);
-		gl->draw3DWall(sc,-sc,sc,sc,sc,-sc,NULL);
-		glLoadIdentity();
+		gl->draw3DFloor(-sc,-sc,sc,sc,sc);
+		gl->draw3DWall(-sc,-sc,sc,sc,-sc,-sc);
+		gl->draw3DWall(-sc,sc,sc,sc,sc,-sc);
+		gl->draw3DWall(-sc,-sc,sc,-sc,sc,-sc);
+		gl->draw3DWall(sc,-sc,sc,sc,sc,-sc);
+		gl->transformClear();
 	gl->disableShaders();
 
 
+	gl->transformTranslation(x,y,z+hopZ);
 
-
-	glTranslatef(x,y,z+hopZ);
-
-	//glRotated(xRot, 1, 0, 0);
-
-	if(hopZ <= 0) {
-		glRotated(setupRot, 0, 0, 1);	
-		glRotated(xyRot, 1, 0, 0);
-		glRotated(direction-setupRot, 0, 0, 1);	
+	if(onGround && hopZ <= 0) {
+		gl->transformRotationZ(setupRot);	
+		gl->transformRotationX(xyRot);
+		gl->transformRotationZ(direction-setupRot);	
 	}
 	else
-		glRotated(direction, 0, 0, 1);	
-	//glRotated(direction, 0, 0, 1);
+		gl->transformRotationZ(direction);	
 	
-	glScalef(hopSc,hopSc,1/hopSc);
+	gl->transformScale(hopSc,hopSc,1/hopSc);
 
-	// Draw Top of Player Model
-		glBegin(GL_TRIANGLE_FAN);
-			glTexCoord2d(.5, .5);
-				glVertex3d(0,0,h);
-
-			for(int i = 0; i <= sideNum; i++) {
-				dir = ang + i/sideNum*360;
-
-				xN = calcLenX(1,dir);
-				yN = calcLenY(1,dir);
-
-				glTexCoord2d(.5 + .5*xN,.5 + .5*yN);
-					glVertex3d(xN*s, yN*s, h);
-			}
-		glEnd();
-
-	// Draw Side Faces of Player Model
-	for(int i = 0; i < sideNum; i++) {
-		glBegin(GL_QUADS);
-
-			dir = ang + i/sideNum*360;
-				xN = calcLenX(1,dir);
-				yN = calcLenY(1,dir);
-
-			glTexCoord2d(0,0);
-				glVertex3d(xN*s, yN*s, h);
-			glTexCoord2d(0,1);
-				glVertex3d(xN*s, yN*s, 0);
-
-
-			dir = ang + (i+1)/sideNum*360;
-				xN = calcLenX(1,dir);
-				yN = calcLenY(1,dir);
-
-			glTexCoord2d(1,1);
-				glVertex3d(xN*s, yN*s, 0);
-			glTexCoord2d(1,0);
-				glVertex3d(xN*s, yN*s, h);
-		glEnd();
-	}
-
+	gl->draw3DPrism(0,0,0,s,h,6);
 
 
 	gl->disableShaders();
-	
-	glLoadIdentity();
-
-	/*gl->enableShader("Water");
-		gl->draw3DFloor(0,0,2048,2048,200,NULL);	
-	gl->disableShaders();*/
+	gl->transformClear();
 }
 
 
 void Character :: updateHop(float deltaT) {
 	float hopZVelP = hopZVel;
 
-	hopZVel -= .2;
-	hopZ += hopZVel;
-	if(hopZ < 0) {
-		hopZ = hopZVel = 0;
+	if(onGround) {
+		hopZVel += GRAVITY_ACCELERATION;
+		hopZ += hopZVel;
+		if(hopZ < 0) {
+			hopZ = hopZVel = 0;
 
-		if(hopZVelP != 0)
-			hopSc *= 1.3;
+			if(hopZVelP != 0)
+				hopSc *= 1.3;
+		}
+
+		hopSc += (1 - hopSc)/3;
 	}
-
-	hopSc += (1 - hopSc)/3;
+	else {
+		hopZ = 0;
+		hopZVel = 0;
+		hopSc += (1 - hopSc)/3;
+	}
 }
 
 void Character :: hop() {
 	if(hopZ == 0)
-		hopZVel = 1.3;
+		hopZVel = hopSpeed;
 }
 
 

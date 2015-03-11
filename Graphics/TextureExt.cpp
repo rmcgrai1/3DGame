@@ -8,57 +8,80 @@
 #include <GL/glext.h>
 #include "TextureExt.h"
 #include "Texture.h"
+#include "GraphicsOGL.h"
+#include "../Functions/Math2D.h"
+//#include "../IO/dirent.h"
 using namespace std;
+
+
+
+TextureExt :: TextureExt(Texture * tex) {
+
+	addFrame(tex);
+}
 
 
 TextureExt :: TextureExt(string fileName) {
 
-	/*if(fileName.find(".gif")) {
-		loadMultiframe(fileName);
-	}*/
-	//else {
-		//addFrame(new Texture(fileName));
-	//}
-}
-
-void TextureExt :: loadMultiframe(string fileName) {
-	/*list<Image> imageList; 	
-
-	try {
-		readImages(&imageList, fileName);
-		
-		list<Image> :: const_iterator i;
-		for(i = imageList.begin(); i != imageList.end(); i++)
-			addFrame(new Texture(*i));
+	if(!fileName.find(".")) {
+		loadDirectory(fileName);
 	}
-	catch (Magick::Error& Error) {
-		
-	}	*/
+	else
+		addFrame(fileName);
 }
+
+void TextureExt :: loadDirectory(string dirName) {
+
+	/*DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir (dirName)) != NULL) {
+		while ((ent = readdir (dir)) != NULL)
+			addFrame(ent->d_name);
+		closedir (dir);
+	} else {
+		perror ("");
+		return EXIT_FAILURE;
+	}*/
+}
+
 
 void TextureExt :: bind(int ind) {
 	getFrame(ind)->bind();
 }
+void TextureExt :: unbind(int ind) {
+	getFrame(ind)->unbind();
+}
 
+
+void TextureExt :: addFrame(string fileName) {
+	addFrame(new Texture(fileName));
+}
 void TextureExt :: addFrame(Texture* tex) {
 	frameList.push_back(tex);
 }
 
+
 Texture* TextureExt :: getFrame(int ind) {
 	return frameList.at(ind % getFrameNumber());
 }
+Texture* TextureExt :: getFrame(float ind) {
+	return frameList.at(modf(ind, getFrameNumber()));	
+}
 
-/*Texture* TextureExt :: getFrame(float ind) {
-	return frameList.at(ind % getFrameNumber());	
-}*/
 
 int TextureExt :: getWidth() {
-	return frameList.at(0)->getWidth();
+	return getWidth(0);
+}
+int TextureExt :: getWidth(int frame) {
+	return frameList.at(frame)->getWidth();
+}
+int TextureExt :: getHeight() {
+	return getHeight(0);
+}
+int TextureExt :: getHeight(int frame) {
+	return frameList.at(frame)->getHeight();
 }
 
-int TextureExt :: getHeight() {
-	return frameList.at(0)->getHeight();
-}
 
 int TextureExt :: getFrameNumber() {
 	return frameList.size();

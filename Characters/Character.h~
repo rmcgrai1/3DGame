@@ -19,6 +19,7 @@ class Character : public Physical {
 
 	protected:
 		void hop();
+		float floorZ;
 
 	private:
 		void updateHop(float);

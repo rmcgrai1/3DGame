@@ -9,7 +9,6 @@
 #include <GL/glut.h>
 #include <GL/glext.h>
 #include "Image.h"
-using namespace cimg_library;
 using namespace std;
 
 class Texture {
@@ -21,6 +20,9 @@ class Texture {
 
 		void bind();
 		void bind(GLenum);
+
+		void unbind();
+		void unbind(GLenum);
 		
 	private:
 

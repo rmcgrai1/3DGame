@@ -29,6 +29,21 @@
 		return atan2(y2-y1, x2-x1)/PI*180;
 	}
 
+	float modf(float x, float y) {
+		if(x == y)
+			return 0;
+		else if(x < y)
+			return x;
+		else {
+			int t = 0;
+
+			while(y < x)
+				x -= y;
+
+			return x;
+		}
+	}
+
 // MAGICAL!!!
 	float calcTurnToDir(float dir, float toDir) {
 		float newDir = 0;

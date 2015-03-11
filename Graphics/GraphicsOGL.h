@@ -41,29 +41,64 @@ class GraphicsOGL {
 			float getCamDir();
 			void setProjectionPrep(float,float,float,float,float,float);
 		
-		//DRAWING
+
+		// DRAWING
 			void setColor(int,int,int);
-			void drawPoint(float,float);
-			void drawLine(float,float,float,float);
-			void drawRect(float,float,float,float);
-			void fillRect(float,float,float,float);
-			void drawCircle(float,float,float,int);
-			void fillCircle(float,float,float,int);
-			void drawPolygon(float,float,float,int,float);
-			void fillPolygon(float,float,float,int,float);
 
-		//3D DRAWING
+		//2D DRAWING
+			// 2D PRIMITIVES
+				void drawPoint(float,float);
+				void drawLine(float,float,float,float);
+				void drawRect(float,float,float,float);
+				void fillRect(float,float,float,float);
+				void drawCircle(float,float,float,int);
+				void fillCircle(float,float,float,int);
+				void drawPolygon(float,float,float,int,float);
+				void fillPolygon(float,float,float,int,float);
 
-			void draw3DWall(float,float,float,float,float,float, Texture*);
-			void draw3DFloor(float,float,float,float,float, Texture*);
-			void draw3DLine(float,float,float,float,float,float);
+			// TEXTURES
+				void drawTexture(float, float, Texture*);
+				void drawTextureScaled(float, float, float, float, Texture*);
 
-			void drawTexture(float, float, Texture*);
-			void drawTextureScaled(float, float, float, float, Texture*);
-			float drawChar(float, float, char);
-			float drawCharScaled(float, float, float, float, char);
-			void drawString(float, float, string);
-			void drawStringScaled(float, float, float, float, string);
+			// TEXT
+				float drawChar(float, float, char);
+				float drawCharScaled(float, float, float, float, char);
+				void drawString(float, float, string);
+				void drawStringScaled(float, float, float, float, string);
+
+
+		// 3D DRAWING
+			// 3D TRANSFORMATIONS
+				void transformTranslation(float, float, float);
+				void transformScale(float);
+				void transformScale(float, float, float);
+				void transformRotationX(float);
+				void transformRotationY(float);
+				void transformRotationZ(float);
+				void transformClear();
+
+
+			//3D PRIMTITIVES
+				void draw3DSphere(float,float,float,float,int);
+				void draw3DSphere(float,float,float,float,int,Texture*);
+
+				void draw3DWall(float,float,float,float,float,float);
+				void draw3DWall(float,float,float,float,float,float, Texture*);
+				void draw3DWall(float,float,float,float,float,float, Texture*, float, float);
+
+				void draw3DFloor(float,float,float,float,float);
+				void draw3DFloor(float,float,float,float,float, Texture*);
+				void draw3DFloor(float,float,float,float,float, Texture*, float, float);
+
+				void draw3DBlock(float,float,float,float,float,float);
+				void draw3DBlock(float,float,float,float,float,float, Texture*);
+				void draw3DBlock(float,float,float,float,float,float, Texture*, Texture*);
+
+				void draw3DPrism(float,float,float,float,float,int);
+				void draw3DPrism(float,float,float,float,float,int, Texture*);
+
+				void draw3DLine(float,float,float,float,float,float);
+
 
 		//SHADERS
 			void disableShaders();

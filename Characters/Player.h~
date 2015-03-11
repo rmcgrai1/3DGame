@@ -7,7 +7,7 @@
 #include <deque>
 #include "../Characters/Character.h"
 #include "../Graphics/Texture.h"
-#include "../Controller.h"
+#include "../Graphics/GraphicsOGL.h"
 
 class Player : public Character {
 	public:

@@ -342,7 +342,6 @@ void GraphicsOGL :: display() {
 	}
 
 	void GraphicsOGL :: drawTexture(float x, float y, Texture* tex) {
-		
 		drawTextureScaled(x, y, 1, 1, tex);
 	}
 
@@ -372,91 +371,160 @@ void GraphicsOGL :: display() {
 
 //3D DRAWING
 
-	void GraphicsOGL :: draw3DWall(float x1, float y1, float z1, float x2, float y2, float z2, Texture* tex) {
-
-			if(tex != NULL) {
-				glEnable(GL_TEXTURE_2D);
-				
-				tex->bind();
-			}
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-						
-			/*glColor4f(1f, 1f, 1f, (float) alpha);
-			
-			gl.glTranslated(sx+xScale*x,sy+yScale*y,sz+zScale*z);
-			gl.glRotated(rotZ, 0, 0, 1);
-			gl.glRotated(rotY, 0, 1, 0);
-			gl.glRotated(rotX, 1, 0, 0);
-			
-			gl.glScalef(xScale, yScale, zScale);*/
-			
-			glBegin(GL_QUADS);
-				glTexCoord2d(0.0, 0.0); 	
-					glVertex3d(x1, y1, z1);
-				glTexCoord2d(1.0, 0.0);
-					glVertex3d(x2, y2, z1);
-				glTexCoord2d(1.0, 1.0);
-					glVertex3d(x2, y2, z2);
-				glTexCoord2d(0.0, 1.0);
-					glVertex3d(x1, y1, z2);
-			glEnd();
-			
-			//glLoadIdentity();
-			
-			
-			//glColor4f(1f, 1f, 1f, 1f);
-
-		glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
+	void GraphicsOGL :: transformTranslation(float x, float y, float z) {
+		glTranslatef(x, y, z);
+	}
+	void GraphicsOGL :: transformScale(float s) {
+		transformScale(s, s, s);
+	}
+	void GraphicsOGL :: transformScale(float xS, float yS, float zS) {
+		glScalef(xS, yS, zS);
+	}
+	void GraphicsOGL :: transformRotationX(float angle) {
+		glRotatef(angle, 1, 0, 0);
+	}
+	void GraphicsOGL :: transformRotationY(float angle) {
+		glRotatef(angle, 0, 1, 0);
+	}
+	void GraphicsOGL :: transformRotationZ(float angle) {
+		glRotatef(angle, 0, 0, 1);
+	}
+	void GraphicsOGL :: transformClear() {
+		glLoadIdentity();
 	}
 
-	void GraphicsOGL :: draw3DFloor(float x1, float y1, float x2, float y2, float z, Texture* tex) {
 
-			if(tex != NULL) {
-				glEnable(GL_TEXTURE_2D);
+	void GraphicsOGL :: draw3DSphere(float x, float y, float z, float r, int numPts) {
+		draw3DSphere(x,y,z,r,numPts, NULL);
+	}
+	void GraphicsOGL :: draw3DSphere(float x, float y, float z, float r, int numPts, Texture* tex) {
+		float z1, z2, xN1,yN1, xN2,yN2, zDir1, zDir2, xyN1,xyN2, zN1, zN2, dir;
+
+		if(tex != NULL) {
+			glEnable(GL_TEXTURE_2D);
+			tex->bind();
+		}
+
+		for(float i = 0; i < numPts; i++) {
+
+			glBegin(GL_TRIANGLE_STRIP);
+
+			for(float j = 0; j < numPts; j++) {
+
+				zDir1 = 90*2*r*(.5-(i/numPts));
+				zDir2 = 90*2*r*(.5-((i+1)/numPts));
+
+				xyN1 = calcLenX(1,zDir1);
+				xyN2 = calcLenX(1,zDir2);
+				zN1 = calcLenY(1,zDir1);
+				zN2 = calcLenY(1,zDir2);
+
 				
-				tex->bind();
-			}
-			
-			glAlphaFunc(GL_GREATER, 0);
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-						
-			/*glColor4f(1f, 1f, 1f, (float) alpha);
-			
-			gl.glTranslated(sx+xScale*x,sy+yScale*y,sz+zScale*z);
-			gl.glRotated(rotZ, 0, 0, 1);
-			gl.glRotated(rotY, 0, 1, 0);
-			gl.glRotated(rotX, 1, 0, 0);
-			
-			gl.glScalef(xScale, yScale, zScale);*/
-			
-			glBegin(GL_QUADS);
-				glTexCoord2d(0.0, 0.0);
-					glVertex3d(x1, y1, z);
-				glTexCoord2d(1.0, 0.0);
-					glVertex3d(x2, y1, z);
-				glTexCoord2d(1.0, 1.0);
-					glVertex3d(x2, y2, z);
-				glTexCoord2d(0.0, 1.0);
-					glVertex3d(x1, y2, z);
-			glEnd();
+				dir = j/numPts*360;
+					xN1 = calcLenX(1,dir)*xyN1;
+					yN1 = calcLenY(1,dir)*xyN1;
+					xN2 = calcLenX(1,dir)*xyN2;
+					yN2 = calcLenY(1,dir)*xyN2;
 
-			
-			//glLoadIdentity();
-			
-			
-			//glColor4f(1f, 1f, 1f, 1f);
+				glTexCoord2f(j/numPts,i/numPts);
+				glNormal3f(xN1,yN1,zN1);
+					glVertex3f(x+xN1*r, y+yN1*r, z+zN1*r);
+				glTexCoord2f(j/numPts,(i+1)/numPts);
+				glNormal3f(xN2,yN2,zN2);
+					glVertex3f(x+xN2*r, y+yN2*r, z+zN2*r);
+
+
+				dir = (j+1)/numPts*360;
+					xN1 = calcLenX(1,dir)*xyN1;
+					yN1 = calcLenY(1,dir)*xyN1;
+					xN2 = calcLenX(1,dir)*xyN2;
+					yN2 = calcLenY(1,dir)*xyN2;
+
+				glTexCoord2f((j+1)/numPts,(i+1)/numPts);
+				glNormal3f(xN2,yN2,zN2);
+					glVertex3f(x+xN2*r, y+yN2*r, z+zN2*r);
+				glTexCoord2f((j+1)/numPts,i/numPts);
+				glNormal3f(xN1,yN1,zN1);
+					glVertex3f(x+xN1*r, y+yN1*r, z+zN1*r);
+			}
+
+			glEnd();
+		}
+
+		if(tex != NULL) {
+			glDisable(GL_TEXTURE_2D);
+			tex->unbind();
+		}
+	}
+
+	void GraphicsOGL :: draw3DWall(float x1, float y1, float z1, float x2, float y2, float z2) {
+		draw3DWall(x1,y1,z1,x2,y2,z2,NULL);
+	}
+	void GraphicsOGL :: draw3DWall(float x1, float y1, float z1, float x2, float y2, float z2, Texture* tex) {
+		draw3DWall(x1,y1,z1,x2,y2,z2,tex,1,1);
+	}
+	void GraphicsOGL :: draw3DWall(float x1, float y1, float z1, float x2, float y2, float z2, Texture* tex, float xRepeat, float yRepeat) {
+
+		if(tex != NULL) {
+			glEnable(GL_TEXTURE_2D);
+			tex->bind();
+		}
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+		glBegin(GL_QUADS);
+			glTexCoord2d(0.0, 0.0); 	
+				glVertex3d(x1, y1, z1);
+			glTexCoord2d(xRepeat, 0.0);
+				glVertex3d(x2, y2, z1);
+			glTexCoord2d(xRepeat, yRepeat);
+				glVertex3d(x2, y2, z2);
+			glTexCoord2d(0.0, yRepeat);
+				glVertex3d(x1, y1, z2);
+		glEnd();
 
 		glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		if(tex != NULL)
+			tex->unbind();
+	}
+
+	void GraphicsOGL :: draw3DFloor(float x1, float y1, float x2, float y2, float z) {
+		draw3DFloor(x1,y1,x2,y2,z,NULL);
+	}
+	void GraphicsOGL :: draw3DFloor(float x1, float y1, float x2, float y2, float z, Texture* tex) {
+		draw3DFloor(x1,y1,x2,y2,z,NULL,1,1);
+	}
+	void GraphicsOGL :: draw3DFloor(float x1, float y1, float x2, float y2, float z, Texture* tex, float xRepeat, float yRepeat) {
+
+		if(tex != NULL) {
+			glEnable(GL_TEXTURE_2D);
+			tex->bind();
+		}
+			
+		glAlphaFunc(GL_GREATER, 0);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		
+		glBegin(GL_QUADS);
+			glTexCoord2d(0.0, 0.0);
+				glVertex3d(x1, y1, z);
+			glTexCoord2d(xRepeat, 0.0);
+				glVertex3d(x2, y1, z);
+			glTexCoord2d(xRepeat, yRepeat);
+				glVertex3d(x2, y2, z);
+			glTexCoord2d(0.0, yRepeat);
+				glVertex3d(x1, y2, z);
+		glEnd();
+
+		if(tex != NULL) {
+			glDisable(GL_TEXTURE_2D);
+			tex->unbind();
+		}
 	}
 
 	void GraphicsOGL :: draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) {
-	
 		// Create Line Primitive from (x1,y1,z1) to (x2,y2,z2)
 		glBegin(GL_LINES);
 			glVertex3f(x1, y1, z1);
@@ -464,10 +532,86 @@ void GraphicsOGL :: display() {
 		glEnd();
 	}
 
+
+	void GraphicsOGL :: draw3DBlock(float x1, float y1, float z1, float x2, float y2, float z2) {
+		draw3DBlock(x1,y1,z1,x2,y2,z2,NULL);
+	}
+	void GraphicsOGL :: draw3DBlock(float x1, float y1, float z1, float x2, float y2, float z2, Texture* tex) {
+		draw3DBlock(x1,y1,z1,x2,y2,z2,tex,tex);
+	}
+	void GraphicsOGL :: draw3DBlock(float x1, float y1, float z1, float x2, float y2, float z2, Texture* texWall, Texture* texFloor) {
+		draw3DWall(x1,y1,z1,x1,y2,z2,texWall);
+		draw3DWall(x2,y1,z1,x2,y2,z2,texWall);
+		draw3DWall(x1,y1,z1,x2,y1,z2,texWall);
+		draw3DWall(x1,y2,z1,x2,y2,z2,texWall);
+		draw3DFloor(x1,y1,x1,y2,z1,texFloor);
+		draw3DFloor(x1,y1,x1,y2,z2,texFloor);
+	}
+
+
+	void GraphicsOGL :: draw3DPrism(float x, float y, float z, float rad, float h, int sideNum) {
+		draw3DPrism(x,y,z,rad,h,sideNum,NULL);
+	}
+	void GraphicsOGL :: draw3DPrism(float x, float y, float z, float rad, float height, int sideNum, Texture* tex) {
+		float ang = 45, dir, xN, yN;
+
+		if(tex != NULL) {
+			glEnable(GL_TEXTURE_2D);
+			tex->bind();
+		}
+
+		// Draw Top of Player Model
+		glBegin(GL_TRIANGLE_FAN);
+			glTexCoord2f(.5, .5);
+				glVertex3f(x,y,z+height);
+
+			for(int i = 0; i <= sideNum; i++) {
+				dir = ang + 1.*i/sideNum*360;
+
+				xN = calcLenX(1,dir);
+				yN = calcLenY(1,dir);
+
+				glTexCoord2f(.5 + .5*xN,.5 + .5*yN);
+					glVertex3f(x+xN*rad, y+yN*rad, z+height);
+			}
+		glEnd();
+
+		// Draw Side Faces of Player Model
+		for(int i = 0; i < sideNum; i++) {
+			glBegin(GL_QUADS);
+
+				dir = ang + 1.*i/sideNum*360;
+					xN = calcLenX(1,dir);
+					yN = calcLenY(1,dir);
+
+				glTexCoord2f(0,0);
+					glVertex3f(xN*rad, yN*rad, height);
+				glTexCoord2f(0,1);
+					glVertex3f(xN*rad, yN*rad, 0);
+
+
+				dir = ang + (i+1.)/sideNum*360;
+					xN = calcLenX(1,dir);
+					yN = calcLenY(1,dir);
+
+				glTexCoord2f(1,1);
+					glVertex3f(x+xN*rad, y+yN*rad, z);
+				glTexCoord2f(1,0);
+					glVertex3f(x+xN*rad, y+yN*rad, z+height);
+			glEnd();
+		}
+
+		if(tex != NULL) {
+			glDisable(GL_TEXTURE_2D);
+			tex->unbind();
+		}
+	}
+
 //SHADERS
 
 
 	void GraphicsOGL :: disableShaders() {
+		textureController->getTexture("Noise")->unbind(GL_TEXTURE2);
 		glUseProgram(0);
 	}
 
@@ -476,6 +620,8 @@ void GraphicsOGL :: display() {
 	}
 
 	void GraphicsOGL :: enableShader(GLuint program) {
+
+		Texture* noiseTex = textureController->getTexture("Noise");
 
 		// Set Current Shader Program
 		curProgram = program;
@@ -490,12 +636,14 @@ void GraphicsOGL :: display() {
 
 
 		// Get Camera Position and Direction
-		float camPos[3], camDir[3];
+		float camPos[3], sCamPos[3], camDir[3];
 		glCamera->getPosition(camPos);
+		glCamera->getShaderPosition(sCamPos);
 		glCamera->getDirection(camDir);
 
 		// ** Pass Camera Position and Direction to Shader
-		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, camPos);
+		glUniform3fv(glGetUniformLocation(curProgram, "rCamPos"), 1, camPos);
+		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, sCamPos);
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);  
 
 		glUniform1f(glGetUniformLocation(curProgram, "seaLevel"), terrain->getSeaLevel());  
@@ -503,6 +651,10 @@ void GraphicsOGL :: display() {
 		// Pass Texture(s) to Shader
 		glUniform1i(glGetUniformLocation(curProgram, "Texture0"), 0);
     		glUniform1i(glGetUniformLocation(curProgram, "Texture1"), 1);
+    		glUniform1i(glGetUniformLocation(curProgram, "noiseTex"), 2);
+			noiseTex->bind(GL_TEXTURE2);
+
+		
 
 		float locations[3] = {
 			p->getX(), p->getY(), p->getZ()

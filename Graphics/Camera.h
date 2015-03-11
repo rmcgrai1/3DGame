@@ -15,6 +15,7 @@ class Camera {
 		void setProjectionPrep(float, float, float, float, float, float);
 
 		void getPosition(float[3]);
+		void getShaderPosition(float[3]);
 		void getDirection(float[3]);
 
 	private:
