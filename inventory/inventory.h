@@ -19,7 +19,7 @@ class Inventory : public Drawable2 {
 		void draw(GraphicsOGL*, float);
 		void update(GraphicsOGL*, float);
 	private:
-		InvSlot Slots[27];
+		InvSlot *Slots[27];
 		vector<Item*> items;
 		TexturePack *Textures;
 };
