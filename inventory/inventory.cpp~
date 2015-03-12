@@ -23,7 +23,6 @@ Inventory::Inventory() {
 }
 
 void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
-	gl->disableShaders();
 	gl->setOrtho(); // switch to 2D mode
 	gl->setColor(2147483647*0.5,2147483647*0.5,2147483647*0.5); // set color to gray
 	cout << "Drawing inventory!\n";

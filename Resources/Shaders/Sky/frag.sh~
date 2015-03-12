@@ -10,7 +10,9 @@ uniform sampler2D noiseTex;
 
 
 vec3 sunColor = vec3(1.8, 1.1, 0.6);
-vec3 skyColor = vec3(0.4, 0.6, 0.85);
+vec3 dayColor = vec3(0.4, 0.6, 0.85);
+vec3 nightColor = vec3(0.22,0.10,0.32);
+
 vec3 sunLightColor = vec3(1.5, 1.25, 0.9);
 vec3 skyLightColor = vec3(0.15, 0.2, 0.3);
 vec3 indLightColor = vec3(0.4, 0.3, 0.2);
@@ -19,7 +21,13 @@ vec3 horizonColor = vec3(0.7, 0.75, 0.8);
 vec3 fogColorB = vec3(0.7, 0.8, 0.9);
 vec3 fogColorR = vec3(0.8, 0.7, 0.6);
 
-vec3 sunDirection = normalize(vec3(0.6, 0.8, 0.5));
+//vec3 sunDirection = normalize(vec3(0.6, 0.8, 0.5));
+
+float zDir = iGlobalTime/180.*3.14159*10.;
+float xN = cos(zDir), zN = sin(zDir);
+float dayAmt = (zN+1.)/2.;
+
+vec3 sunDirection = normalize(vec3(0.,zN,xN));
 
 vec2 uv;
 
@@ -81,6 +89,10 @@ float raymarchShadow(in vec3 ro, in vec3 rd, float tmin, float tmax) {
     return sh;
 }
 
+vec3 dayNightColor(vec3 colDay, vec3 colNight) {
+	return dayAmt*colDay + (1.-dayAmt)*colNight;
+}
+
 void main() {
 
     uv = gl_FragCoord.xy;
@@ -100,11 +112,13 @@ void main() {
 
     // terrain marching
     vec3 color;
+
+	vec3 skyColor = dayNightColor(dayColor, nightColor);
     
     // sky and sun
     float sky = clamp(0.6 * (1.0 - 0.8 * rd.y), 0.0, 1.0);
     float diffuse = clamp(0.4 * sunDot, 0.0, 1.0);
-    color = sky * skyColor + pow(sunDot, 800.0) * sunColor + diffuse * skyLightColor;
+    color = sky * skyColor + /*sunDot*sunColor*/ diffuse * skyLightColor;
 
     // clouds
     float t = (cloudsHeight - ro.y) / rd.y;
@@ -116,7 +130,9 @@ void main() {
     }
 
         // horizon
-        color = mix(color, horizonColor, pow(1.0 - rd.y, 4.0));
+        color = mix(color, dayNightColor(horizonColor,horizonColor*.3), pow(1.0 - rd.y, 4.0));
+
+	color += pow(sunDot, 800.0) * sunColor;
 
     // gamma correction
     vec3 gamma = vec3(1.0 / 2.2);
