@@ -18,7 +18,7 @@ InvSlot::InvSlot(Item *newItem, int number, TexturePack *TP) {
 	maxCount = 64; // defaults to max of 64.  Can be changed with later call of SetMax
 }
 
-void InvSlot::drawat(GraphicsOGL* gl, int x, int y, int width, int height) {
+void InvSlot::drawat(GraphicsOGL* gl, int x, int y, int x2, int y2) {
 	gl->drawTextureScaled(x, y, 1, 1, Sprite);
 }
 

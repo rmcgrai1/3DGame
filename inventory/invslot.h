@@ -14,7 +14,7 @@ class InvSlot {
 	friend ostream& operator<<(ostream&, const InvSlot);
 	public:
 		InvSlot(Item *newItem = NULL, int number = 0, TexturePack *TP = new TexturePack); // constructor: if number is 0, item is always "empty"
-		void drawat(GraphicsOGL* gl, int x, int y, int width, int height); // draws the slot (and contents) at this position
+		void drawat(GraphicsOGL* gl, int x, int y, int x2, int y2); // draws the slot (and contents) at this position
 		void SetMax(int max); // sets the maximum count of items for this slot
 		int GetCount(); // returns the number of items in this slot
 		Item *GetItemType(); // returns the type of item that is in the slot

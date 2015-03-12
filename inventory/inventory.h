@@ -18,10 +18,17 @@ class Inventory : public Drawable2 {
 		Inventory(); // constructor
 		void draw(GraphicsOGL*, float);
 		void update(GraphicsOGL*, float);
+		int getInventoryShowStatus(); // returns whether the inventory is being shown (may be needed for pausing execution of game, etc.)
 	private:
 		InvSlot *Slots[27];
 		vector<Item*> items;
 		TexturePack *Textures;
+		
+		Texture *Cursor;
+		
+		int ShowInventory;
+		int mouseX;
+		int mouseY;
 };
 
 #endif
