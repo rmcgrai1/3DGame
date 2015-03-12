@@ -307,6 +307,14 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->disableShaders();
 
 	glDisable(GL_LIGHTING);
+	// Added to make 2d images render correctly
+	if(texGrass != NULL) {
+		texGrass->unbind();
+	}
+	if(texSand != NULL) {
+		texSand->unbind();
+	}
+	// Added to make 2d images render correctly
 }
 
 void Heightmap :: setHeight(int i, int j, float height) {
