@@ -24,10 +24,15 @@ class TexturePack {
 	public:
 		TexturePack(string Folder = "Resources"); // constructor
 		Texture *newTexture(const string&, bool);
+		int *newDim(const string&);
 		void ChangeFolder(string Folder);
 		string GetFolder();
 	private:
+		int *loadDim(const string&);
+		
 		string FolderPath;
+		static vector<string> DimFilePaths;
+		static map<string, int*> Dim;
 		static map<string, Texture*> Textures;
 		static map<string, bool> IsFonts;
 		static vector<string> FilePaths;

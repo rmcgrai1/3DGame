@@ -14,7 +14,7 @@ inventory.o: inventory/inventory.cpp inventory/inventory.h inventory/invslot.h i
 	g++ -c inventory/inventory.cpp -o inventory.o
 
 invslot.o: inventory/invslot.cpp inventory/invslot.h inventory/item.h Graphics/GraphicsOGL.h Graphics/Texture.h Graphics/TexturePack.h
-	g++ -c inventory/invslot.cpp -o invslot.o
+	g++ -c inventory/invslot.cpp -o invslot.o -std=c++11
 
 item.o: inventory/item.cpp inventory/item.h Graphics/Texture.h Graphics/TexturePack.h
 	g++ -c inventory/item.cpp -o item.o
