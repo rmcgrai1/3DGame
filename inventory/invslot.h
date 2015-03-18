@@ -7,6 +7,7 @@
 #include "../Graphics/GraphicsOGL.h"
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
+#include "FrameTexture.h"
 
 #include "item.h"
 using namespace std;
@@ -15,8 +16,6 @@ class InvSlot {
 	public:
 		InvSlot(Item *newItem = NULL, int number = 0, TexturePack *TP = new TexturePack); // constructor: if number is 0, item is always "empty"
 		void drawat(GraphicsOGL* gl, int x, int y, int x2, int y2); // draws the slot (and contents) at this position
-		void tileTexture(GraphicsOGL* gl, int x, int y, int width, int height, int xNum, int yNum, double xScale, double yScale, int *finalX, int *finalY, Texture* Tex); // tiles a texture at a position, with specified scale a specified numbert of times
-		void UpdateDrawCoords(int width, int height); // updates the scales for drawing the inventory slot
 		void SetMax(int max); // sets the maximum count of items for this slot
 		int GetCount(); // returns the number of items in this slot
 		Item *GetItemType(); // returns the type of item that is in the slot
@@ -31,12 +30,9 @@ class InvSlot {
 		Item *ItemType;
 		int count;
 		int maxCount;
-		int prevwidth;
-		int prevheight;
-		double SpriteScales[2];
-		int SpriteNums[6];
-		static int *SpriteDim[9];
-		static Texture *Sprites[9];
+		
+		FrameTexture *MainSlots;
+		int PrevFramePos[4];
 		static TexturePack *Textures;
 };
 

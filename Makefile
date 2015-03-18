@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o
-	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o
+	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -18,6 +18,9 @@ invslot.o: inventory/invslot.cpp inventory/invslot.h inventory/item.h Graphics/G
 
 item.o: inventory/item.cpp inventory/item.h Graphics/Texture.h Graphics/TexturePack.h
 	g++ -c inventory/item.cpp -o item.o
+
+FrameTexture.o: inventory/FrameTexture.cpp inventory/FrameTexture.h Graphics/Texture.h Graphics/TexturePack.h Graphics/GraphicsOGL.h
+	g++ -c inventory/FrameTexture.cpp -o FrameTexture.o -std=c++11
 
 
 # FUNCTIONS
