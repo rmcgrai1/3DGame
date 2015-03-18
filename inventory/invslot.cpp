@@ -43,7 +43,13 @@ void InvSlot::drawat(GraphicsOGL* gl, int x, int y, int x2, int y2) {
 		if((i%3)==0) {
 			curX = x;
 		}
+		if(i==4 && ItemType) {
+			int itemwidth = SpriteDim[4][0]*xNum*SpriteScales[0];
+			int itemheight = SpriteDim[4][1]*yNum*SpriteScales[1];
+			ItemType->DisplayAt(gl,curX,curY[1],itemwidth,itemheight);
+		}
 		tileTexture(gl,curX,curY[i%3],SpriteDim[i][0],SpriteDim[i][1],xNum,yNum,SpriteScales[0],SpriteScales[1],&curX,&curY[i%3],Sprites[i]);
+		
 	}
 	//tileTexture(gl,curX,curY,SpriteDim[0][0],SpriteDim[0][1],1,1,SpriteScales[0],SpriteScales[1],&curX,dummy,Sprites[0]);
 	//tileTexture(gl,curX,curY,SpriteDim[1][0],SpriteDim[1][1],SpriteNums[0],1,SpriteScales[0],SpriteScales[1],&curX,dummy,Sprites[1]);

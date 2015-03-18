@@ -23,11 +23,9 @@ Inventory::Inventory() {
 	Cursor = Textures->newTexture("Images/Inventory/Cursor.png", false);
 	
 	//TEST CODE to add some items to slots
-	items.push_back(new Item);
-	items.back()->SetType("stone");
+	items.push_back(new Item("stone", "Images/Items/stone", Textures));
 	Slots[8]->AddItem(items.back(), 54);
-	items.push_back(new Item);
-	items.back()->SetType("dirt");
+	items.push_back(new Item("dirt", "Images/Items/dirt", Textures));
 	Slots[10]->AddItem(items.back(), 42);
 	
 }
