@@ -83,7 +83,7 @@ void Image :: interleave(unsigned char* out) {
 				for(int c = 0; c < 4; c++)
 					out[i+c] = image(x,y,c);
 
-				out[i+3] = image(x,y,0);
+				out[i+3] = image(x,y,3);
 
 				i += 4;
 			}

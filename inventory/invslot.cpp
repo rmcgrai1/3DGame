@@ -1,25 +1,37 @@
 #include<iostream>
 #include <iomanip>
+#include <string>
+#include <cmath>
 #include <vector>
 #include "../Graphics/GraphicsOGL.h"
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
+#include "FrameTexture.h"
 
 #include "item.h"
 #include "invslot.h"
 using namespace std;
-Texture* InvSlot::Sprite;
 TexturePack* InvSlot::Textures;
 InvSlot::InvSlot(Item *newItem, int number, TexturePack *TP) {
 	Textures = TP;
-	Sprite = Textures->newTexture("Images/Inventory/InvSlot.png", false); // save texture in Sprite
 	ItemType = number?newItem:NULL; // sets to NULL if number==0
 	count = number;
 	maxCount = 64; // defaults to max of 64.  Can be changed with later call of SetMax
+	int i;
+	for(i=0;i<4;i++) {
+		PrevFramePos[i] = 0;
+	}
+	MainSlots = new FrameTexture(Textures, "Images/Inventory/InvSlot");
 }
 
 void InvSlot::drawat(GraphicsOGL* gl, int x, int y, int x2, int y2) {
-	gl->drawTextureScaled(x, y, 1, 1, Sprite);
+	if(ItemType) {
+		if(!(PrevFramePos[0] || PrevFramePos[1] || PrevFramePos[2] || PrevFramePos[3])) { // if positions are at 0, calculate positions by drawing frame to NULL
+			MainSlots->drawat(NULL, x, y, x2, y2, PrevFramePos); // don't draw anything, but use to calculate positions
+		}
+		ItemType->DisplayAt(gl,PrevFramePos[0],PrevFramePos[1],PrevFramePos[2],PrevFramePos[3]);
+	}
+	MainSlots->drawat(gl, x, y, x2, y2, PrevFramePos);
 }
 
 void InvSlot::SetMax(int max) {

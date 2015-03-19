@@ -7,6 +7,7 @@
 #include "../Graphics/GraphicsOGL.h"
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
+#include "FrameTexture.h"
 
 #include "item.h"
 using namespace std;
@@ -29,7 +30,9 @@ class InvSlot {
 		Item *ItemType;
 		int count;
 		int maxCount;
-		static Texture *Sprite;
+		
+		FrameTexture *MainSlots;
+		int PrevFramePos[4];
 		static TexturePack *Textures;
 };
 

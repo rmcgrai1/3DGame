@@ -19,14 +19,13 @@ Inventory::Inventory() {
 	ShowInventory = 0;
 	mouseX = 0;
 	mouseY = 0;
+	updateDrawCoords(NULL);
 	Cursor = Textures->newTexture("Images/Inventory/Cursor.png", false);
 	
 	//TEST CODE to add some items to slots
-	items.push_back(new Item);
-	items.back()->SetType("stone");
+	items.push_back(new Item("stone", "Images/Items/stone", Textures));
 	Slots[8]->AddItem(items.back(), 54);
-	items.push_back(new Item);
-	items.back()->SetType("dirt");
+	items.push_back(new Item("dirt", "Images/Items/dirt", Textures));
 	Slots[10]->AddItem(items.back(), 42);
 	
 }
@@ -37,14 +36,6 @@ void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
 		//gl->disableShaders(); // disable any shaders (removed because of bug with cursor showing as white box)
 		
 		gl->drawTexture(mouseX, mouseY, Cursor);
-		int scrwidth = gl->getScreenWidth();
-		int scrheight = gl->getScreenHeight();
-		int leftx = scrwidth/10;
-		int topy = scrheight/5;
-		int invwidth = scrwidth*4/5;
-		int invheight = scrheight*3/5;
-		int slotwidth = invwidth/9;
-		int slotheight = invheight/3;
 		int row, col, i, x, y;
 		for(row=0;row<3;row++) {
 			for(col=0;col<9;col++) {
@@ -70,6 +61,7 @@ void Inventory::update(GraphicsOGL* gl, float deltaTime) {
 	int ThisKeyState = Input->checkLetter('i'); // get current state of the key
 	if(ThisKeyState && !PrevKeyState) { // if key just pressed down
 		ShowInventory = !ShowInventory; // toggle showing inventory
+		updateDrawCoords(gl); // update the coordinates for drawing the inventory (don't need updated more than once per opening of menu)
 	}
 	PrevKeyState = ThisKeyState; // record current key state in previous key state for next iteration
 	
@@ -103,6 +95,29 @@ void Inventory::update(GraphicsOGL* gl, float deltaTime) {
 
 int Inventory::getInventoryShowStatus() {
 	return ShowInventory;
+}
+
+void Inventory::updateDrawCoords(GraphicsOGL* gl) {
+	if(gl) {
+		if(gl->getScreenWidth()!=scrwidth) {
+			scrwidth = gl->getScreenWidth();
+			cout << "Inventory screen width changed to " << scrwidth << endl;
+		}
+		if(gl->getScreenHeight()!=scrheight) {
+			scrheight = gl->getScreenHeight();
+			cout << "Inventory screen height changed to " << scrheight << endl;
+		}
+	} else { // gl is NULL - must assume default screen dimensions (should happen in constructor)
+		scrwidth = 640;
+		scrheight = 480;
+		cout << "Inventory screen dimensions defaulted to " << scrwidth << "x" << scrheight << endl;
+	}
+	leftx = scrwidth/10;
+	topy = scrheight/5;
+	invwidth = scrwidth*4/5;
+	invheight = scrheight*3/5;
+	slotwidth = invwidth/9;
+	slotheight = invheight/3;
 }
 
 ostream& operator<<(ostream& output, const Inventory inv) {

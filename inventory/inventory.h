@@ -19,6 +19,7 @@ class Inventory : public Drawable2 {
 		void draw(GraphicsOGL*, float);
 		void update(GraphicsOGL*, float);
 		int getInventoryShowStatus(); // returns whether the inventory is being shown (may be needed for pausing execution of game, etc.)
+		void updateDrawCoords(GraphicsOGL*);
 	private:
 		InvSlot *Slots[27];
 		vector<Item*> items;
@@ -29,6 +30,11 @@ class Inventory : public Drawable2 {
 		int ShowInventory;
 		int mouseX;
 		int mouseY;
+		
+		int scrwidth,scrheight;
+		int leftx,topy;
+		int invwidth,invheight;
+		int slotwidth,slotheight;
 };
 
 #endif
