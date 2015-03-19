@@ -1,7 +1,7 @@
 #ifndef SOUND_H
 #define SOUND_H
 #include <iostream>
-#include <OpenAL/al.h>
+#import <OpenAL/al.h>
 #include <string>
 #include <list>
 
