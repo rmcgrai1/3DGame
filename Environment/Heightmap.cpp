@@ -261,7 +261,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	GLfloat lightpos[] = {0,.6,-.8, 0};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
-	gl->enableShader("Terrain");
+	//gl->enableShader("Terrain");
 
 	if(texGrass != NULL) {
 		glEnable(GL_TEXTURE_2D);

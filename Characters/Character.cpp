@@ -88,6 +88,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 
 	// Draw Sky
+	/*
 	gl->enableShader("Sky");
 		gl->transformTranslation(x,y,z);
 
@@ -100,7 +101,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->draw3DWall(sc,-sc,sc,sc,sc,-sc);
 		gl->transformClear();
 	gl->disableShaders();
-
+	*/
 
 	gl->transformTranslation(x,y,z+hopZ);
 

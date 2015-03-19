@@ -27,13 +27,18 @@
 #include "../Functions/linmath.h"
 #include "../Environment/Heightmap.h"
 #include "../Characters/Player.h"
+#include "../Characters/NPC.h"
 #include "../Environment/Tree.h"
 #include "../Environment/Terrain.h"
+#include "../inventory/inventory.h"
+
 using namespace std;
 using namespace std::chrono;
 
 
 Player* p;
+NPC* npc;
+Inventory* inv;
 
 GraphicsOGL* ogl;
 void idleCallback() {
@@ -96,9 +101,11 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		fontController = new FontController();
 		textureController = new TextureController();
 		shaderController = new ShaderController();
+		inv = new Inventory();
 
 		terrain = new Terrain(textureController,2048,2048, "Resources/Images/test.png",150);
 		p = new Player(1028,1028,0);
+		npc = new NPC(1028,1028,0);
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
 	glutIdleFunc(idleCallback);
@@ -636,7 +643,7 @@ void GraphicsOGL :: display() {
 
 
 		// Get Camera Position and Direction
-		float camPos, sCamPos[3], camDir[3];
+		float camPos[3], sCamPos[3], camDir[3];
 		glCamera->getPosition(camPos);
 		glCamera->getShaderPosition(sCamPos);
 		glCamera->getDirection(camDir);

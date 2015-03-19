@@ -21,6 +21,8 @@
 using namespace std;
 
 
+//float nCDir = 0;
+//float jumpSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*24));
 
 NPC :: NPC(float x, float y, float z) : Character(x,y,z) {
 }
@@ -29,7 +31,7 @@ void NPC :: update(GraphicsOGL* gl, float deltaTime) {
 	//Inputcontroller will be simulated
 	Character :: update(gl, deltaTime);
 
-	updateMovement(gl,deltaTime);
+	updateControl(gl,deltaTime);
 }
 
 void NPC :: draw(GraphicsOGL* gl, float deltaTime) {
@@ -37,12 +39,12 @@ void NPC :: draw(GraphicsOGL* gl, float deltaTime) {
 	Character :: draw(gl, deltaTime);
 }
 
-void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
+void NPC :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	srand(time(NULL));
 	InputController* i = gl->getInputController();
-	float dir = 0, cDir = gl->getCamDir(), aDir;
-	aDir = dir-90;
-	int randMove = rand()%10;
+	float dir = rand%10-5, cDir = gl->getCamDir(), aDir;
+	direction += dir;
+	/*int randMove = rand()%360;
 	switch(randMove){
 		case 1: 
 			dir = 90;
@@ -74,7 +76,7 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 			break;
 	}
 
-	/*/ If Jump Button Pressed...
+	/* If Jump Button Pressed...
 	if(i->checkLetter('u')) {
 		if(onGround) {
 			zVel = jumpSpeed;
@@ -86,24 +88,26 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	}*/
 
 	// If a Button is Held...
+	vel = 1;
+	hop();
+/*
 	if(dir != -1) {
-		vel = 1 + i->getShift()*2;
 
 		if(dir == 90 || dir == -90) {
-			nCDir = cDir;
+			//nCDir = cDir;
 			direction = cDir - 90 + dir;	
 		}
 		else if(dir == 0 || dir == 180) {
 			direction = cDir - 90 + dir;	
-			nCDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
+			//nCDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
 		}
 		else if(dir == 45 || dir == 135) {
 			direction = cDir - 90 + dir;	
-			nCDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
+			//nCDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
 		}
 		else {
 			direction = cDir - 90 + dir;	
-			nCDir = cDir - .2*calcTurnToDir(cDir,180+cDir-90+dir);
+			//nCDir = cDir - .2*calcTurnToDir(cDir,180+cDir-90+dir);
 		}
 
 		
@@ -111,6 +115,7 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	}
 	else
 		vel = 0;
+*/
 }
 
 
