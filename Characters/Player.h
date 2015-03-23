@@ -21,6 +21,7 @@ class Player : public Character {
 		void land();
 
 		float camDis;
+		int flight=0;
 };
 
 #endif

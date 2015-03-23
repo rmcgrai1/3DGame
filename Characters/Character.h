@@ -19,6 +19,8 @@ class Character : public Physical {
 
 	protected:
 		void hop();
+		float hopZ;
+		float hopZVel;
 
 	private:
 		void updateHop(float);
@@ -26,8 +28,6 @@ class Character : public Physical {
 		virtual void land();
 		
 		bool isMoving;
-		float hopZ;
-		float hopZVel;
 		float hopSc;
 
 		static Texture* shTex;
