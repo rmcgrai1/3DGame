@@ -20,7 +20,10 @@ class Inventory : public Drawable2 {
 		void update(GraphicsOGL*, float);
 		int getInventoryShowStatus(); // returns whether the inventory is being shown (may be needed for pausing execution of game, etc.)
 		void updateDrawCoords(GraphicsOGL*);
+		int posInRange(int x, int y, int x1, int y1, int x2, int y2);
+		InvSlot *itemAt(int x, int y);
 	private:
+		InvSlot *CursorSlot;
 		InvSlot *Slots[27];
 		vector<Item*> items;
 		TexturePack *Textures;
@@ -35,6 +38,7 @@ class Inventory : public Drawable2 {
 		int leftx,topy;
 		int invwidth,invheight;
 		int slotwidth,slotheight;
+		static double ItemRot;
 };
 
 #endif

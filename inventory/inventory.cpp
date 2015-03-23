@@ -10,17 +10,22 @@
 #include "invslot.h"
 #include "inventory.h"
 using namespace std;
+
+double Inventory::ItemRot;
+
 Inventory::Inventory() {
 	Textures = new TexturePack("Resources");
 	int i;
 	for(i=0;i<27;i++) {
 		Slots[i] = new InvSlot(NULL, 0, Textures);
 	}
+	CursorSlot = new InvSlot(NULL, 0, Textures);
 	ShowInventory = 0;
 	mouseX = 0;
 	mouseY = 0;
 	updateDrawCoords(NULL);
 	Cursor = Textures->newTexture("Images/Inventory/Cursor.png", false);
+	ItemRot = 45;
 	
 	//TEST CODE to add some items to slots
 	items.push_back(new Item("stone", "Images/Items/stone", Textures));
@@ -43,7 +48,7 @@ void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
 				x = leftx + slotwidth*col;
 				y = topy + slotheight*row;
 				
-				Slots[i]->drawat(gl, x, y, x+slotwidth, y+slotheight);
+				Slots[i]->drawat(gl, x, y, x+slotwidth, y+slotheight, ItemRot);
 			}
 		}
 		
@@ -56,10 +61,22 @@ void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
 void Inventory::update(GraphicsOGL* gl, float deltaTime) {
 	InputController *Input = gl->getInputController();
 	
+	mouseX = Input->getMouseX();
+	mouseY = Input->getMouseY();
+	
+	InvSlot *HoveredItem = itemAt(mouseX, mouseY);
+	
+	// Update rotation of items
+	ItemRot+=0.2;
+	if(ItemRot>=360) {
+		ItemRot-=360;
+	}
+	
 	// React to 'I'
 	static int PrevKeyState = 0;
 	int ThisKeyState = Input->checkLetter('i'); // get current state of the key
 	if(ThisKeyState && !PrevKeyState) { // if key just pressed down
+		ItemRot = 45; // initialize rotation of items to 45 degrees
 		ShowInventory = !ShowInventory; // toggle showing inventory
 		updateDrawCoords(gl); // update the coordinates for drawing the inventory (don't need updated more than once per opening of menu)
 	}
@@ -70,6 +87,10 @@ void Inventory::update(GraphicsOGL* gl, float deltaTime) {
 	int ThisLeftMouseState = Input->checkLeftMouse(); // get current state of button
 	if(ThisLeftMouseState && !PrevLeftMouseState) {
 		// Left mouse button pressed
+		if(HoveredItem) {
+			cout << "Swapped [" << *CursorSlot << "] in cursor with [" << *HoveredItem << "]\n";
+			CursorSlot->SwapWith(HoveredItem);
+		}
 	} else if(!ThisLeftMouseState && PrevLeftMouseState) {
 		// Left mouse button released
 	} else if(ThisLeftMouseState) {
@@ -82,15 +103,21 @@ void Inventory::update(GraphicsOGL* gl, float deltaTime) {
 	int ThisRightMouseState = Input->checkRightMouse(); // get current state of button
 	if(ThisRightMouseState && !PrevRightMouseState) {
 		// Right mouse button pressed
+		if(HoveredItem) {
+			if(CursorSlot->GetCount()) { // there is something picked up
+				cout << "Moved one from [" << *CursorSlot << "] in cursor to slot with [" << *HoveredItem << "]\n";
+				CursorSlot->MoveTo(1, HoveredItem);
+			} else { // there is nothing picked up
+				cout << "Moved half from [" << *HoveredItem << "] to cursor with [" << *CursorSlot << "]\n";
+				CursorSlot->MoveFrom((HoveredItem->GetCount())/2, HoveredItem);
+			}
+		}
 	} else if(!ThisRightMouseState && PrevRightMouseState) {
 		// Right mouse button released
 	} else if(ThisRightMouseState) {
 		// Right mouse button is currently held down
 	}
 	PrevRightMouseState = ThisRightMouseState; // record current button state in previous button state for next iteration
-	
-	mouseX = Input->getMouseX();
-	mouseY = Input->getMouseY();
 }
 
 int Inventory::getInventoryShowStatus() {
@@ -118,6 +145,30 @@ void Inventory::updateDrawCoords(GraphicsOGL* gl) {
 	invheight = scrheight*3/5;
 	slotwidth = invwidth/9;
 	slotheight = invheight/3;
+}
+
+int Inventory::posInRange(int x, int y, int x1, int y1, int x2, int y2) {
+	if((x1<=x && x<=x2) || (x2<=x && x<=x1)) {
+		if((y1<=y && y<=y2) || (y2<=y && y<=y1)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
+}
+
+InvSlot *Inventory::itemAt(int x, int y) {
+	int i;
+	for(i=0;i<27;i++) {
+		InvSlot *ThisSlot = Slots[i];
+		int *Frame = ThisSlot->GetFrameIntPos();
+		if(posInRange(x,y,Frame[0],Frame[1],Frame[0]+Frame[2],Frame[1]+Frame[3])) {
+			return ThisSlot;
+		}
+	}
+	return NULL;
 }
 
 ostream& operator<<(ostream& output, const Inventory inv) {
