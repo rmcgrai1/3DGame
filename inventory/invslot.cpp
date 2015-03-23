@@ -19,19 +19,23 @@ InvSlot::InvSlot(Item *newItem, int number, TexturePack *TP) {
 	maxCount = 64; // defaults to max of 64.  Can be changed with later call of SetMax
 	int i;
 	for(i=0;i<4;i++) {
-		PrevFramePos[i] = 0;
+		FrameIntPos[i] = 0;
 	}
 	MainSlots = new FrameTexture(Textures, "Images/Inventory/InvSlot");
 }
 
-void InvSlot::drawat(GraphicsOGL* gl, int x, int y, int x2, int y2) {
+void InvSlot::drawat(GraphicsOGL* gl, int x, int y, int x2, int y2, double rot) {
 	if(ItemType) {
-		if(!(PrevFramePos[0] || PrevFramePos[1] || PrevFramePos[2] || PrevFramePos[3])) { // if positions are at 0, calculate positions by drawing frame to NULL
-			MainSlots->drawat(NULL, x, y, x2, y2, PrevFramePos); // don't draw anything, but use to calculate positions
+		if(!(FrameIntPos[0] || FrameIntPos[1] || FrameIntPos[2] || FrameIntPos[3])) { // if positions are at 0, calculate positions by drawing frame to NULL
+			MainSlots->drawat(NULL, x, y, x2, y2, FrameIntPos); // don't draw anything, but use to calculate positions
 		}
-		ItemType->DisplayAt(gl,PrevFramePos[0],PrevFramePos[1],PrevFramePos[2],PrevFramePos[3]);
+		string countStr = to_string(count);
+		double xScale = (double)FrameIntPos[2]/60;
+		double yScale = (double)FrameIntPos[4]/200;
+		gl->drawStringScaled(FrameIntPos[0]+FrameIntPos[2]-16*countStr.length()*xScale,FrameIntPos[1]+FrameIntPos[3]-16*yScale,xScale,yScale,countStr);
+		ItemType->DisplayAt(gl,FrameIntPos[0],FrameIntPos[1],FrameIntPos[2],FrameIntPos[3],rot);
 	}
-	MainSlots->drawat(gl, x, y, x2, y2, PrevFramePos);
+	MainSlots->drawat(gl, x, y, x2, y2, FrameIntPos);
 }
 
 void InvSlot::SetMax(int max) {
@@ -114,6 +118,27 @@ int InvSlot::MoveTo(int number, InvSlot *Destination) {
 
 int InvSlot::MoveFrom(int number, InvSlot *Source) {
 	return Source->MoveTo(number, this); // use MoveTo function, created above with source and destination reversed
+}
+
+void InvSlot::SwapWith(InvSlot *Other) {
+	InvSlot *temp = new InvSlot(NULL, 0, Textures);
+	int Overflow = MoveTo(GetCount(), temp);
+	if(Overflow) {
+		cout << "WARNING: overflow of " << Overflow << " items when copying from [" << *this << "] to temporary [" << *temp << "]\n";
+	}
+	Overflow = MoveFrom(Other->GetCount(), Other);
+	if(Overflow) {
+		cout << "WARNING: overflow of " << Overflow << " items when copying to [" << *this << "] from [" << *Other << "]\n";
+	}
+	Overflow = temp->MoveTo(temp->GetCount(), Other);
+	if(Overflow) {
+		cout << "WARNING: overflow of " << Overflow << " items when copying from temporary [" << *temp << "] to [" << *Other << "]\n";
+	}
+	delete temp;
+}
+
+int *InvSlot::GetFrameIntPos() {
+	return FrameIntPos;
 }
 
 ostream& operator<<(ostream& output, const InvSlot Slot) {

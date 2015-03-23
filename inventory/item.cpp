@@ -10,31 +10,38 @@ Item::Item(string newName, TexturePack *TP) {
 	Name = newName;
 	Description = "";
 	TextureLocation = "Images/Items/Blank.png";
-	DimLocation = "Images/Items/Blank.dim";
+	//DimLocation = "Images/Items/Blank.dim";
 	Tex = TP->newTexture(TextureLocation, false);
-	Dim = TP->newDim(DimLocation);
+	//Dim = TP->newDim(DimLocation);
 }
 
 Item::Item(string newName, string TextureLoc, TexturePack *TP) {
 	Name = newName;
 	Description = "";
 	TextureLocation = TextureLoc + ".png";
-	DimLocation = TextureLoc + ".dim";
+	//DimLocation = TextureLoc + ".dim";
 	Tex = TP->newTexture(TextureLocation, false);
-	Dim = TP->newDim(DimLocation);
+	//Dim = TP->newDim(DimLocation);
 }
 
 Item::Item(string newName, string TextureLoc, string Descrip, TexturePack *TP) {
 	Name = newName;
 	Description = Descrip;
 	TextureLocation = TextureLoc + ".png";
-	DimLocation = TextureLoc + ".dim";
+	//DimLocation = TextureLoc + ".dim";
 	Tex = TP->newTexture(TextureLocation, false);
-	Dim = TP->newDim(DimLocation);
+	//Dim = TP->newDim(DimLocation);
 }
 
-void Item::DisplayAt(GraphicsOGL* gl, int x, int y, int width, int height) {
-	gl->drawTextureScaled(x, y, width/((double)Dim[0]), height/((double)Dim[1]), Tex);
+void Item::DisplayAt(GraphicsOGL* gl, int x, int y, int width, int height, double rot) {
+	gl->transformClear();
+	gl->transformTranslation(x+width/2,y+height/2,100);
+	gl->transformRotationX(-135);
+	gl->transformRotationZ(rot);
+	gl->transformScale(0.5);
+	gl->transformTranslation(0,0,-height/2);
+	gl->draw3DPrism(0, 0, 0, width, height, 4, Tex);
+	gl->transformClear();
 }
 
 void Item::SetName(string newName) {
