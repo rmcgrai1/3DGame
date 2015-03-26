@@ -10,11 +10,19 @@ using namespace std;
 class Item {
 	friend ostream& operator<<(ostream&, const Item);
 	public:
-		Item(string newType = "empty"); // constructor: if number is 0, item is always "empty"
-		void SetType(string newType);
-		string GetType();
+		Item(string newName = "empty", TexturePack *TP = new TexturePack); // constructor
+		Item(string newName, string TextureLoc, TexturePack *TP); // constructor - TextureLoc is filename without extension for the file
+		Item(string newName, string TextureLoc, string Descrip, TexturePack *TP); // constructor
+		void DisplayAt(GraphicsOGL* gl, int x, int y, int width, int height, double rot);
+		void SetName(string newType);
+		string GetName();
 	private:
-		string Type;
+		string Name;
+		string Description;
+		Texture *Tex;
+		//int *Dim;
+		string TextureLocation;
+		//string DimLocation;
 };
 
 #endif

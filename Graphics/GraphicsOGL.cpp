@@ -27,14 +27,17 @@
 #include "../Functions/linmath.h"
 #include "../Environment/Heightmap.h"
 #include "../Characters/Player.h"
+#include "../Characters/NPC.h"
 #include "../Environment/Tree.h"
 #include "../Environment/Terrain.h"
 #include "../inventory/inventory.h"
+
 using namespace std;
 using namespace std::chrono;
 
 
 Player* p;
+NPC* npc;
 Inventory* inv;
 
 GraphicsOGL* ogl;
@@ -102,6 +105,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 		terrain = new Terrain(textureController,2048,2048, "Resources/Images/test.png",150);
 		p = new Player(1028,1028,0);
+		npc = new NPC(1018,1018,0);
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
 	glutIdleFunc(idleCallback);

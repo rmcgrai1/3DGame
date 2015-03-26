@@ -20,10 +20,13 @@ class Character : public Physical {
 	protected:
 		virtual void land();
 		void hop();
+<<<<<<< HEAD
 		float faceDir;
 		bool isMoving;
 
 		static float GRAVITY_HOP_ACCELERATION;
+=======
+>>>>>>> 6e6d2a149e943776a9a8f1acf981155ac29b65ba
 
 	private:
 		void updateHop(float);

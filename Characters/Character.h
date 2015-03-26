@@ -22,15 +22,24 @@ class Character : public Physical {
 	protected:
 		virtual void land();
 		void hop();
+<<<<<<< HEAD
 		float faceDir;
 		bool isMoving;
+=======
+		float hopZ;
+		float hopZVel;
+>>>>>>> 6e6d2a149e943776a9a8f1acf981155ac29b65ba
 
 	private:
 		void updateHop(float);
 		
+<<<<<<< HEAD
 		float hopX;
 		float hopZ;
 		float hopZVel;
+=======
+		bool isMoving;
+>>>>>>> 6e6d2a149e943776a9a8f1acf981155ac29b65ba
 		float hopSc;
 		float hopDir;
 		

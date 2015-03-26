@@ -17,6 +17,7 @@ class NPC : public Character {
 
 
 	private:
+		void updateMovement(GraphicsOGL*, float);
 		void land();
 };
 

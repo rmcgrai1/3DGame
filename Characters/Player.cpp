@@ -62,8 +62,25 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 }
 
 void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
+	int PrevzState = 0;
 	InputController* i = gl->getInputController();
+<<<<<<< HEAD
 	float dir = i->getWASDDir(), cDir = gl->getCamDir(), aDir, d;
+=======
+	float dir = i->getWASDDir(), cDir = gl->getCamDir(), aDir;
+
+	//flight
+	int zState = i->checkLetter('z'); // get current state of the key
+	if(zState && !PrevzState) { // if key just pressed down
+		hopZVel += 0;
+		zVel = 0;
+		hopZ = 0;
+		z += 10;
+		floorZ = z;
+		flight = !flight; // toggle
+	}
+	PrevzState = zState; // record current key state in previous key state for next iteration
+>>>>>>> 6e6d2a149e943776a9a8f1acf981155ac29b65ba
 	aDir = dir-90;
 
 	// If Jump Button Pressed...

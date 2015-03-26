@@ -3,24 +3,25 @@
 #ifndef TEXTINTERPRETER_H
 #define TEXTINTERPRETER_H
 
-
+#include "TextController.h"
 #include <string>
-
 using namespace std;
 
-
 class TextInterpreter {
-
-	public:
+	public:					// PUBLIC
 		TextInterpreter();			// Constructor
-		
-		bool interpret(string);			// Interprets a line of text as commands.
+		Format generateFormat(string);		// Generate Format
 
-	private:
-		void setSize(float);
-		void setColor(float[4]);
-		void setBold(bool);
-		void setItalics(bool);
+	private:				// PRIVATE
+		char eatOne(string&);			// Remove One Char
+		int checkStr(string&, string);		// Remove Substring
+		int checkStrCase(string&, string);	// Remove SS (Any Case)
+		int checkStrSpace(string&, string);	// Remove SS (& Spaces)
+		int checkWhiteSpace(string&);		// Remove White Space
+		char readChar(string&);			// Read One Char
+		int readHex(string&);			// Read Hex Digit
+		int readHex2(string&);			// Read 2 Hex Digits
+		float readDec(string&);			// Read Decimal
 };
 
 #endif
