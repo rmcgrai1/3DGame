@@ -1,11 +1,23 @@
 all: main
 
-main: main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o
-	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o
+	g++ main.o Math2D.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
 
+
+
+# INVENTORY
+###############################################################
+inventory.o: inventory/inventory.cpp inventory/inventory.h inventory/invslot.h inventory/item.h Primitives/Drawable.h Graphics/GraphicsOGL.h Graphics/Texture.h Graphics/TexturePack.h
+	g++ -c inventory/inventory.cpp -o inventory.o
+
+invslot.o: inventory/invslot.cpp inventory/invslot.h inventory/item.h Graphics/GraphicsOGL.h Graphics/Texture.h Graphics/TexturePack.h
+	g++ -c inventory/invslot.cpp -o invslot.o
+
+item.o: inventory/item.cpp inventory/item.h Graphics/Texture.h Graphics/TexturePack.h
+	g++ -c inventory/item.cpp -o item.o
 
 
 # FUNCTIONS
@@ -13,6 +25,15 @@ main.o: main.cpp
 Math2D.o: Functions/Math2D.cpp Functions/Math2D.h
 	g++ -c Functions/Math2D.cpp
 
+
+
+# PARTICLES
+###############################################################
+Particle.o: Particles/Particle.cpp Particles/Particle.h
+	g++ -c Particles/Particle.cpp
+
+SmokeRing.o: Particles/SmokeRing.cpp Particles/SmokeRing.h
+	g++ -c Particles/SmokeRing.cpp
 
 
 # GRAPHICS
@@ -30,6 +51,8 @@ Texture.o: Graphics/Texture.cpp Graphics/Texture.h
 	g++ -c Graphics/Texture.cpp
 TextureExt.o: Graphics/TextureExt.cpp Graphics/TextureExt.h
 	g++ -c Graphics/TextureExt.cpp
+TexturePack.o: Graphics/TexturePack.cpp Graphics/TexturePack.h Graphics/Texture.h
+	g++ -c Graphics/TexturePack.cpp
 TextureController.o: Graphics/TextureController.cpp Graphics/TextureController.h
 	g++ -c Graphics/TextureController.cpp
 
@@ -71,10 +94,10 @@ NPC.o: Characters/NPC.cpp Characters/NPC.h
 ###############################################################
 Terrain.o: Environment/Terrain.cpp Environment/Terrain.h
 	g++ -c Environment/Terrain.cpp
-Water.o: Environment/Water.cpp Environment/Water.h
-	g++ -c Environment/Water.cpp
 Heightmap.o: Environment/Heightmap.cpp Environment/Heightmap.h
 	g++ -c Environment/Heightmap.cpp
+Water.o: Environment/Water.cpp Environment/Water.h
+	g++ -c Environment/Water.cpp
 Tree.o: Environment/Tree.cpp Environment/Tree.h
 	g++ -c Environment/Tree.cpp
 Branch.o: Environment/Branch.cpp Environment/Branch.h

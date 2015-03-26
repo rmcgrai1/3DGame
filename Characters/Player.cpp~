@@ -31,7 +31,7 @@ Player :: Player(float x, float y, float z) : Character(x,y,z) {
 
 void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
-	Character :: update(gl, deltaTime);
+	//Character :: update(gl, deltaTime);
 
 	// Update User Control of Player
 	updateControl(gl,deltaTime);
@@ -63,7 +63,7 @@ void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 
 void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	InputController* i = gl->getInputController();
-	float dir = i->getWASDDir(), cDir = gl->getCamDir(), aDir;
+	float dir = i->getWASDDir(), cDir = gl->getCamDir(), aDir, d;
 	aDir = dir-90;
 
 	// If Jump Button Pressed...
@@ -83,27 +83,31 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 
 		if(dir == 90 || dir == -90) {
 			nCDir = cDir;
-			direction = cDir - 90 + dir;	
+			d = cDir - 90 + dir;	
 		}
 		else if(dir == 0 || dir == 180) {
-			direction = cDir - 90 + dir;	
+			d = cDir - 90 + dir;	
 			nCDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
 		}
 		else if(dir == 45 || dir == 135) {
-			direction = cDir - 90 + dir;	
+			d = cDir - 90 + dir;	
 			nCDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
 		}
 		else {
-			direction = cDir - 90 + dir;	
+			d = cDir - 90 + dir;	
 			nCDir = cDir - .2*calcTurnToDir(cDir,180+cDir-90+dir);
 		}
 
 		
 		hop();
+
+		direction = d;
+		faceDirection(d);
 	}
 	else
 		vel = 0;
 }
 
 void Player :: land() {
+	Character :: land();
 }

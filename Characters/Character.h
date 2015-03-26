@@ -15,21 +15,25 @@ class Character : public Physical {
 		Character(float, float, float);
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
+		void faceDirection(float);
 
+		static float GRAVITY_HOP_ACCELERATION;
 
 	protected:
+		virtual void land();
 		void hop();
+		float faceDir;
+		bool isMoving;
 
 	private:
 		void updateHop(float);
-
-		virtual void land();
 		
-		bool isMoving;
+		float hopX;
 		float hopZ;
 		float hopZVel;
 		float hopSc;
-
+		float hopDir;
+		
 		static Texture* shTex;
 };
 

@@ -15,10 +15,11 @@ class Player : public Character {
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);
 
+	protected:
+		void land();
 
 	private:
 		void updateControl(GraphicsOGL*, float);
-		void land();
 
 		float camDis;
 };

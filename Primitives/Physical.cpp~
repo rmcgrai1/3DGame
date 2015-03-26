@@ -84,15 +84,16 @@ bool Physical :: collideHeightmap(Heightmap* hm) {
 		// Landing
 		if(z < h+4 && zVel < 0) {
 
-			// Run Landing Function (Might Bounce, Play Sound?)
-			land();
+// Move Object to Floor Height
+			floorZ = z = h;
 
-			// If Z Vel Not Bouncing, Make Sure it's Set to 0!
+			// Run Landing Function (Might Bounce, Play Sound?)
+			if(zVel != GRAVITY_ACCELERATION)
+				land();
+
+			// If Z Vel Not Bouncing after Land(), Make Sure it's Set to 0!
 			if(zVel < 0)
 				zVel = 0;
-
-			// Move Object to Floor Height
-			z = h;
 
 			onGround = true;
 		}

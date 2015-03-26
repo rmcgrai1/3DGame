@@ -41,14 +41,14 @@ class Physical : public Instantiable {
 								// COLLISION FUNCTIONS
 		bool collideHeightmap(Heightmap*);			// Collide with Heightmap
 
+								// VIRTUAL FUNCTIONS
+		virtual void land() = 0;				// What Happens when Landing
+
 
 	protected:
 								// CONSTRUCTOR(S)
 		Physical(float, float, float);				// Position Constructor
 		
-								// VIRTUAL FUNCTIONS
-		virtual void land() = 0;				// What Happens when Landing
-
 
 
 

@@ -17,6 +17,8 @@ class Drawable2 : public Updateable {
 		virtual void draw(GraphicsOGL*, float);
 
 		void setVisible(int);
+		void destroy();
+		static void removeDestroyed();
 
 	protected:
 		Drawable2();
@@ -30,6 +32,7 @@ class Drawable2 : public Updateable {
 		static int TYPE_HUD;
 
 	private:
+		static deque<Drawable2*> removeDList;
 		static deque<Drawable2*> drawableList;
 		static deque<Drawable2*> hudList;
 };

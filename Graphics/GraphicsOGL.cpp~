@@ -34,7 +34,8 @@ using namespace std;
 using namespace std::chrono;
 
 
-Player* p;
+Player* pl;
+Updateable* p;
 Inventory* inv;
 
 GraphicsOGL* ogl;
@@ -98,7 +99,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		fontController = new FontController();
 		textureController = new TextureController();
 		shaderController = new ShaderController();
-		inv = new Inventory();
+		//inv = new Inventory();
 
 		terrain = new Terrain(textureController,2048,2048, "Resources/Images/test.png",150);
 		p = new Player(1028,1028,0);
@@ -140,6 +141,9 @@ void GraphicsOGL :: idle() {
 
 		// Update All Updateable Objects
 		Updateable :: updateAll(this, 1);
+
+		Drawable2 :: removeDestroyed();
+		Instantiable :: removeDestroyed();
 
 		// Draw Current Frame
 		glutPostRedisplay();
@@ -555,6 +559,13 @@ void GraphicsOGL :: display() {
 		}
 
 
+		void GraphicsOGL :: draw3DCircle(float x, float y, float z, float rad, int sideNum) {
+			draw3DPrism(x,y,z,rad,0,sideNum,NULL);
+		}
+		void GraphicsOGL :: draw3DCircle(float x, float y, float z, float rad, int sideNum, Texture* tex) {
+			draw3DPrism(x,y,z,rad,0,sideNum,tex);
+		}
+
 		void GraphicsOGL :: draw3DPrism(float x, float y, float z, float rad, float h, int sideNum) {
 			draw3DPrism(x,y,z,rad,h,sideNum,NULL);
 		}
@@ -582,29 +593,47 @@ void GraphicsOGL :: display() {
 				}
 			glEnd();
 
-			// Draw Side Faces of Player Model
-			for(int i = 0; i < sideNum; i++) {
-				glBegin(GL_QUADS);
+			if(height != 0) {
+				// Draw Top of Player Model
+				glBegin(GL_TRIANGLE_FAN);
+					glTexCoord2f(.5, .5);
+						glVertex3f(x,y,z);
 
-					dir = ang + 1.*i/sideNum*360;
+					for(int i = 0; i <= sideNum; i++) {
+						dir = ang + 1.*i/sideNum*360;
+
 						xN = calcLenX(1,dir);
 						yN = calcLenY(1,dir);
 
-					glTexCoord2f(0,0);
-						glVertex3f(xN*rad, yN*rad, height);
-					glTexCoord2f(0,1);
-						glVertex3f(xN*rad, yN*rad, 0);
-
-
-					dir = ang + (i+1.)/sideNum*360;
-						xN = calcLenX(1,dir);
-						yN = calcLenY(1,dir);
-
-					glTexCoord2f(1,1);
-						glVertex3f(x+xN*rad, y+yN*rad, z);
-					glTexCoord2f(1,0);
-						glVertex3f(x+xN*rad, y+yN*rad, z+height);
+						glTexCoord2f(.5 + .5*xN,.5 + .5*yN);
+							glVertex3f(x+xN*rad, y+yN*rad, z);
+					}
 				glEnd();
+
+				// Draw Side Faces of Player Model
+				for(int i = 0; i < sideNum; i++) {
+					glBegin(GL_QUADS);
+
+						dir = ang + 1.*i/sideNum*360;
+							xN = calcLenX(1,dir);
+							yN = calcLenY(1,dir);
+
+						glTexCoord2f(0,0);
+							glVertex3f(xN*rad, yN*rad, height);
+						glTexCoord2f(0,1);
+							glVertex3f(xN*rad, yN*rad, 0);
+
+
+						dir = ang + (i+1.)/sideNum*360;
+							xN = calcLenX(1,dir);
+							yN = calcLenY(1,dir);
+
+						glTexCoord2f(1,1);
+							glVertex3f(x+xN*rad, y+yN*rad, z);
+						glTexCoord2f(1,0);
+							glVertex3f(x+xN*rad, y+yN*rad, z+height);
+					glEnd();
+				}
 			}
 
 			if(tex != NULL) {

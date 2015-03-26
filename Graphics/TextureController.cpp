@@ -18,8 +18,6 @@ TextureController :: TextureController() {
 }
 	
 Texture* TextureController :: getTexture(string name) {
-	cout << "What" << endl;
-	cout << numTextures << endl;
 	return textureMap[name];
 }
 

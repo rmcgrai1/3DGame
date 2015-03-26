@@ -18,10 +18,14 @@ class Instantiable : public Drawable2 {
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 
+		void destroy();
+		static void removeDestroyed();
+
 	protected:
 		Instantiable();
 			
-		static deque<Instantiable> instanceList;
+		static deque<Instantiable*> instanceList;
+		static deque<Instantiable*> removeIList;
 };
 
 #endif

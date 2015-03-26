@@ -60,7 +60,7 @@ class GraphicsOGL {
 				void drawTexture(float, float, Texture*);
 				void drawTextureScaled(float, float, float, float, Texture*);
 
-			// 
+			// TEXT
 				float drawChar(float, float, char);
 				float drawCharScaled(float, float, float, float, char);
 				void drawString(float, float, string);
@@ -93,6 +93,9 @@ class GraphicsOGL {
 				void draw3DBlock(float,float,float,float,float,float);
 				void draw3DBlock(float,float,float,float,float,float, Texture*);
 				void draw3DBlock(float,float,float,float,float,float, Texture*, Texture*);
+
+				void draw3DCircle(float,float,float,float,int);
+				void draw3DCircle(float,float,float,float,int, Texture*);
 
 				void draw3DPrism(float,float,float,float,float,int);
 				void draw3DPrism(float,float,float,float,float,int, Texture*);

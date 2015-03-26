@@ -16,12 +16,16 @@ class GraphicsOGL;
 class Instantiable : public Drawable2 {
 	public:
 		virtual void update(GraphicsOGL*, float);
-		virtual void draw(GraphicsOGL* gl, float);
+		virtual void draw(GraphicsOGL*, float);
+
+		void destroy();
+		static void removeDestroyed();
 
 	protected:
 		Instantiable();
 			
 		static deque<Instantiable> instanceList;
+		static deque<Instantiable*> removeIList;
 };
 
 #endif

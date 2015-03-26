@@ -10,6 +10,7 @@
 using namespace std;
 
 
+deque<Drawable2*> Drawable2 :: removeDList;
 deque<Drawable2*> Drawable2 :: drawableList;
 deque<Drawable2*> Drawable2 :: hudList;
 
@@ -47,6 +48,28 @@ void Drawable2 :: update(GraphicsOGL* gl, float deltaTime) {
 void Drawable2 :: draw(GraphicsOGL* gl, float deltaTime) {
 }
 
-void setVisible(int newV) {
+void Drawable2 :: setVisible(int newV) {
 	visible = newV;
+}
+
+void Drawable2 :: destroy() {
+	//Drawable2 :: destroy();
+
+	removeDList.push_back(this);
+}
+
+void Drawable2 :: removeDestroyed() {
+	Drawable2* inst;
+
+	for(int i = 0; i < removeDList.size(); i++) {
+		inst = removeDList[i];
+
+		for(int j = 0; j < drawableList.size(); j++)
+			if(drawableList[j] == inst) {
+				drawableList.erase(drawableList.begin()+j);
+				break;
+			}
+	}
+
+	removeIList.clear();
 }

@@ -94,6 +94,9 @@ class GraphicsOGL {
 				void draw3DBlock(float,float,float,float,float,float, Texture*);
 				void draw3DBlock(float,float,float,float,float,float, Texture*, Texture*);
 
+				void draw3DCircle(float,float,float,float,int);
+				void draw3DCircle(float,float,float,float,int, Texture*);
+
 				void draw3DPrism(float,float,float,float,float,int);
 				void draw3DPrism(float,float,float,float,float,int, Texture*);
 

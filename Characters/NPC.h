@@ -16,7 +16,7 @@ class NPC : public Character {
 		void draw(GraphicsOGL*, float);
 
 
-	private:
+	protected:
 		void land();
 };
 

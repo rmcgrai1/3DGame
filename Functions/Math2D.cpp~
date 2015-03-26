@@ -40,7 +40,7 @@
 			while(y < x)
 				x -= y;
 
-			return y;
+			return x;
 		}
 	}
 

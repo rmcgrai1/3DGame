@@ -11,20 +11,27 @@
 #include <cmath>
 #include "../Functions/Math2D.h"
 #include "../Environment/Heightmap.h"
+#include "../Particles/SmokeRing.h"
 using namespace std;
 
 
 
-float hopSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*3));
+float Character::GRAVITY_HOP_ACCELERATION = GRAVITY_ACCELERATION*.5;
+float hopHeight = 3;
+float hopSpeed = sqrt(abs(2*Character::GRAVITY_HOP_ACCELERATION*hopHeight));
 float s = 6, h = 8;
 
 Texture* Character :: shTex;
 
 Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 
+	hopX = 0;
+	faceDir = 0;
 	hopZ = 0;
 	hopZVel = 0;
 	hopSc = 1;
+	hopDir = 1;
+	hopX = 0;
 
  	shTex = new Texture("Resources/Images/shadow.png",false);
 }
@@ -91,7 +98,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->enableShader("Sky");
 		gl->transformTranslation(x,y,z);
 
-		float sc = 1000;
+		float sc = 2000;
 
 		gl->draw3DFloor(-sc,-sc,sc,sc,sc);
 		gl->draw3DWall(-sc,-sc,sc,sc,-sc,-sc);
@@ -106,12 +113,13 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	if(onGround && hopZ <= 0) {
 		gl->transformRotationZ(setupRot);	
-		gl->transformRotationX(xyRot);
-		gl->transformRotationZ(direction-setupRot);	
+		//gl->transformRotationX(xyRot);
+		gl->transformRotationZ(faceDir-setupRot);	
 	}
 	else
-		gl->transformRotationZ(direction);	
-	
+		gl->transformRotationZ(faceDir);
+
+	gl->transformTranslation(-hopZVel,hopX,0);
 	gl->transformScale(hopSc,hopSc,1/hopSc);
 
 	gl->draw3DPrism(0,0,0,s,h,6);
@@ -121,12 +129,17 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->transformClear();
 }
 
+void Character :: faceDirection(float dir) {
+	faceDir += calcTurnToDir(faceDir,dir);
+}
+
 
 void Character :: updateHop(float deltaT) {
 	float hopZVelP = hopZVel;
+	float chAmt = 5;
 
 	if(onGround) {
-		hopZVel += GRAVITY_ACCELERATION;
+		hopZVel += GRAVITY_HOP_ACCELERATION;
 		hopZ += hopZVel;
 		if(hopZ < 0) {
 			hopZ = hopZVel = 0;
@@ -136,19 +149,31 @@ void Character :: updateHop(float deltaT) {
 		}
 
 		hopSc += (1 - hopSc)/3;
+
+		if(isMoving)
+			hopX += ((3*hopDir*(hopHeight-hopZ)/hopHeight) - hopX)/chAmt;
 	}
 	else {
 		hopZ = 0;
 		hopZVel = 0;
 		hopSc += (1 - hopSc)/3;
 	}
+
+	if(!isMoving || !onGround)
+		hopX += (0 - hopX)/chAmt;
 }
 
 void Character :: hop() {
-	if(hopZ == 0)
+	if(hopZ == 0) {
 		hopZVel = hopSpeed;
+
+		cout << hopDir << ", " << hopX << endl;
+
+		hopDir *= -1;
+	}
 }
 
 
 void Character :: land() {
+	new SmokeRing(x,y,z,4,12,20);
 }
