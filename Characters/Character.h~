@@ -17,23 +17,20 @@ class Character : public Physical {
 		virtual void draw(GraphicsOGL*, float);
 		void faceDirection(float);
 
+		static float GRAVITY_HOP_ACCELERATION;
+
 	protected:
 		virtual void land();
 		void hop();
-<<<<<<< HEAD
+
 		float faceDir;
 		bool isMoving;
-
-		static float GRAVITY_HOP_ACCELERATION;
-=======
->>>>>>> 6e6d2a149e943776a9a8f1acf981155ac29b65ba
+		float hopZ;
+		float hopZVel;
 
 	private:
 		void updateHop(float);
 		
-		float hopX;
-		float hopZ;
-		float hopZVel;
 		float hopSc;
 		float hopDir;
 		

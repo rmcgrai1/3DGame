@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "../Environment/Heightmap.h"
 #include "../Environment/Terrain.h"
+#include "../Characters/Player.h"
 
 
 class Camera;
@@ -29,8 +30,13 @@ class GraphicsOGL {
 		void idle();
 		void display();
 
+		Player* getPlayer();
+
 		InputController* getInputController();
 		TextureController* getTextureController();
+
+		// Slow PC??
+			int isPCSlow();
 
 		//ACCESSOR
 			int getScreenWidth();
@@ -130,10 +136,13 @@ class GraphicsOGL {
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;
 
+			Player* myPlayer;
+
 		//FPS Variables
 			unsigned long fpsStart, fpsEnd;
 			unsigned long drawStart, drawEnd;
 			int fps;
+			float avgFPS;
 
 		//Heightmap Variables
 			Terrain* terrain;

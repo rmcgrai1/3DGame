@@ -36,16 +36,16 @@ Inventory::Inventory() {
 }
 
 void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
-<<<<<<< HEAD
-	gl->disableShaders();
+	/*gl->disableShaders();
 	gl->setOrtho(); // switch to 2D mode
 	gl->setColor(2147483647*0.5,2147483647*0.5,2147483647*0.5); // set color to gray
 	cout << "Drawing inventory!\n";
 	gl->fillRect(gl->getScreenWidth()-40, gl->getScreenHeight()-40, gl->getScreenWidth()-20, gl->getScreenHeight()-20);
-	Slots[8].drawat(gl, gl->getScreenWidth()-40, gl->getScreenHeight()-40, gl->getScreenWidth()-20, gl->getScreenHeight()-20);
+	Slots[8]->drawat(gl, gl->getScreenWidth()-40, gl->getScreenHeight()-40, gl->getScreenWidth()-20, gl->getScreenHeight()-20);
 	gl->setColor(2147483647*1,2147483647*1,2147483647*1); // set color back to white
 	gl->setPerspective(); // switch back to 3D mode
-=======
+	*/
+
 	if(ShowInventory) { // only show anything if ShowInventory is true
 		gl->setOrtho(); // switch to 2D mode
 		//gl->disableShaders(); // disable any shaders (removed because of bug with cursor showing as white box)
@@ -66,7 +66,6 @@ void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
 		
 		gl->setPerspective(); // switch back to 3D mode
 	}
->>>>>>> 6e6d2a149e943776a9a8f1acf981155ac29b65ba
 }
 
 void Inventory::update(GraphicsOGL* gl, float deltaTime) {

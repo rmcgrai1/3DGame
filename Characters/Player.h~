@@ -16,19 +16,13 @@ class Player : public Character {
 		void draw(GraphicsOGL*, float);
 
 	protected:
-				void land();
+		void land();
 
 	private:
 		void updateControl(GraphicsOGL*, float);
-<<<<<<< HEAD
 
 		float camDis;
-=======
-		void land();
-
-		float camDis;
-		int flight;
->>>>>>> 6e6d2a149e943776a9a8f1acf981155ac29b65ba
+		int flight=0;
 };
 
 #endif

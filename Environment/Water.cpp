@@ -22,7 +22,9 @@ void Water :: update(GraphicsOGL* gl, float deltaTime) {
 
 void Water :: draw(GraphicsOGL* gl, float deltaTime) {
 
-	//gl->enableShader("Water");
-		gl->draw3DFloor(0,0,width,height,seaLevel,NULL);	
+	if(!gl->isPCSlow())
+		gl->enableShader("Water");
+		
+	gl->draw3DFloor(0,0,width,height,seaLevel,NULL);	
 	gl->disableShaders();
 }

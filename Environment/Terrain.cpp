@@ -36,6 +36,23 @@ void Terrain :: drawFirst(GraphicsOGL* gl, float deltaTime) {
 
 void Terrain :: drawLast(GraphicsOGL* gl, float deltaTime) {
 	water->draw(gl,deltaTime);
+
+	// Draw Sky
+	Player* p;
+	p = gl->getPlayer();
+
+	gl->enableShader("Sky");
+		gl->transformTranslation(p->getX(),p->getY(),p->getZ());
+
+		float sc = 2000;
+
+		gl->draw3DFloor(-sc,-sc,sc,sc,sc);
+		gl->draw3DWall(-sc,-sc,sc,sc,-sc,-sc);
+		gl->draw3DWall(-sc,sc,sc,sc,sc,-sc);
+		gl->draw3DWall(-sc,-sc,sc,-sc,sc,-sc);
+		gl->draw3DWall(sc,-sc,sc,sc,sc,-sc);
+		gl->transformClear();
+	gl->disableShaders();
 }
 
 float Terrain :: getSeaLevel() {

@@ -31,7 +31,7 @@ Player :: Player(float x, float y, float z) : Character(x,y,z) {
 
 void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
-	//Character :: update(gl, deltaTime);
+	Character :: update(gl, deltaTime);
 
 	// Update User Control of Player
 	updateControl(gl,deltaTime);
@@ -70,7 +70,7 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	float dir = i->getWASDDir(), cDir = gl->getCamDir(), aDir;
 
 	//flight
-	int zState = Input->checkLetter('z'); // get current state of the key
+	int zState = i->checkLetter('z'); // get current state of the key
 	if(zState && !PrevzState) { // if key just pressed down
 		hopZVel += 0;
 		zVel = 0;

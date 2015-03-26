@@ -35,8 +35,7 @@
 using namespace std;
 using namespace std::chrono;
 
-
-Player* p;
+	
 NPC* npc;
 Inventory* inv;
 
@@ -59,8 +58,8 @@ GraphicsOGL :: GraphicsOGL(int argc, char* argv[]) {
 	SCREEN_WIDTH = resolution[0] = 640;
 	SCREEN_HEIGHT = resolution[1] = 480;
 
-
-	fps = 1;
+	avgFPS = 60;
+	fps = 60;
 	curProgram = 0;
 	globalTime = 0;
 
@@ -73,6 +72,9 @@ GraphicsOGL :: ~GraphicsOGL() {
 	delete [] resolution;
 }
 
+Player* GraphicsOGL :: getPlayer() {
+	return myPlayer;
+}
 
 void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
@@ -101,10 +103,10 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		fontController = new FontController();
 		textureController = new TextureController();
 		shaderController = new ShaderController();
-		//inv = new Inventory();
+		inv = new Inventory();
 
 		terrain = new Terrain(textureController,2048,2048, "Resources/Images/test.png",150);
-		p = new Player(1028,1028,0);
+		myPlayer = new Player(1028,1028,0);
 		npc = new NPC(1018,1018,0);
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
@@ -134,6 +136,10 @@ Heightmap* GraphicsOGL :: getHeightmap() {
 }
 TextureController* GraphicsOGL :: getTextureController() {
 	return textureController;
+}
+
+int GraphicsOGL :: isPCSlow() {
+	return (avgFPS < 50);
 }
 
 
@@ -169,6 +175,7 @@ void GraphicsOGL :: idle() {
 	if(fps > 60)
 		fps = 60;
 
+	avgFPS = (fps + avgFPS)/2.;
 
 	// If Sleep Time is Positive (Not Running Slow), Sleep for # Nanoseconds
 	if(sleepTime > 0)
@@ -208,7 +215,7 @@ void GraphicsOGL :: display() {
 		string fpsStr = "FPS ", dirStr = "Dir ", posStr = "Pos ";
 			fpsStr = fpsStr + to_string(fps);
 			dirStr = dirStr + to_string(getCamDir());
-			posStr = posStr + to_string(p->getX()) + ", " + to_string(p->getY()) + ", " + to_string(p->getZ());
+			posStr = posStr + to_string(myPlayer->getX()) + ", " + to_string(myPlayer->getY()) + ", " + to_string(myPlayer->getZ());
 
 		setFont("8bit");
 		drawStringScaled(0,0,.65,.65,fpsStr);
@@ -695,7 +702,7 @@ void GraphicsOGL :: display() {
 		
 
 		float locations[3] = {
-			p->getX(), p->getY(), p->getZ()
+			myPlayer->getX(), myPlayer->getY(), myPlayer->getZ()
 		/*,
 		  0, 1.0, 0,
 		  0, 0, 0*/
