@@ -19,6 +19,6 @@ void FontController :: initialize() {
 	addFont("8bit",false);
 }
 
-void FontController :: addFont(string name, bool hasCaps, int argc, char** argv) {
-	fontMap[name] = new Font2D(name, hasCaps, argc, argv);
+void FontController :: addFont(string name, bool hasCaps) {
+	fontMap[name] = new Font2D(name, hasCaps);
 }

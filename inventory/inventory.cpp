@@ -13,7 +13,7 @@ using namespace std;
 
 double Inventory::ItemRot;
 
-Inventory::Inventory() {
+Inventory::Inventory() : Drawable2(TYPE_INVENTORY) {
 	Textures = new TexturePack("Resources");
 	int i;
 	for(i=0;i<27;i++) {

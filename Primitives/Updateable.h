@@ -15,8 +15,14 @@ class Updateable {
 
 	protected:
 		Updateable();
+		Updateable(int);
+
+		int oType;
 
 		static deque<Updateable*> updateableList;
+
+		static const int TYPE_NONE = -1;
+		static const int TYPE_INVENTORY = 0;
 };
 
 #endif

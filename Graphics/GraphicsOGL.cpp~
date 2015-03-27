@@ -37,7 +37,6 @@ using namespace std::chrono;
 
 	
 NPC* npc;
-Inventory* inv;
 
 GraphicsOGL* ogl;
 void idleCallback() {
@@ -76,6 +75,10 @@ Player* GraphicsOGL :: getPlayer() {
 	return myPlayer;
 }
 
+Inventory* GraphicsOGL :: getPlayer() {
+	return myPlayer;
+}
+
 void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 	//Initialize OpenGL
@@ -103,7 +106,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		fontController = new FontController();
 		textureController = new TextureController();
 		shaderController = new ShaderController();
-		inv = new Inventory();
+		myInventory = new Inventory();
 
 		terrain = new Terrain(textureController,2048,2048, "Resources/Images/test.png",150);
 		myPlayer = new Player(1028,1028,0);
@@ -175,7 +178,7 @@ void GraphicsOGL :: idle() {
 	if(fps > 60)
 		fps = 60;
 
-	fps(
+	avgFPS = (fps + avgFPS)/2.;
 
 	// If Sleep Time is Positive (Not Running Slow), Sleep for # Nanoseconds
 	if(sleepTime > 0)
@@ -212,15 +215,17 @@ void GraphicsOGL :: display() {
 	// DRAW HUD
 
 	setOrtho();
-		string fpsStr = "FPS ", dirStr = "Dir ", posStr = "Pos ";
+		string fpsStr = "FPS: ", dirStr = "Dir: ", posStr = "Pos: ";
 			fpsStr = fpsStr + to_string(fps);
 			dirStr = dirStr + to_string(getCamDir());
 			posStr = posStr + to_string(myPlayer->getX()) + ", " + to_string(myPlayer->getY()) + ", " + to_string(myPlayer->getZ());
 
 		setFont("8bit");
-		drawStringScaled(0,0,.65,.65,fpsStr);
-		drawStringScaled(0,20,.65,.65,dirStr);
-		drawStringScaled(0,40,.65,.65,posStr);
+
+		float s = 1;
+		drawStringScaled(0,0,s,s,fpsStr);
+		drawStringScaled(0,20,s,s,dirStr);
+		drawStringScaled(0,40,s,s,posStr);
 
 
 	// Flush Graphics to Screen
@@ -363,6 +368,11 @@ void GraphicsOGL :: display() {
 	}
 
 	void GraphicsOGL :: drawTextureScaled(float x, float y, float xS, float yS, Texture* tex) {
+		if(tex == NULL) {
+			cout << "Attempted to draw NULL texture." << endl;
+			return;
+		}
+
 		glEnable(GL_TEXTURE_2D);
 		tex->bind();
 
@@ -744,6 +754,13 @@ void GraphicsOGL :: display() {
 
 	float GraphicsOGL :: drawCharScaled(float x, float y, float xS, float yS, char c) {
 		Texture* t = curFont->getChar(c);
+		if(t == NULL) {
+			cout << "Attempted to draw a character not present in the font." << endl;
+			return 0;
+		}
+
+		if(c == 'y' || c == 'g' || c == 'j' || c == 'p' || c == 'q')
+			y += .25*t->getHeight()*yS;
 
 		drawTextureScaled(x, y, xS, yS, t);
 		return t->getWidth()*xS;
@@ -757,7 +774,7 @@ void GraphicsOGL :: display() {
 		int len = str.length();
 		char c;
 
-		float s = 16;
+		float s = 8, e = -1;
 
 		float dX = x, dY = y;
 
@@ -765,15 +782,15 @@ void GraphicsOGL :: display() {
 			c = str[i];
 
 			if(c == '\n') { 
-				dY += s*yS + 1;
+				dY += s*yS + e*yS;
 				dX = x;
 			}
 			else if(c == ' ')
-				dX += s*xS + 1;
+				dX += s*xS + e*xS;
 			else if(islower(c))
-				dX += drawCharScaled(dX,dY + (s*yS*.25), xS,yS*.75, c) + 1;
+				dX += drawCharScaled(dX,dY + (s*yS*.25), xS,yS*.75, c) + e*xS;
 			else
-				dX += drawCharScaled(dX,dY, xS, yS, c) + 1;
+				dX += drawCharScaled(dX,dY, xS, yS, c) + e*xS;
 		}
 	}
 

@@ -16,7 +16,7 @@ Font2D* FontController :: getFont(string name) {
 }		
 
 void FontController :: initialize() {
-	addFont("8bit",false);
+	addFont("8bit",true);
 }
 
 void FontController :: addFont(string name, bool hasCaps) {

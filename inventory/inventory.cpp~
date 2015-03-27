@@ -13,7 +13,7 @@ using namespace std;
 
 double Inventory::ItemRot;
 
-Inventory::Inventory() {
+Inventory::Inventory() : Drawable2(TYPE_INVENTORYs) {
 	Textures = new TexturePack("Resources");
 	int i;
 	for(i=0;i<27;i++) {
@@ -36,7 +36,7 @@ Inventory::Inventory() {
 }
 
 void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
-	gl->disableShaders();
+	/*gl->disableShaders();
 	gl->setOrtho(); // switch to 2D mode
 	gl->setColor(2147483647*0.5,2147483647*0.5,2147483647*0.5); // set color to gray
 	cout << "Drawing inventory!\n";
@@ -44,6 +44,7 @@ void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
 	Slots[8]->drawat(gl, gl->getScreenWidth()-40, gl->getScreenHeight()-40, gl->getScreenWidth()-20, gl->getScreenHeight()-20);
 	gl->setColor(2147483647*1,2147483647*1,2147483647*1); // set color back to white
 	gl->setPerspective(); // switch back to 3D mode
+	*/
 
 	if(ShowInventory) { // only show anything if ShowInventory is true
 		gl->setOrtho(); // switch to 2D mode

@@ -12,7 +12,6 @@
 #include "../Graphics/Texture.h"
 #include "../Graphics/GraphicsOGL.h"
 #include "../Primitives/Physical.h"
-#include "Character.h"
 #include "Player.h"
 #include <cmath>
 #include "../Functions/Math2D.h"
@@ -26,7 +25,7 @@ float jumpSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*24));
 
 Player :: Player(float x, float y, float z) : Character(x,y,z) {
 	
-	camDis = 70;
+	Player::camDis = 70;
 }
 
 void Player :: update(GraphicsOGL* gl, float deltaTime) {
@@ -58,6 +57,8 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 
+	cout << hopX << endl;
+
 	Character :: draw(gl, deltaTime);
 }
 
@@ -68,7 +69,7 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	float dir = i->getWASDDir(), cDir = gl->getCamDir(), aDir, d;
 
 	//flight
-	int zState = i->checkLetter('z'); // get current state of the key
+	/*int zState = i->checkLetter('z'); // get current state of the key
 	if(zState && !PrevzState) { // if key just pressed down
 		hopZVel += 0;
 		zVel = 0;
@@ -77,7 +78,7 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 		floorZ = z;
 		flight = !flight; // toggle
 	}
-	PrevzState = zState; // record current key state in previous key state for next iteration
+	PrevzState = zState;*/ // record current key state in previous key state for next iteration
 
 
 	aDir = dir-90;
@@ -95,6 +96,7 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 
 	// If a Button is Held...
 	if(dir != -1) {
+		isMoving = true;
 		vel = 1 + i->getShift()*2;
 
 		if(dir == 90 || dir == -90) {
@@ -120,8 +122,10 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 		direction = d;
 		faceDirection(d);
 	}
-	else
+	else {
 		vel = 0;
+		isMoving = false;
+	}
 }
 
 void Player :: land() {

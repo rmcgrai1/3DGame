@@ -11,7 +11,7 @@
 
 
 // Set up Gravity Constant
-const float Physical :: GRAVITY_ACCELERATION = -.125;
+const float Physical :: GRAVITY_ACCELERATION = -.15; //-.125;
 
 
 // CONSTRUCTOR

@@ -16,7 +16,7 @@ using namespace std;
 
 
 
-float Character::GRAVITY_HOP_ACCELERATION = GRAVITY_ACCELERATION*.5;
+float Character::GRAVITY_HOP_ACCELERATION = GRAVITY_ACCELERATION*.75;
 float hopHeight = 3;
 float hopSpeed = sqrt(abs(2*Character::GRAVITY_HOP_ACCELERATION*hopHeight));
 float s = 6, h = 8;
@@ -31,7 +31,6 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	hopZVel = 0;
 	hopSc = 1;
 	hopDir = 1;
-	hopX = 0;
 
  	shTex = new Texture("Resources/Images/shadow.png",false);
 }
@@ -94,8 +93,9 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	}*/
 
 
-	// Draw Sky
+	
 	gl->transformTranslation(x,y,z+hopZ);
+
 
 	if(onGround && hopZ <= 0) {
 		gl->transformRotationZ(setupRot);	
@@ -122,7 +122,7 @@ void Character :: faceDirection(float dir) {
 
 void Character :: updateHop(float deltaT) {
 	float hopZVelP = hopZVel;
-	float chAmt = 5;
+	float chAmt = 10;
 
 	if(onGround) {
 		hopZVel += GRAVITY_HOP_ACCELERATION;
@@ -137,7 +137,7 @@ void Character :: updateHop(float deltaT) {
 		hopSc += (1 - hopSc)/3;
 
 		if(isMoving)
-			hopX += ((3*hopDir*(hopHeight-hopZ)/hopHeight) - hopX)/chAmt;
+			hopX += ((2*hopDir*(hopHeight-hopZ)/hopHeight) - hopX)/chAmt;
 	}
 	else {
 		hopZ = 0;
@@ -152,8 +152,6 @@ void Character :: updateHop(float deltaT) {
 void Character :: hop() {
 	if(hopZ == 0) {
 		hopZVel = hopSpeed;
-
-		cout << hopDir << ", " << hopX << endl;
 
 		hopDir *= -1;
 	}

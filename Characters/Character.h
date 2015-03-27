@@ -24,10 +24,10 @@ class Character : public Physical {
 		void hop();
 
 		float faceDir;
-		bool isMoving;
-		float hopX;
 		float hopZ;
 		float hopZVel;
+		float hopX;	
+		bool isMoving;
 
 	private:
 		void updateHop(float);

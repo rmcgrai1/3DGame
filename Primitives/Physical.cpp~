@@ -11,7 +11,7 @@
 
 
 // Set up Gravity Constant
-const float Physical :: GRAVITY_ACCELERATION = -.125;
+const float Physical :: GRAVITY_ACCELERATION = -.15; //-.125;
 
 
 // CONSTRUCTOR
@@ -84,7 +84,7 @@ bool Physical :: collideHeightmap(Heightmap* hm) {
 		// Landing
 		if(z < h+4 && zVel < 0) {
 
-// Move Object to Floor Height
+			// Move Object to Floor Height
 			floorZ = z = h;
 
 			// Run Landing Function (Might Bounce, Play Sound?)

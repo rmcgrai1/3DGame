@@ -73,7 +73,7 @@ Shader.o: Graphics/Shader.cpp Graphics/Shader.h
 # PRIMITIVES
 ###############################################################
 Updateable.o: Primitives/Updateable.cpp Primitives/Updateable.h
-	g++ -c Primitives/Updateable.cpp
+	g++ -c Primitives/Updateable.cpp -std=c++11
 Drawable.o: Primitives/Drawable.cpp Primitives/Drawable.h
 	g++ -c Primitives/Drawable.cpp
 Instantiable.o: Primitives/Instantiable.cpp Primitives/Instantiable.h

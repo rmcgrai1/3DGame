@@ -22,7 +22,7 @@ class Player : public Character {
 		void updateControl(GraphicsOGL*, float);
 
 		float camDis;
-		int flight=0;
+		int flight;
 };
 
 #endif

@@ -18,12 +18,10 @@ deque<Drawable2*> Drawable2 :: hudList;
 Drawable2 :: Drawable2() : Updateable() {
 
 	visible = true;
-	cout << "No type specified for some drawable object." << endl;
-
 	drawableList.push_back(this);
 }
 
-Drawable2 :: Drawable2(int type) : Updateable() {
+Drawable2 :: Drawable2(int type) : Updateable(type) {
 
 	visible = true;
 	drawableList.push_back(this);
