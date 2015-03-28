@@ -22,7 +22,7 @@ class Updateable {
 		static deque<Updateable*> updateableList;
 
 		static const int TYPE_NONE = -1;
-		static const int TYPE_INVENTORY = 0;
+		static const int TYPE_MENU = 0;
 };
 
 #endif

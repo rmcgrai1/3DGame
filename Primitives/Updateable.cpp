@@ -25,10 +25,10 @@ Updateable :: Updateable(int newType) {
 
 void Updateable :: updateAll(GraphicsOGL* gl, float deltaTime) {
 	int si = updateableList.size();
-	bool isInvOpen = gl->getInventory()->getInventoryShowStatus();
+	bool isInvOpen = gl->getMenu()->getMenuShowStatus();
 
 	for(int i = 0; i < si; i++) {
-		if(!isInvOpen || updateableList[i]->oType == TYPE_INVENTORY)
+		if(!isInvOpen || updateableList[i]->oType == TYPE_MENU)
 			updateableList[i]->update(gl, deltaTime);
 	}
 }

@@ -30,7 +30,7 @@
 #include "../Characters/NPC.h"
 #include "../Environment/Tree.h"
 #include "../Environment/Terrain.h"
-#include "../inventory/inventory.h"
+#include "../menus/menu.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -75,8 +75,8 @@ Player* GraphicsOGL :: getPlayer() {
 	return myPlayer;
 }
 
-Inventory* GraphicsOGL :: getInventory() {
-	return myInventory;
+Menu* GraphicsOGL :: getMenu() {
+	return myMenu;
 }
 
 void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
@@ -106,7 +106,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		fontController = new FontController();
 		textureController = new TextureController();
 		shaderController = new ShaderController();
-		myInventory = new Inventory();
+		myMenu = new Menu();
 
 		terrain = new Terrain(textureController,2048,2048, "Resources/Images/test.png",150);
 		myPlayer = new Player(1028,1028,0);
