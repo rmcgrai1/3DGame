@@ -26,6 +26,7 @@ Updateable :: Updateable(int newType) {
 
 void Updateable :: updateAll(GraphicsOGL* gl, float deltaTime) {
 	int si = updateableList.size();
+<<<<<<< HEAD
 
 	bool isInvOpen = gl->getInventory()->getInventoryShowStatus();
 
@@ -34,6 +35,12 @@ void Updateable :: updateAll(GraphicsOGL* gl, float deltaTime) {
 			continue;
 
 		if(!isInvOpen || updateableList[i]->oType == TYPE_INVENTORY)
+=======
+	bool isInvOpen = gl->getMenu()->getMenuShowStatus();
+
+	for(int i = 0; i < si; i++) {
+		if(!isInvOpen || updateableList[i]->oType == TYPE_MENU)
+>>>>>>> 7214d79ba1fa5417571a7679619f5a5f5db13f52
 			updateableList[i]->update(gl, deltaTime);
 	}
 }
