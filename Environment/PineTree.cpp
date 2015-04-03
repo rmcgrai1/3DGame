@@ -5,7 +5,8 @@
 #include "Tree.h"
 #include "../Graphics/Texture.h"
 
-PineTree :: PineTree(float nX, float nY, float nZ, float size, float colR, float colG, float colB) : Tree(nX,nY,nZ,size) {
+PineTree :: PineTree(float nX, float nY, float size, float colR, float colG, float colB) : Tree(nX,nY,size) {
+
 	colRed = colR;
 	colGreen = colG;
 	colBlue = colB;
@@ -57,6 +58,9 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 			//aR = rand();
 
 			//gl->setColor(R+aR,G+aG,B+aB);
+			
+			gl->setShaderVariable("iDark", pow((3.-i)/3.,2.));
+
 			gl->draw3DCone(0,0,uDZ,uR,uH, fidelity, branchTex);
 			gl->draw3DCone(0,0,uDZ,uR*1.1,uH*.8, fidelity, branchTex);
 		}

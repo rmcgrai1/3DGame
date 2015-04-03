@@ -8,7 +8,7 @@
 
 class PineTree : public Tree {
 	public:
-		PineTree(float, float, float,float,float,float,float);
+		PineTree(float, float,float,float,float,float);
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);
 

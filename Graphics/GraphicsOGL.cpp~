@@ -34,6 +34,8 @@
 #include "../inventory/inventory.h"
 #include "../Text/TextController.h"
 #include "../Environment/PineTree.h"
+//#include "../menus/menu.h"
+
 
 using namespace std;
 using namespace std::chrono;
@@ -79,8 +81,8 @@ Player* GraphicsOGL :: getPlayer() {
 	return myPlayer;
 }
 
-Inventory* GraphicsOGL :: getInventory() {
-	return myInventory;
+Menu* GraphicsOGL :: getMenu() {
+	return myMenu;
 }
 
 void GraphicsOGL :: logMessage(string str) {
@@ -121,7 +123,6 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		textureController = new TextureController();
 		shaderController = new ShaderController();
 
-		myInventory = new Inventory();
 		tc = new TextController();
 
 		for(int i = 0; i < 50; i++) {
@@ -135,8 +136,10 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 			cR = .2 + .4*(rand() % 100)/100;
 			cG = .6 + .4*(rand() % 100)/100;
 			cB = .3 + .3*(rand() % 100)/100;
-			new PineTree(x,y,0,size,cR,cG,cB);
+			new PineTree(x,y,size,cR,cG,cB);
 		}
+
+		myMenu = new Menu();
 
 		new NPC(1000,1018,0);
 		new NPC(1018,1018,0);

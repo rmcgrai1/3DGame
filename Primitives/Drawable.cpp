@@ -10,21 +10,19 @@
 using namespace std;
 
 
-deque<Drawable2*> Drawable2 :: removeDList;
-deque<Drawable2*> Drawable2 :: drawableList;
-deque<Drawable2*> Drawable2 :: hudList;
+SortedList<Drawable2*> Drawable2 :: drawableList;
 
 
 Drawable2 :: Drawable2() : Updateable() {
 
 	visible = true;
-	drawableList.push_back(this);
+	drawableList.add(this);
 }
 
 Drawable2 :: Drawable2(int type) : Updateable(type) {
 
 	visible = true;
-	drawableList.push_back(this);
+	drawableList.add(this);
 }
 
 void Drawable2 :: drawAll(GraphicsOGL* gl, float deltaTime) {
@@ -56,23 +54,9 @@ void Drawable2 :: setVisible(int newV) {
 
 void Drawable2 :: destroy() {
 	Updateable :: destroy();
-
-	removeDList.push_back(this);
+	drawableList.destroy(this);
 }
 
 void Drawable2 :: removeDestroyed() {
-	Drawable2* inst;
-
-
-	for(int i = 0; i < removeDList.size(); i++) {
-		inst = removeDList[i];
-
-		for(int j = 0; j < drawableList.size(); j++)
-			if(drawableList[j] == inst) {
-				drawableList.erase(drawableList.begin()+j);
-				break;
-			}
-	}
-
-	removeDList.clear();
+	drawableList.removeDestroyed();
 }

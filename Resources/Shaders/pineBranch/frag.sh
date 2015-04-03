@@ -2,6 +2,7 @@ uniform float iGlobalTime;
 uniform sampler2D tex;
 uniform vec3 lights[1];
 uniform vec4 iColor;
+uniform float iDark;
 
 varying vec2 uvCoords;
 
@@ -23,6 +24,6 @@ void main() {
 
 	gl_FragColor = mixColors(texture2D(tex, uvCoords), vec4(iColor.rgb,.5));
 	
-	gl_FragColor.rgb -= dark*vec3(2.,1.5,1.5);
+	gl_FragColor.rgb -= iDark*dark*vec3(2.,1.5,1.5);
 	gl_FragColor.rgb += .5*light*vec3(.5,.8,.8);
 }

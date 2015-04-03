@@ -37,7 +37,7 @@ Inventory::Inventory() : Drawable2(TYPE_INVENTORY) {
 
 void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
 
-	//gl->logMessage("inventory.cpp, draw()");
+	gl->logMessage("inventory.cpp, draw()");
 
 	/*gl->disableShaders();
 	gl->setOrtho(); // switch to 2D mode

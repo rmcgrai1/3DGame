@@ -24,7 +24,7 @@ Inventory::Inventory() : Drawable2(TYPE_INVENTORY) {
 	mouseX = 0;
 	mouseY = 0;
 	updateDrawCoords(NULL);
-	Cursor = Textures->newTexture("Images/Inventory/Cursor.png", false);
+	Cursor = Textures->newTexture("Images/Menus/Cursor.png", false);
 	ItemRot = 45;
 	
 	//TEST CODE to add some items to slots

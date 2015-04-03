@@ -13,6 +13,9 @@ class PineTree : public Tree {
 		void draw(GraphicsOGL*, float);
 
 	private:
+		float colRed;
+		float colGreen;
+		float colBlue;
 };
 
 #endif

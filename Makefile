@@ -1,12 +1,7 @@
 all: main
 
-<<<<<<< HEAD
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
-=======
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o menu.o inventory.o playerInv.o invslot.o item.o FrameTexture.o
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o menu.o inventory.o playerInv.o invslot.o item.o FrameTexture.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
->>>>>>> 7214d79ba1fa5417571a7679619f5a5f5db13f52
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o Data/SortedList.h
+	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o Data/SortedList.h -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -85,8 +80,8 @@ Shader.o: Graphics/Shader.cpp Graphics/Shader.h
 ###############################################################
 Updateable.o: Primitives/Updateable.cpp Primitives/Updateable.h
 	g++ -c Primitives/Updateable.cpp -std=c++11
-Drawable.o: Primitives/Drawable.cpp Primitives/Drawable.h
-	g++ -c Primitives/Drawable.cpp
+Drawable.o: Primitives/Drawable.cpp Primitives/Drawable.h Data/SortedList.h
+	g++ -c Primitives/Drawable.cpp Data/SortedList.h
 Instantiable.o: Primitives/Instantiable.cpp Primitives/Instantiable.h
 	g++ -c Primitives/Instantiable.cpp
 Physical.o: Primitives/Physical.cpp Primitives/Physical.h
@@ -106,6 +101,8 @@ NPC.o: Characters/NPC.cpp Characters/NPC.h
 
 # ENVIRONMENT
 ###############################################################
+Environmental.o: Environment/Environmental.cpp Environment/Environmental.h
+	g++ -c Environment/Environmental.cpp
 Terrain.o: Environment/Terrain.cpp Environment/Terrain.h
 	g++ -c Environment/Terrain.cpp
 Heightmap.o: Environment/Heightmap.cpp Environment/Heightmap.h
