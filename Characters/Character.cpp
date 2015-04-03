@@ -21,7 +21,6 @@ float hopHeight = 3;
 float hopSpeed = sqrt(abs(2*Character::GRAVITY_HOP_ACCELERATION*hopHeight));
 float s = 6, h = 8;
 
-Texture* Character :: shTex;
 
 Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 
@@ -31,8 +30,6 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	hopZVel = 0;
 	hopSc = 1;
 	hopDir = 1;
-
- 	shTex = new Texture("Resources/Images/shadow.png",false);
 }
 
 void Character :: update(GraphicsOGL* gl, float deltaTime) {
@@ -52,27 +49,28 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	float sideNum = 6;
 
-	float normal[3];
 	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
 
-		hm->getNormal(x,y,normal);
-		
-			nX = normal[0];
-			nY = normal[1];
-			nZ = normal[2];
+		hm->getFloorRotations(x,y,setupRot,xyRot);
 
+	//DRAW SHADOW
+	float grndZ = hm->getHeightXY(x,y);
 
-		xyDis = sqrt(nX*nX + nY*nY);
-		xRot = 90 - (180-(90+calcPtDir(0,0,nX,nZ)));
-		yRot = calcPtDir(0,0,nY,nZ);
+	gl->setDepthTest(false);
+		gl->transformTranslation(x,y,grndZ);
+		gl->transformRotationZ(setupRot);
+		gl->transformRotationX(xyRot);	
 
-		setupRot = 90+calcPtDir(0,0,nX,nY);
-		xyRot = 90-calcPtDir(0,0,xyDis,nZ);
+		gl->transformScale(1 - (z-grndZ)/70);	
 
+		gl->draw3DFloor(-8,-8,8,8,0,gl->getTextureController()->getTexture("Shadow"));
 
+		gl->transformClear();
+	gl->setDepthTest(true);
 
+	/*
 	// Draw Several Shadows
-	/*for(int i = 0; i < 4; i++) {
+	for(int i = 0; i < 4; i++) {
 		float shNorm[3];
 		float l = s, d = i*90., shadowX = x + calcLenX(l,d), shadowY = y + calcLenY(l,d), shadowZ = hm->getHeightXY(shadowX,shadowY);
 		float shadowSetupRot, shadowXYRot;
@@ -90,22 +88,28 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			gl->draw3DFloor(-8,-8,8,8,0,shTex);
 
 			glLoadIdentity();
-	}*/
-
+	}
+	gl->glSet();
+	*/
 
 	
 	gl->transformTranslation(x,y,z+hopZ);
+	
 
 
-	if(onGround && hopZ <= 0) {
+	if(onGround/*&& hopZ <= 0*/) {
 		gl->transformRotationZ(setupRot);	
-		//gl->transformRotationX(xyRot);
-		gl->transformRotationZ(faceDir-setupRot);	
+		gl->transformRotationX(xyRot);
+		gl->transformRotationZ(-setupRot);
+
+
+		gl->transformRotationZ(faceDir);		
+		gl->transformTranslation(-hopZVel,hopX,0);	
 	}
 	else
 		gl->transformRotationZ(faceDir);
 
-	gl->transformTranslation(-hopZVel,hopX,0);
+	//gl->transformTranslation(-hopZVel,hopX,0);
 	gl->transformScale(hopSc,hopSc,1/hopSc);
 
 	gl->draw3DPrism(0,0,0,s,h,6);
@@ -127,7 +131,10 @@ void Character :: updateHop(float deltaT) {
 	if(onGround) {
 		hopZVel += GRAVITY_HOP_ACCELERATION;
 		hopZ += hopZVel;
-		if(hopZ < 0) {
+		if(hopZ <= 0) {
+			if(hopZVel != GRAVITY_HOP_ACCELERATION)
+				new SmokeRing(x,y,z,2,8,4,1.3);
+
 			hopZ = hopZVel = 0;
 
 			if(hopZVelP != 0)
@@ -159,5 +166,7 @@ void Character :: hop() {
 
 
 void Character :: land() {
-	new SmokeRing(x,y,z,4,12,20);
+
+	hopSc *= 2;
+	new SmokeRing(x,y,z,4,13,7,2);
 }

@@ -10,14 +10,15 @@
 
 class Tree : public Physical {
 	public:
-		Tree(int,int,int);
-		void update(GraphicsOGL*, float);
-		void draw(GraphicsOGL*, float);
+		Tree(float,float,float,float);
+		virtual void update(GraphicsOGL*, float);
+		virtual void draw(GraphicsOGL*, float);
 
-	private:
+	protected:
 		void land();
 
 		Branch* root;
+		float size;
 };
 
 #endif

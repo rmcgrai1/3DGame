@@ -46,6 +46,14 @@ Font2D :: Font2D(string fontName, bool ca) {
 	addChar(']');
 }
 
+int Font2D :: getWidth() {
+	return getChar('A')->getWidth();
+}
+
+int Font2D :: getHeight() {
+	return getChar('A')->getHeight();
+}
+
 Texture* Font2D :: getChar(char c) {
 	if(isalpha(c)) {
 		return fontMap[c];
@@ -69,7 +77,10 @@ void Font2D :: addChar(char c, string fileName) {
 	string str = "Loading file for ";
 	str = str + c + " at " + fileName;
 
-	Texture* t = new Texture(fileName, true);
+	string name = "";
+		name += c;
+
+	Texture* t = new Texture(name, fileName, true);
 
 	fontMap[c] = t;
 }

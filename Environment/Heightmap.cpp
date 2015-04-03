@@ -39,7 +39,7 @@ Heightmap :: Heightmap(float xS, float yS, float resolution) {
 	generateNormals();
 }
 
-Heightmap :: Heightmap(TextureController* tc, float xS, float yS, string fileName) {
+Heightmap :: Heightmap(TextureController* tc, float xS, float yS, float zS, string fileName) {
 	xSize = xS;
 	ySize = yS;
 
@@ -64,7 +64,7 @@ Heightmap :: Heightmap(TextureController* tc, float xS, float yS, string fileNam
 
 		// Set Height to Value of Current Pixel
 		for(int j = 0; j < xNum; j++)
-			setHeight(i,j,hmImg->getValue(j,i));
+			setHeight(i,j,hmImg->getValue(j,i)/255.*zS);
 	}
 
 	texGrass = tc->getTexture("Grass");
@@ -191,7 +191,23 @@ void Heightmap :: getNormal(float x, float y, float vec[3]) {
 	// Set Values in Vector
 		vec[0] = Dx;	vec[1] = Dy;	vec[2] = Dz;
 }
-//bool isFloor(float, float);
+
+void Heightmap :: getFloorRotations(float x, float y, float& setupRot, float& xyRot) {
+	float nX, nY, nZ, xyDis, xRot, yRot, normal[3];	
+	getNormal(x,y,normal);
+	
+		nX = normal[0];
+		nY = normal[1];
+		nZ = normal[2];
+
+
+	xyDis = sqrt(nX*nX + nY*nY);
+	xRot = 90 - (180-(90+calcPtDir(0,0,nX,nZ)));
+	yRot = calcPtDir(0,0,nY,nZ);
+
+	setupRot = 90+calcPtDir(0,0,nX,nY);
+	xyRot = 90-calcPtDir(0,0,xyDis,nZ);
+}
 
 void Heightmap :: generateNormals() {
 	float n1[3],n2[3],n3[3],n4[3];
@@ -254,6 +270,8 @@ void Heightmap :: generateNormals() {
 //bool isWall(float, float);
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
+
+	gl->logMessage("Heightmap.cpp, draw()");
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);

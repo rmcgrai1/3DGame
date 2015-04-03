@@ -14,10 +14,12 @@ class Shader {
 	public:
 		Shader(string);
 		GLuint getProgram();
+		string getName();
 
 	private: 
 		void addSubShader(const char*, GLenum);
 		GLuint program;
+		string name;
 };
 
 #endif

@@ -13,9 +13,13 @@ using namespace std;
 
 class Texture {
 	public:
-		Texture(const string&);
-		Texture(const string&, bool);
-		
+		Texture(string);
+		Texture(string, bool);
+		Texture(string, const string&);
+		Texture(string, const string&, bool);
+
+
+		string getName();
 		int getWidth();
 		int getHeight();
 
@@ -29,6 +33,7 @@ class Texture {
 
 		static int texNum;
 
+		string name;
 		string fileName;
 
 		GLuint m_textureObj;

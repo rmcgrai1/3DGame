@@ -31,6 +31,10 @@ class GraphicsOGL {
 		void idle();
 		void display();
 
+		void logMessage(string);
+
+
+		void setDepthTest(bool);
 		Player* getPlayer();
 		Inventory* getInventory();
 
@@ -105,6 +109,12 @@ class GraphicsOGL {
 				void draw3DCircle(float,float,float,float,int);
 				void draw3DCircle(float,float,float,float,int, Texture*);
 
+				void draw3DCone(float,float,float,float,float,int);
+				void draw3DCone(float,float,float,float,float,int, Texture*);
+
+				void draw3DFrustem(float,float,float,float,float,float,int);
+				void draw3DFrustem(float,float,float,float,float,float,int, Texture*);
+
 				void draw3DPrism(float,float,float,float,float,int);
 				void draw3DPrism(float,float,float,float,float,int, Texture*);
 
@@ -112,6 +122,7 @@ class GraphicsOGL {
 
 
 		//SHADERS
+			void setShaderVariable(string, float);
 			void disableShaders();
 			void enableShader(GLuint);
 			void enableShader(string);
@@ -155,6 +166,7 @@ class GraphicsOGL {
 			FontController* fontController;
 
 		//Shader Variables
+			Shader* curShader;
 			GLuint curProgram;
 			float* resolution;
 			float globalTime;

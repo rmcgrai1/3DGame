@@ -30,6 +30,9 @@ Player :: Player(float x, float y, float z) : Character(x,y,z) {
 
 void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
+	gl->logMessage("Player.cpp, update()");
+
+
 	Character :: update(gl, deltaTime);
 
 	// Update User Control of Player
@@ -57,7 +60,7 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {
 
-	cout << hopX << endl;
+	gl->logMessage("Player.cpp, draw()");
 
 	Character :: draw(gl, deltaTime);
 }

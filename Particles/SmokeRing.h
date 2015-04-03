@@ -8,7 +8,7 @@
 
 class SmokeRing : public Particle {
 	public:
-		SmokeRing(float,float,float,float,float,int);
+		SmokeRing(float,float,float,float,float,int,float);
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);
 
@@ -17,7 +17,8 @@ class SmokeRing : public Particle {
 		float endSize;
 		float curSize;
 		float addAmt;
-		int numSteps;
+		float percSmoke;
+		float alpha;
 		int totSteps;
 };
 

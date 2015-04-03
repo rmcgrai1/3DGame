@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o
+	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -73,7 +73,7 @@ Shader.o: Graphics/Shader.cpp Graphics/Shader.h
 # PRIMITIVES
 ###############################################################
 Updateable.o: Primitives/Updateable.cpp Primitives/Updateable.h
-	g++ -c Primitives/Updateable.cpp
+	g++ -c Primitives/Updateable.cpp -std=c++11
 Drawable.o: Primitives/Drawable.cpp Primitives/Drawable.h
 	g++ -c Primitives/Drawable.cpp
 Instantiable.o: Primitives/Instantiable.cpp Primitives/Instantiable.h
@@ -114,6 +114,14 @@ FileIO.o: IO/FileIO.cpp IO/FileIO.h
 
 InputController.o: IO/InputController.cpp IO/InputController.h
 	g++ -c IO/InputController.cpp
+
+# TEXT
+###############################################################
+TextController.o: Text/TextController.cpp Text/TextController.h
+	g++ -c Text/TextController.cpp
+
+TextInterpreter.o: Text/TextInterpreter.cpp Text/TextInterpreter.h
+	g++ -c Text/TextInterpreter.cpp
 
 
 clean:

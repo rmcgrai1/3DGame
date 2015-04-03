@@ -16,7 +16,7 @@
 using namespace std;
 
 
-Shader :: Shader(string name) {
+Shader :: Shader(string myName) {
 	program = glCreateProgram();
 
 	if (program == 0) {
@@ -25,6 +25,7 @@ Shader :: Shader(string name) {
 	}
 
 	string dir;
+	name = myName;
 	dir = "Resources/Shaders/" + name;
 	string vs, fs;
 
@@ -59,6 +60,10 @@ Shader :: Shader(string name) {
 
 GLuint Shader :: getProgram() {
 	return program;
+}
+
+string Shader :: getName() {
+	return name;
 }
 
 void Shader :: addSubShader(const char* pShaderText, GLenum ShaderType) {

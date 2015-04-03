@@ -12,6 +12,8 @@ class Font2D {
 	public:
 		Font2D(string,bool);
 		Texture* getChar(char);
+		int getWidth();
+		int getHeight();
 
 	private:
 		void addChar(char,string);

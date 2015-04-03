@@ -17,15 +17,18 @@
 
 #include <vector>
 #include <string>
+#include "../Graphics/GraphicsOGL.h"
 #include "TextInterpreter.h"
+#include "../Primitives/Drawable.h"
 using namespace std;
 
 class TextInterpreter;
-class TextController {
+class TextController : public Drawable2 {
 
 	public:					// PUBLIC
 		TextController();			// Contructor
-		void draw();				// Drawing Text
+		void update(GraphicsOGL*, float);	//
+		void draw(GraphicsOGL*, float);		// Drawing Text
 		void setText(string);			// Setting Text
 		void clearScreen();			// Clearing Screen
 		void clearTextBox();			// Clearing Text Box
@@ -45,6 +48,9 @@ class TextController {
 		string allText;				// "Real" Text
 		string curText;				// "Display" Text
 		vector<Format> formatVec;		// Format Vector
+		float curScale;
+
+		GraphicsOGL* GL;
 };
 
 #endif

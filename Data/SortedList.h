@@ -7,7 +7,11 @@
 
 template <typename T>
 class SortedList : public vector {
-
+	public:
+		SortedList
+		void removeDestroyed();
+		//A add();
+	private:
 }
 
 #endif

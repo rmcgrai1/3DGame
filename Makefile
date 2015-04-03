@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o
+	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -103,6 +103,8 @@ Water.o: Environment/Water.cpp Environment/Water.h
 	g++ -c Environment/Water.cpp
 Tree.o: Environment/Tree.cpp Environment/Tree.h
 	g++ -c Environment/Tree.cpp
+PineTree.o: Environment/PineTree.cpp Environment/PineTree.h
+	g++ -c Environment/PineTree.cpp
 Branch.o: Environment/Branch.cpp Environment/Branch.h
 	g++ -c Environment/Branch.cpp
 
@@ -114,6 +116,14 @@ FileIO.o: IO/FileIO.cpp IO/FileIO.h
 
 InputController.o: IO/InputController.cpp IO/InputController.h
 	g++ -c IO/InputController.cpp
+
+# TEXT
+###############################################################
+TextController.o: Text/TextController.cpp Text/TextController.h
+	g++ -c Text/TextController.cpp -std=c++11
+
+TextInterpreter.o: Text/TextInterpreter.cpp Text/TextInterpreter.h
+	g++ -c Text/TextInterpreter.cpp -std=c++11
 
 
 clean:

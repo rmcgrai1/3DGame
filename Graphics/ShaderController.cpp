@@ -32,6 +32,9 @@ void ShaderController :: initialize() {
 	addShader("Water");
 	addShader("Sky");
 	addShader("Terrain");
+	addShader("SmokeRing");
+	addShader("Untextured");
+	addShader("pineBranch");
 }
 void ShaderController :: addShader(string name) {
 	shaderMap[name] = new Shader(name);
