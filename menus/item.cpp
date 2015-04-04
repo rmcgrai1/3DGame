@@ -3,6 +3,7 @@
 #include "../Graphics/GraphicsOGL.h"
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
+#include "PosSpec.h"
 
 #include "item.h"
 using namespace std;
@@ -33,14 +34,14 @@ Item::Item(string newName, string TextureLoc, string Descrip, TexturePack *TP) {
 	//Dim = TP->newDim(DimLocation);
 }
 
-void Item::DisplayAt(GraphicsOGL* gl, int x, int y, int width, int height, double rot) {
+void Item::DisplayAt(GraphicsOGL* gl, PosSpec *Dim, double rot) {
 	gl->transformClear();
-	gl->transformTranslation(x+width/2,y+height/2,100);
+	gl->transformTranslation(Dim->getCenterX(),Dim->getCenterY(),100);
 	gl->transformRotationX(-135);
 	gl->transformRotationZ(rot);
 	gl->transformScale(0.5);
-	gl->transformTranslation(0,0,-height/2);
-	gl->draw3DPrism(0, 0, 0, width, height, 4, Tex);
+	gl->transformTranslation(0,0,Dim->getHeight()/-2);
+	gl->draw3DPrism(0, 0, 0, Dim->getWidth(), Dim->getHeight(), 4, Tex);
 	gl->transformClear();
 }
 

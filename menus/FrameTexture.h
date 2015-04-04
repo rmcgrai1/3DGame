@@ -8,12 +8,13 @@
 #include "../Graphics/Texture.h"
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/GraphicsOGL.h"
+#include "PosSpec.h"
 
 using namespace std;
 class FrameTexture {
 	public:
 		FrameTexture(TexturePack *TP = new TexturePack, string Folder = "Images/Inventory/BlankSlot"); // constructor
-		void drawat(GraphicsOGL* gl, int x, int y, int x2, int y2, int *inCoords); // draws the frame at this position and stores the coordinates of the inside in inCoords array
+		void drawat(GraphicsOGL* gl, PosSpec *Dim, PosSpec *inCoords); // draws the frame at this position and stores the coordinates of the inside in inCoords array
 		void tileTexture(GraphicsOGL* gl, int x, int y, int width, int height, int xNum, int yNum, double xScale, double yScale, int *finalX, int *finalY, Texture* Tex); // tiles a texture at a position, with specified scale a specified numbert of times
 		void UpdateDrawCoords(int width, int height);
 	private:

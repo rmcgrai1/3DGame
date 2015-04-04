@@ -10,6 +10,7 @@
 #include "../Graphics/Texture.h"
 
 #include "item.h"
+#include "PosSpec.h"
 #include "invslot.h"
 #include "playerInv.h"
 using namespace std;
@@ -32,9 +33,11 @@ class Menu : public Drawable2 {
 		int mouseX;
 		int mouseY;
 		
-		int scrwidth,scrheight;
-		int leftx,topy;
-		int invwidth,invheight;
+		PosSpec *scrDim;
+		//int scrwidth,scrheight;
+		PosSpec *invDim;
+		//int leftx,topy;
+		//int invwidth,invheight;
 		static double ItemRot;
 };
 

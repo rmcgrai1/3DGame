@@ -7,6 +7,7 @@
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
 #include "FrameTexture.h"
+#include "PosSpec.h"
 
 #include "item.h"
 #include "invslot.h"
@@ -16,26 +17,24 @@ InvSlot::InvSlot(Item *newItem, int number, TexturePack *TP) {
 	Textures = TP;
 	ItemType = number?newItem:NULL; // sets to NULL if number==0
 	count = number;
+	FrameIntPos = NULL; // ensure is blank, for later identification of not being set
 	maxCount = 64; // defaults to max of 64.  Can be changed with later call of SetMax
-	int i;
-	for(i=0;i<4;i++) {
-		FrameIntPos[i] = 0;
-	}
 	MainSlots = new FrameTexture(Textures, "Images/Menus/InvSlot");
 }
 
-void InvSlot::drawat(GraphicsOGL* gl, int x, int y, int x2, int y2, double rot) {
-	if(ItemType) {
-		if(!(FrameIntPos[0] || FrameIntPos[1] || FrameIntPos[2] || FrameIntPos[3])) { // if positions are at 0, calculate positions by drawing frame to NULL
-			MainSlots->drawat(NULL, x, y, x2, y2, FrameIntPos); // don't draw anything, but use to calculate positions
-		}
-		string countStr = to_string(count);
-		double xScale = (double)FrameIntPos[2]/60;
-		double yScale = (double)FrameIntPos[4]/200;
-		gl->drawStringScaled(FrameIntPos[0]+FrameIntPos[2]-16*countStr.length()*xScale,FrameIntPos[1]+FrameIntPos[3]-16*yScale,xScale,yScale,countStr);
-		ItemType->DisplayAt(gl,FrameIntPos[0],FrameIntPos[1],FrameIntPos[2],FrameIntPos[3],rot);
+void InvSlot::drawat(GraphicsOGL* gl, PosSpec *Dim, double rot) {
+	if(!FrameIntPos) { // if positions are not set, calculate positions by drawing frame to NULL
+		FrameIntPos = new PosSpec;
+		MainSlots->drawat(NULL, Dim, FrameIntPos); // don't draw anything, but use to calculate positions
 	}
-	MainSlots->drawat(gl, x, y, x2, y2, FrameIntPos);
+	if(ItemType) {
+		string countStr = to_string(count);
+		double xScale = (double)FrameIntPos->getWidth()/60;
+		double yScale = (double)FrameIntPos->getHeight()/200;
+		gl->drawStringScaled(FrameIntPos->getRightX()-8*countStr.length()*xScale,FrameIntPos->getBottomY()-8*yScale,xScale,yScale,countStr);
+		ItemType->DisplayAt(gl,FrameIntPos,rot);
+	}
+	MainSlots->drawat(gl, Dim, FrameIntPos);
 }
 
 void InvSlot::SetMax(int max) {
@@ -137,7 +136,7 @@ void InvSlot::SwapWith(InvSlot *Other) {
 	delete temp;
 }
 
-int *InvSlot::GetFrameIntPos() {
+PosSpec *InvSlot::GetFrameIntPos() {
 	return FrameIntPos;
 }
 

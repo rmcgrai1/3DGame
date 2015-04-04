@@ -9,6 +9,7 @@
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
 
+#include "PosSpec.h"
 #include "item.h"
 #include "invslot.h"
 using namespace std;
@@ -17,11 +18,10 @@ class Inventory {
 	public:
 		Inventory(); // constructor
 		void draw(GraphicsOGL*, float);
-		void update(int x, int y, int invwidth, int invheight, double Rot);
+		void update(PosSpec *Dim, double Rot);
 		void leftclick(int x, int y, InvSlot *CursorSlot);
 		void rightclick(int x, int y, InvSlot *CursorSlot);
-		void updateDrawCoords(int x, int y, int fullwidth, int fullheight);
-		int posInRange(int x, int y, int x1, int y1, int x2, int y2);
+		void updateDrawCoords(PosSpec *Dim);
 		InvSlot *itemAt(int x, int y);
 		int *GetFramePos();
 	private:
@@ -38,7 +38,8 @@ class Inventory {
 		int sizepos[4];
 		int leftx,topy;
 		int allwidth,allheight;
-		int slotwidth,slotheight;
+		vector<PosSpec*> slotDims;
+		//int slotwidth,slotheight;
 		static double ItemRot;
 };
 

@@ -6,6 +6,7 @@
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
 
+#include "PosSpec.h"
 #include "playerInv.h"
 #include "menu.h"
 using namespace std;
@@ -18,6 +19,8 @@ Menu::Menu() : Drawable2(TYPE_MENU) {
 	ShowMenu = 0;
 	mouseX = 0;
 	mouseY = 0;
+	scrDim = new PosSpec(0,0,640,480);
+	invDim = new PosSpec(0,0,640,480);
 	updateDrawCoords(NULL);
 	Cursor = Textures->newTexture("Images/Menus/Cursor.png", false);
 	ItemRot = 45;
@@ -58,7 +61,7 @@ void Menu::update(GraphicsOGL* gl, float deltaTime) {
 	PrevKeyState = ThisKeyState; // record current key state in previous key state for next iteration
 	
 	if(ShowMenu) {
-		playerInventory->update(Input, leftx, topy, invwidth, invheight, ItemRot);
+		playerInventory->update(Input, invDim, ItemRot);
 	}
 }
 
@@ -68,23 +71,21 @@ int Menu::getMenuShowStatus() {
 
 void Menu::updateDrawCoords(GraphicsOGL* gl) {
 	if(gl) {
-		if(gl->getScreenWidth()!=scrwidth) {
-			scrwidth = gl->getScreenWidth();
-			cout << "Menu screen width changed to " << scrwidth << endl;
+		if(gl->getScreenWidth()!=scrDim->getWidth()) {
+			scrDim->setWidth(gl->getScreenWidth());
+			cout << "Menu screen width changed to " << scrDim->getWidth() << endl;
 		}
-		if(gl->getScreenHeight()!=scrheight) {
-			scrheight = gl->getScreenHeight();
-			cout << "Menu screen height changed to " << scrheight << endl;
+		if(gl->getScreenHeight()!=scrDim->getHeight()) {
+			scrDim->setHeight(gl->getScreenHeight());
+			cout << "Menu screen height changed to " << scrDim->getHeight() << endl;
 		}
 	} else { // gl is NULL - must assume default screen dimensions (should happen in constructor)
-		scrwidth = 640;
-		scrheight = 480;
-		cout << "Menu screen dimensions defaulted to " << scrwidth << "x" << scrheight << endl;
+		scrDim->changeDim(640,480);
+		cout << "Menu screen dimensions defaulted to " << scrDim->getWidth() << "x" << scrDim->getHeight() << endl;
 	}
-	leftx = scrwidth/10;
-	topy = scrheight/5;
-	invwidth = scrwidth*4/5;
-	invheight = scrheight*3/5;
+	
+	invDim->setTopLeft(scrDim->getWidth()/10,scrDim->getHeight()/5);
+	invDim->changeDim(scrDim->getWidth()*4/5,scrDim->getHeight()*3/5);
 }
 
 ostream& operator<<(ostream& output, const Menu menu) {
