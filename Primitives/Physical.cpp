@@ -46,6 +46,10 @@ void Physical :: draw(GraphicsOGL* gl, float deltaTime) {
 	Instantiable :: draw(gl, deltaTime);	
 }
 
+void Physical :: destroy() {
+	Instantiable :: destroy();
+}
+
 
 // ACCESSOR/MUTATOR FUNCTIONS
 	void Physical :: setX(float newX) {

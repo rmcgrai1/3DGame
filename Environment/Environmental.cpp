@@ -16,6 +16,18 @@ void Environmental :: update(GraphicsOGL* gl, float deltaT) {
 void Environmental :: draw(GraphicsOGL* gl, float deltaT) {
 }
 
+float Environmental :: getX() {
+	return x;
+}
+
+float Environmental :: getY() {
+	return y;
+}
+
+float Environmental :: getZ() {
+	return z;
+}
+
 void Environmental :: placeOnGround(GraphicsOGL* gl) {
 	if(!onGround) {
 		onGround = true;

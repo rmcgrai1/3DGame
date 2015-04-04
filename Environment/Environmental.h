@@ -13,6 +13,10 @@ class Environmental : public Instantiable {
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 
+		float getX();
+		float getY();
+		float getZ();
+
 	protected:
 		float x;
 		float y;

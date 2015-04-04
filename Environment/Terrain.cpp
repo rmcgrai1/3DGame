@@ -4,6 +4,7 @@
 
 #include <string>
 #include "../Graphics/GraphicsOGL.h"
+#include "../Graphics/Texture.h"
 #include "../Graphics/TextureController.h"
 #include "Heightmap.h"
 #include "Terrain.h"
@@ -35,7 +36,10 @@ void Terrain :: drawFirst(GraphicsOGL* gl, float deltaTime) {
 	Player* p;
 	p = gl->getPlayer();
 
+	Texture* cloudTex = gl->getTextureController()->getTexture("Noise");
+
 	gl->enableShader("Sky");
+		cloudTex->bind();
 		gl->transformTranslation(p->getX(),p->getY(),p->getZ());
 
 		float sc = 2000;
@@ -46,6 +50,8 @@ void Terrain :: drawFirst(GraphicsOGL* gl, float deltaTime) {
 		gl->draw3DWall(-sc,-sc,sc,-sc,sc,-sc);
 		gl->draw3DWall(sc,-sc,sc,sc,sc,-sc);
 		gl->transformClear();
+
+		cloudTex->unbind();
 	gl->disableShaders();
 
 

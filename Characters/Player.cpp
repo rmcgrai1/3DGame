@@ -36,7 +36,9 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 	Character :: update(gl, deltaTime);
 
 	// Update User Control of Player
-	updateControl(gl,deltaTime);
+
+	if(knockbackTimer == -1)
+		updateControl(gl,deltaTime);
 
 
 
@@ -129,6 +131,10 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 		vel = 0;
 		isMoving = false;
 	}
+
+	
+	float mouseDir = calcPtDir(320,240, i->getMouseX(), i->getMouseY());
+	toolDirection(-(cDir-90 + mouseDir) + 180);
 }
 
 void Player :: land() {

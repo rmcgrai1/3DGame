@@ -8,6 +8,9 @@
 #include "../Graphics/GraphicsOGL.h"
 #include <cmath>
 
+
+SortedList<Tree*> Tree :: treeList;
+
 Tree :: Tree(float x, float y, float newSize) : Environmental(x,y) {
 
 	isGrowing = true;
@@ -17,6 +20,8 @@ Tree :: Tree(float x, float y, float newSize) : Environmental(x,y) {
 	toSize = newSize;
 
 	growWobble = .25;
+
+	treeList.add(this);
 }
 
 void Tree :: update(GraphicsOGL* gl, float deltaTime) {
@@ -26,7 +31,7 @@ void Tree :: update(GraphicsOGL* gl, float deltaTime) {
 		size += (growWobble > 0 ? 1 : -1)*abs(toSize+growWobble - ((toSize+growWobble) - size))/10;
 
 		if((growWobble > 0 && size > toSize+growWobble) || (growWobble < 0 && size < toSize+growWobble)) {
-			growWobble *= -.75;
+			growWobble *= -.5;
 		}
 		else if(abs(growWobble) < .01)
 			isGrowing = false;

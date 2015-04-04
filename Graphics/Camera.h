@@ -14,6 +14,7 @@ class Camera {
 		void setProjection(GraphicsOGL*);
 		void setProjectionPrep(float, float, float, float, float, float);
 
+		void getNormal(float[3]);
 		void getPosition(float[3]);
 		void getShaderPosition(float[3]);
 		void getDirection(float[3]);

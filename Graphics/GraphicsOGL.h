@@ -35,6 +35,7 @@ class GraphicsOGL {
 
 
 		void setDepthTest(bool);
+		void setCulling(bool);
 		Player* getPlayer();
 		Menu* getMenu();
 

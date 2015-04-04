@@ -22,7 +22,7 @@ class Physical : public Instantiable {
 								// PARENT FUNCTIONS
 		virtual void update(GraphicsOGL*, float);		// Update Function
 		virtual void draw(GraphicsOGL*, float);			// Draw Function
-
+		virtual void destroy();
 								// ACCESSOR/MUTATOR FUNCTIONS
 		void setX(float);					// Set X
 		void setY(float);					// Set Y

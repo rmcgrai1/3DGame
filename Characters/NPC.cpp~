@@ -34,7 +34,7 @@ void NPC :: update(GraphicsOGL* gl, float deltaTime) {
 	//Inputcontroller will be simulated
 	Character :: update(gl, deltaTime);
 
-	updateControl(gl,deltaTime);
+	//updateControl(gl,deltaTime);
 }
 
 void NPC :: draw(GraphicsOGL* gl, float deltaTime) {

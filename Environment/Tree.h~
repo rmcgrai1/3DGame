@@ -7,6 +7,7 @@
 #include "Branch.h"
 #include "Environmental.h"
 #include "../Graphics/GraphicsOGL.h"
+#include "../Data/SortedList.h"
 
 class Tree : public Environmental {
 	public:
@@ -14,13 +15,15 @@ class Tree : public Environmental {
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 
+		static SortedList<Tree*> treeList;
+
 	protected:
 		Branch* root;
 		float size;
 		float toSize;
 
 		bool isGrowing;
-		float growWobble = .25;
+		float growWobble;
 };
 
 #endif

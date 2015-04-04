@@ -46,6 +46,10 @@ void Physical :: draw(GraphicsOGL* gl, float deltaTime) {
 	Instantiable :: draw(gl, deltaTime);	
 }
 
+void Physical :: destroy() {
+	Instantiable :: destroy();
+}
+
 
 // ACCESSOR/MUTATOR FUNCTIONS
 	void Physical :: setX(float newX) {
@@ -89,7 +93,6 @@ bool Physical :: collideHeightmap(Heightmap* hm) {
 
 			// Run Landing Function (Might Bounce, Play Sound?)
 			if(zVel != GRAVITY_ACCELERATION) {
-				cout << "landed!" << endl;
 				land();
 			}
 

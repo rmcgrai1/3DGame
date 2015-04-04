@@ -89,6 +89,10 @@ void GraphicsOGL :: logMessage(string str) {
 	//cout << str << endl;
 }
 
+void GraphicsOGL :: setCulling(bool val) {
+	(val) ? glEnable(GL_CULLFACE) : glDisable(GL_CULLFACE);
+}
+
 void GraphicsOGL :: setDepthTest(bool val) {
 	(val) ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 }
@@ -130,7 +134,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 			float x, y, size;
 			x = 1028 + (rand() % s - s/2.);
 			y = 1028 + (rand() % s - s/2.);
-			size = 1 + .5*(rand() % 100)/100;
+			size = 1 + 2*(rand() % 100)/100;
 
 			float cR, cG, cB;
 			cR = .2 + .4*(rand() % 100)/100;
@@ -671,6 +675,7 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 			// Draw Top of Player Model
 			glBegin(GL_TRIANGLE_FAN);
 				glTexCoord2f(.5, .5);
+				glNormal3f(0.,0.,1.);
 					glVertex3f(x,y,z+h);
 
 				for(int i = 0; i <= sideNum; i++) {
@@ -680,6 +685,7 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 					yN = calcLenY(1,dir);
 
 					glTexCoord2f(.5 + .5*xN,.5 + .5*yN);
+					glNormal3f(0.,0.,1.);
 						glVertex3f(x+xN*radTop, y+yN*radTop, z+h);
 				}
 			glEnd();
@@ -688,6 +694,7 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 				// Draw Bottom of Player Model
 				glBegin(GL_TRIANGLE_FAN);
 					glTexCoord2f(.5, .5);
+					glNormal3f(0.,0.,-1.);
 						glVertex3f(x,y,z);
 
 					for(int i = 0; i <= sideNum; i++) {
@@ -697,6 +704,7 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 						yN = calcLenY(1,dir);
 
 						glTexCoord2f(.5 + .5*xN,.5 + .5*yN);
+						glNormal3f(0.,0.,-1.);
 							glVertex3f(x+xN*radBot, y+yN*radBot, z);
 					}
 				glEnd();
@@ -710,8 +718,10 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 							yN = calcLenY(1,dir);
 
 						glTexCoord2f(0,0);
+						glNormal3f(xN,yN,0.);
 							glVertex3f(xN*radTop, yN*radTop, z+h);
 						glTexCoord2f(0,1);
+						glNormal3f(xN,yN,0.);
 							glVertex3f(xN*radBot, yN*radBot, z);
 
 
@@ -720,8 +730,10 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 							yN = calcLenY(1,dir);
 
 						glTexCoord2f(1,1);
+						glNormal3f(xN,yN,0.);
 							glVertex3f(x+xN*radBot, y+yN*radBot, z);
 						glTexCoord2f(1,0);
+						glNormal3f(xN,yN,0.);
 							glVertex3f(x+xN*radTop, y+yN*radTop, z+h);
 					glEnd();
 				}
@@ -771,12 +783,14 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 
 
 		// Get Camera Position and Direction
-		float camPos[3], sCamPos[3], camDir[3];
+		float camNormal[3], camPos[3], sCamPos[3], camDir[3];
+		glCamera->getNormal(camNormal);
 		glCamera->getPosition(camPos);
 		glCamera->getShaderPosition(sCamPos);
 		glCamera->getDirection(camDir);
 
 		// ** Pass Camera Position and Direction to Shader
+		glUniform3fv(glGetUniformLocation(curProgram, "camNormal"), 1, camNormal);		
 		glUniform3fv(glGetUniformLocation(curProgram, "rCamPos"), 1, camPos);
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, sCamPos);
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);  

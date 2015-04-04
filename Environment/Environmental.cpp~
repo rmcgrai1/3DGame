@@ -2,6 +2,7 @@
 
 #include "Environmental.h"
 #include "../Graphics/GraphicsOGL.h"
+#include "../Primitives/Instantiable.h"
 
 Environmental :: Environmental(float nX, float nY) {
 	x = nX;

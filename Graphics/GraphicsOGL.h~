@@ -16,7 +16,7 @@
 #include "../Environment/Heightmap.h"
 #include "../Environment/Terrain.h"
 #include "../Characters/Player.h"
-#include "../inventory/inventory.h"
+#include "../menus/menu.h"
 
 
 class Camera;
@@ -36,7 +36,7 @@ class GraphicsOGL {
 
 		void setDepthTest(bool);
 		Player* getPlayer();
-		Inventory* getInventory();
+		Menu* getMenu();
 
 		InputController* getInputController();
 		TextureController* getTextureController();
@@ -150,7 +150,7 @@ class GraphicsOGL {
 		int SCREEN_HEIGHT;
 
 			Player* myPlayer;
-			Inventory* myInventory;
+			Menu* myMenu;
 
 		//FPS Variables
 			unsigned long fpsStart, fpsEnd;

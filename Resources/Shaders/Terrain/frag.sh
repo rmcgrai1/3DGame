@@ -9,8 +9,21 @@ varying float sandWeight;
 varying float height;
 uniform sampler2D Texture0;
 uniform sampler2D Texture1;
-uniform vec3 lights[1];
 
+varying float dp;
+
+const int numLights = 100;
+uniform vec3 lights[numLights];
+
+
+float zDir = (iGlobalTime*10. + 90.)/180.*3.14159;
+float xN = cos(zDir), zN = sin(zDir);
+float dayAmt = (zN+1.)/2.;
+
+vec3 sunDirection = normalize(vec3(0.,zN,xN));
+
+
+varying vec3 vNormal;
 varying vec4 vWVertex;
 varying mat4 uMMatrix;
 uniform float seaLevel;
@@ -26,7 +39,7 @@ uniform sampler2D noiseTex;
 	vec3 fogColorB = vec3(0.7, 0.8, 0.9);
 	vec3 fogColorR = vec3(0.8, 0.7, 0.6);
 
-	vec3 sunDirection = normalize(vec3(0.6, 0.8, 0.5));
+	//vec3 sunDirection = normalize(vec3(0.6, 0.8, 0.5));
 
 	vec2 uv;
 
@@ -152,7 +165,7 @@ vec4 addLighting(vec4 oriColor) {
 	
 	float dis = calcDis(vWVertex.xyz,curLightPos); 
 	
-	float col = contain((dis/100.))*.7;
+	float col = contain((dis/200.))*.7;
 
 	newCol.a = 1.-col;
 
@@ -168,7 +181,7 @@ vec4 addFog(vec4 oriColor) {
 	
 	float dis = calcDis(vWVertex.xyz,vec3(rCamPos.xyz)); 
 	
-	float col = contain((dis/1000.));
+	float col = contain((dis/2000.));
 
 	newCol.a = 1.-col;
 
@@ -219,6 +232,7 @@ vec4 caustics(vec4 fragColor, vec2 uv) {
 
 void main() {
 	vec4 grassColor = vec4(texture2D(Texture0, gl_TexCoord[0].xy).rgb, grassWeight);
+		grassColor = mixColors(grassColor, vec4(.1,.5,.3, 1.));
 	vec4 sandColor = vec4(texture2D(Texture1, gl_TexCoord[0].xy).rgb, sandWeight);
 
 	gl_FragColor = mixColors(grassColor, sandColor);
@@ -226,5 +240,13 @@ void main() {
 	if(height < seaLevel)
 		gl_FragColor = caustics(gl_FragColor, gl_TexCoord[0].xy);
 
-	gl_FragColor = addFog(addLighting(gl_FragColor));
+	
+	float dark = .7 + .3*dot(sunDirection, vNormal);
+
+	//gl_FragColor = addFog(addLighting(gl_FragColor));
+	gl_FragColor = addFog(gl_FragColor);
+		gl_FragColor.rgb *= dark*dp;
+	//gl_FragColor = vec4(vNormal.xyz,1.); //addFog(gl_FragColor);
+
+	
 }

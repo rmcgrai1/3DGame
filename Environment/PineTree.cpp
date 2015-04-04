@@ -19,13 +19,37 @@ void PineTree :: update(GraphicsOGL* gl, float deltaT) {
 void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 
 	int fidelity = 10;
-
-	gl->transformClear();
-	gl->transformTranslation(x,y,z);
-	gl->transformScale(size);
-
 	float R = 20, G = 255, B = 50;
 	float r = 15, dZ, h = 30, uR, uDZ, uH;
+
+
+	//DRAW SHADOW
+	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
+
+		gl->getHeightmap()->getFloorRotations(x,y,setupRot,xyRot);
+	float grndZ = z;
+
+	gl->setCulling(true);
+	gl->setDepthTest(false);
+		gl->transformTranslation(x,y,grndZ);
+		gl->transformRotationZ(setupRot);
+		gl->transformRotationX(xyRot);	
+
+		gl->transformScale(size);	
+
+		float s = 32;
+		gl->draw3DFloor(-s,-s,s,s,0,gl->getTextureController()->getTexture("Shadow"));
+
+		gl->transformClear();
+	gl->setCulling(false);
+	gl->setDepthTest(true);
+
+
+
+
+	gl->transformClear();
+	gl->transformTranslation(x,y,z-5);
+	gl->transformScale(size);
 
 	Texture* branchTex = gl->getTextureController()->getTexture("pineBranch");
 	Texture* barkTex = gl->getTextureController()->getTexture("bark");
@@ -37,7 +61,10 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 		bB = 255*(1-colGreen);
 
 	gl->setColor(bR,bG,bB);*/
-	gl->draw3DPrism(0,0,0,5,30, fidelity, barkTex);
+
+	gl->enableShader("pineBark");
+	gl->draw3DPrism(0,0,0,4,30, fidelity, barkTex);
+	gl->draw3DCone(0,0,0,5,30, fidelity, barkTex);
 
 
 	gl->enableShader("pineBranch");
