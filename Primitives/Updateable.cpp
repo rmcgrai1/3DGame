@@ -9,6 +9,7 @@ using namespace std;
 
 
 deque<Updateable*> Updateable :: updateableList;
+deque<Updateable*> Updateable :: removeUList;
 
 Updateable :: Updateable() {
 
@@ -25,6 +26,7 @@ Updateable :: Updateable(int newType) {
 
 void Updateable :: updateAll(GraphicsOGL* gl, float deltaTime) {
 	int si = updateableList.size();
+
 	bool isInvOpen = gl->getMenu()->getMenuShowStatus();
 
 	for(int i = 0; i < si; i++) {
@@ -34,4 +36,24 @@ void Updateable :: updateAll(GraphicsOGL* gl, float deltaTime) {
 }
 		
 void Updateable :: update(GraphicsOGL* gl, float deltaTime) {
+}
+
+void Updateable :: destroy() {
+	removeUList.push_back(this);
+}
+
+void Updateable :: removeDestroyed() {
+	Updateable* inst;
+
+	for(int i = 0; i < removeUList.size(); i++) {
+		inst = removeUList[i];
+
+		for(int j = 0; j < updateableList.size(); j++)
+			if(updateableList[j] == inst) {
+				updateableList.erase(updateableList.begin()+j);
+				break;
+			}
+	}
+
+	removeUList.clear();
 }

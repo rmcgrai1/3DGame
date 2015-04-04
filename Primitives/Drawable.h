@@ -8,6 +8,7 @@
 #include <deque>
 #include "../Graphics/GraphicsOGL.h"
 #include "Updateable.h"
+#include "../Data/SortedList.h"
 
 class GraphicsOGL;
 class Drawable2 : public Updateable {
@@ -32,9 +33,7 @@ class Drawable2 : public Updateable {
 		static int TYPE_HUD;
 
 	private:
-		static deque<Drawable2*> removeDList;
-		static deque<Drawable2*> drawableList;
-		static deque<Drawable2*> hudList;
+		static SortedList<Drawable2*> drawableList;
 };
 
 #endif

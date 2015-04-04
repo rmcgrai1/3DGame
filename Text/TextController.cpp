@@ -7,12 +7,15 @@
 #include <string>
 #include "TextController.h"
 #include "TextInterpreter.h"
+#include "../Primitives/Drawable.h"
+#include "../Graphics/GraphicsOGL.h"
 using namespace std;
 
 // Create Null Format
 Format formNull = {255,255,255,1,0,0};
 
-TextController :: TextController() {
+TextController :: TextController() : Drawable2() {
+
 
 	// Create Text Interpreter Object
 	teInt = new TextInterpreter();
@@ -21,22 +24,9 @@ TextController :: TextController() {
 	setText("");
 }
 
-void TextController :: draw() {
-
-	// Clear Formatting
-	clearFormat();
+void TextController :: update(GraphicsOGL* gl, float deltaT) {
 	
-	// Print Nothing to Ensure Formatting is Set When Window Closes
-	cout << "" << flush;
-
-	// Exit if Should Not Redraw
-	if(!shouldRedraw)
-		return;	
-
-
-	// Clear Screen
-	clearScreen();
-	
+	GL = gl;
 
 	// ADD NEXT CHAR
 
@@ -89,15 +79,36 @@ void TextController :: draw() {
 
 			// Disable Text Marching, Redrawing (for Console)
 			isAdvancing = false;
-			shouldRedraw = false;
+			//shouldRedraw = false;
 		}
 	}
+
+}
+
+void TextController :: draw(GraphicsOGL* gl, float deltaT) {
+
+
+	GL = gl;
+
+	// Clear Formatting
+	clearFormat();
+
+	
+	// Exit if Should Not Redraw
+	if(!shouldRedraw)
+		return;		
+
+	gl->setOrtho();
 
 	
 	// PRINT TEXT
 
 	Format f;
 	char c;
+
+	float startX, startY, dX, dY, xS, yS, e = -1;
+	startX = dX = 80;
+	startY = dY = 0;
 
 	// Draw All of Text
 	int si = curText.size();
@@ -140,9 +151,24 @@ void TextController :: draw() {
 			setFormat(f);
 		}
 		// Otherwise, Print Character
-		else
-			cout << c << flush;
+		else {
+			xS = yS = 1.2*curScale;
+
+			if(c == '\n') { 
+				dY += (8 + e)*yS;
+				dX = startX;
+			}
+			else if(c == ' ')
+				dX += (8 + e)*xS;
+			else if(islower(c))
+				dX += gl->drawCharScaled(dX,dY + (8*yS*.25), xS,yS*.75, c) + e*xS;
+			else
+				dX += gl->drawCharScaled(dX,dY, xS, yS, c) + e*xS;
+		}
 	}
+
+
+	gl->setPerspective();
 }
 
 void TextController :: setText(string newText) {
@@ -153,6 +179,7 @@ void TextController :: setText(string newText) {
 	curPos = -1;
 	allText = newText.c_str();
 	curText = "";
+	curScale = 1;
 
 	// Only Draw/March through Text if String Has Content
 	shouldRedraw = isAdvancing = (allText.size() > 0);
@@ -164,57 +191,21 @@ void TextController :: setText(string newText) {
 void TextController :: setFormat(Format f) {
 
 	int R = f.R, G = f.G, B = f.B;	
-	//setColor(f.R, f.G, f.B);
+	setColor(f.R, f.G, f.B);
 	int bold = f.bold;
 
-	string ul = "";
-	if(f.underline)
-		ul += ";4";
-
 	if(bold) {
-		if(R > G && R > B)
-			cout << "\033[1" + ul + ";31m";
-		else if(G > R && G > B)
-			cout << "\033[1" + ul + ";32m";
-		else if(B > G && B > R)
-			cout << "\033[1" + ul + ";34m";
-		else
-			cout << "\033[1" + ul + "m";
-	} 
-	else {
-		if(R > G && R > B)
-			cout << "\033[31" + ul + "m";
-		else if(G > R && G > B)
-			cout << "\033[32" + ul + "m";
-		else if(B > G && B > R)
-			cout << "\033[34" + ul + "m";
-		else {
-			if(ul != "")
-				ul = "4";
-			else
-				ul = "0";
-			cout << "\033[" + ul + "m";
-		}
 	}
 }
 void TextController :: setColor(int R, int G, int B) {
 
-	//gl->setColor(R/255.,G/255.,B/255.,1);
-
-	if(R > G && R > B)
-		cout << "\033[31m";
-	else if(G > R && G > B)
-		cout << "\033[32m";
-	else if(B > G && B > R)
-		cout << "\033[34m";
-	else
-		cout << "\033[0m";
+	GL->setColor(R,G,B);
 }
 
 
 // Reset Formatting
 void TextController :: clearFormat() {
-	 cout << "\033[0m";
+	 setFormat(formNull);
 }
 
 // Erase Screen

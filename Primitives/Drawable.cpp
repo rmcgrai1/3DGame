@@ -10,21 +10,19 @@
 using namespace std;
 
 
-deque<Drawable2*> Drawable2 :: removeDList;
-deque<Drawable2*> Drawable2 :: drawableList;
-deque<Drawable2*> Drawable2 :: hudList;
+SortedList<Drawable2*> Drawable2 :: drawableList;
 
 
 Drawable2 :: Drawable2() : Updateable() {
 
 	visible = true;
-	drawableList.push_back(this);
+	drawableList.add(this);
 }
 
 Drawable2 :: Drawable2(int type) : Updateable(type) {
 
 	visible = true;
-	drawableList.push_back(this);
+	drawableList.add(this);
 }
 
 void Drawable2 :: drawAll(GraphicsOGL* gl, float deltaTime) {
@@ -32,7 +30,11 @@ void Drawable2 :: drawAll(GraphicsOGL* gl, float deltaTime) {
 
 	Drawable2* cur;
 	for(int i = 0; i < si; i++) {
+
 		cur = drawableList[i];
+
+		if(cur == NULL)
+			continue;
 
 		if(cur->visible)
 			cur->draw(gl, deltaTime);
@@ -51,23 +53,10 @@ void Drawable2 :: setVisible(int newV) {
 }
 
 void Drawable2 :: destroy() {
-	//Drawable2 :: destroy();
-
-	removeDList.push_back(this);
+	Updateable :: destroy();
+	drawableList.destroy(this);
 }
 
 void Drawable2 :: removeDestroyed() {
-	Drawable2* inst;
-
-	for(int i = 0; i < removeDList.size(); i++) {
-		inst = removeDList[i];
-
-		for(int j = 0; j < drawableList.size(); j++)
-			if(drawableList[j] == inst) {
-				drawableList.erase(drawableList.begin()+j);
-				break;
-			}
-	}
-
-	removeDList.clear();
+	drawableList.removeDestroyed();
 }

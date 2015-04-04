@@ -6,7 +6,7 @@ uniform vec3 iCamPos;
 uniform vec3 iCamDir;
 varying vec3 vVertex;
 uniform float seaLevel;
-uniform sampler2D noiseTex;
+uniform sampler2D tex;
 
 
 vec3 sunColor = vec3(1.8, 1.1, 0.6);
@@ -48,7 +48,7 @@ float cloudsDensity = 0.3;
 float cloudsCover = 0.2;
 
 float noiseT(in vec2 p) {
-	return texture2D(noiseTex, p / 256.0, -100.0).x * 2.0 - 1.0;
+	return texture2D(tex, p / 256.0, -100.0).x * 2.0 - 1.0;
 }
 
 float fBm(in vec2 p) {

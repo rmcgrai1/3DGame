@@ -2,12 +2,15 @@
 
 
 #include "../Graphics/GraphicsOGL.h"
+#include "Particle.h"
 #include "../Primitives/Instantiable.h"
 
 Particle :: Particle(float nX, float nY, float nZ) : Instantiable() {
 	x = nX;
 	y = nY;
 	z = nZ;
+
+	cout << nX << ", " << nY << ", " << nZ << endl;
 }
 
 void Particle :: update(GraphicsOGL* gl, float deltaTime) {

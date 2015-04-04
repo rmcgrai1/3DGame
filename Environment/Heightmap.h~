@@ -25,6 +25,7 @@ class Heightmap : public Drawable2 {
 		float getHeightIJ(int, int);
 		float getHeightXY(float, float);
 		void getNormal(float, float, float [3]);
+		void getFloorRotations(float, float, float&, float&);
 		bool isFloor(float, float);
 		bool isWall(float, float);
 	private:

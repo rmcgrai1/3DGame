@@ -25,6 +25,9 @@ void TextureController :: initialize() {
 	addTexture("Grass","Resources/Images/grass.png");
 	addTexture("Sand","Resources/Images/sand.png");
 	addTexture("Noise","Resources/Images/noise.png");
+	addTexture("Shadow","Resources/Images/shadow.png");
+	addTexture("pineBranch","Resources/Images/pineBranch.jpg");
+	addTexture("bark","Resources/Images/bark1.png");
 }
 void TextureController :: addTexture(string name, string fileName) {
 	textureMap[name] = new Texture(fileName,false);

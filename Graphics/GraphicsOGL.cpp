@@ -5,6 +5,7 @@
 
 #include <unistd.h>
 #include <chrono>
+#include <stdlib.h>
 #include <cctype>
 #include <iostream>
 #include <GL/freeglut.h>
@@ -31,12 +32,17 @@
 #include "../Environment/Tree.h"
 #include "../Environment/Terrain.h"
 #include "../menus/menu.h"
+#include "../Text/TextController.h"
+#include "../Environment/PineTree.h"
+//#include "../menus/menu.h"
+
 
 using namespace std;
 using namespace std::chrono;
 
+
+TextController* tc;
 	
-NPC* npc;
 
 GraphicsOGL* ogl;
 void idleCallback() {
@@ -79,7 +85,21 @@ Menu* GraphicsOGL :: getMenu() {
 	return myMenu;
 }
 
+void GraphicsOGL :: logMessage(string str) {
+	//cout << str << endl;
+}
+
+void GraphicsOGL :: setCulling(bool val) {
+	(val) ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+}
+
+void GraphicsOGL :: setDepthTest(bool val) {
+	(val) ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+}
+
 void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
+
+	srand(time(NULL));
 
 	//Initialize OpenGL
 	glutInit(&argc, argv);
@@ -106,19 +126,43 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		fontController = new FontController();
 		textureController = new TextureController();
 		shaderController = new ShaderController();
+
+		tc = new TextController();
+
+		for(int i = 0; i < 50; i++) {
+			int s = 1000;
+			float x, y, size;
+			x = 1028 + (rand() % s - s/2.);
+			y = 1028 + (rand() % s - s/2.);
+			size = 1 + 2*(rand() % 100)/100;
+
+			float cR, cG, cB;
+			cR = .2 + .4*(rand() % 100)/100;
+			cG = .6 + .4*(rand() % 100)/100;
+			cB = .3 + .3*(rand() % 100)/100;
+			new PineTree(x,y,size,cR,cG,cB);
+		}
+
 		myMenu = new Menu();
 
-		terrain = new Terrain(textureController,2048,2048, "Resources/Images/test.png",150);
+		new NPC(1000,1018,0);
+		new NPC(1018,1018,0);
+		
 		myPlayer = new Player(1028,1028,0);
-		npc = new NPC(1018,1018,0);
+		
+		terrain = new Terrain(textureController,2048*5,2048*5, 500, "Resources/Images/test.png",150);
+		
+		tc->setText("`Color:#FF0000`Shaquille``, this is pretty sweet, yeah?\nCheck this out.\n\nSo awesome.");
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
 	glutIdleFunc(idleCallback);
 	glutDisplayFunc(displayCallback);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	
 	//Start up Main Loop
-	glutMainLoop();
+	glutMainLoop();	
 }
 
 //Get Screen Width
@@ -154,6 +198,7 @@ void GraphicsOGL :: idle() {
 		// Update All Updateable Objects
 		Updateable :: updateAll(this, 1);
 
+		Updateable :: removeDestroyed();
 		Drawable2 :: removeDestroyed();
 		Instantiable :: removeDestroyed();
 
@@ -190,8 +235,7 @@ void GraphicsOGL :: display() {
 
 	drawStart = getTime();
 
-	
-
+		
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
  	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
@@ -200,7 +244,6 @@ void GraphicsOGL :: display() {
 
 	globalTime += 1;
 	
-	glColor3f(1,1,1);
 
 
 	// DRAW WORLD
@@ -215,12 +258,16 @@ void GraphicsOGL :: display() {
 	// DRAW HUD
 
 	setOrtho();
+		setFont("8bit");
+		// TEMPORARY FIX
+		drawString(-20,-20,"0");
+
 		string fpsStr = "FPS: ", dirStr = "Dir: ", posStr = "Pos: ";
 			fpsStr = fpsStr + to_string(fps);
 			dirStr = dirStr + to_string(getCamDir());
 			posStr = posStr + to_string(myPlayer->getX()) + ", " + to_string(myPlayer->getY()) + ", " + to_string(myPlayer->getZ());
 
-		setFont("8bit");
+
 
 		float s = 1;
 		drawStringScaled(0,0,s,s,fpsStr);
@@ -247,7 +294,19 @@ void GraphicsOGL :: display() {
 
 //DRAWING FUNCTIONS
 	void GraphicsOGL :: setColor(int R, int G, int B) {
-		glColor3i(R, G, B);
+
+		glColor3ub(R,G,B);
+
+		if(curProgram == 0)
+			return;
+
+		float color[4];
+		color[0] = R/255.;
+		color[1] = G/255.;
+		color[2] = B/255.;
+		color[3] = 1.;
+
+		glUniform4fv(glGetUniformLocation(curProgram, "iColor"), 1, color);
 	}
 
 	void GraphicsOGL :: drawPoint(float x, float y) {
@@ -373,9 +432,13 @@ void GraphicsOGL :: display() {
 			return;
 		}
 
+
+
 		glEnable(GL_TEXTURE_2D);
 		tex->bind();
 
+		//glBegin(GL_QUADS);
+		//glEnd();
 
 		float depth = 0, w, h;
 		w = xS*tex->getWidth();
@@ -393,7 +456,7 @@ void GraphicsOGL :: display() {
 		glEnd();
 
 		glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		tex->unbind();
 	}
 
 
@@ -495,10 +558,13 @@ void GraphicsOGL :: display() {
 		}
 		void GraphicsOGL :: draw3DWall(float x1, float y1, float z1, float x2, float y2, float z2, Texture* tex, float xRepeat, float yRepeat) {
 
+
 			if(tex != NULL) {
 				glEnable(GL_TEXTURE_2D);
 				tex->bind();
 			}
+			
+
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -523,7 +589,7 @@ void GraphicsOGL :: display() {
 			draw3DFloor(x1,y1,x2,y2,z,NULL);
 		}
 		void GraphicsOGL :: draw3DFloor(float x1, float y1, float x2, float y2, float z, Texture* tex) {
-			draw3DFloor(x1,y1,x2,y2,z,NULL,1,1);
+			draw3DFloor(x1,y1,x2,y2,z,tex,1,1);
 		}
 		void GraphicsOGL :: draw3DFloor(float x1, float y1, float x2, float y2, float z, Texture* tex, float xRepeat, float yRepeat) {
 
@@ -586,10 +652,19 @@ void GraphicsOGL :: display() {
 			draw3DPrism(x,y,z,rad,0,sideNum,tex);
 		}
 
-		void GraphicsOGL :: draw3DPrism(float x, float y, float z, float rad, float h, int sideNum) {
-			draw3DPrism(x,y,z,rad,h,sideNum,NULL);
+void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, int sideNum) {
+			draw3DCone(x,y,z,rad,h,sideNum,NULL);
 		}
-		void GraphicsOGL :: draw3DPrism(float x, float y, float z, float rad, float height, int sideNum, Texture* tex) {
+
+void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, int sideNum, Texture* tex) {
+			draw3DFrustem(x,y,z,rad,0,h,sideNum,tex);
+		}
+
+		void GraphicsOGL :: draw3DFrustem(float x, float y, float z, float radBot, float radTop, float h, int sideNum) {
+			draw3DFrustem(x,y,z,radBot,radTop,h,sideNum);
+		}
+
+		void GraphicsOGL :: draw3DFrustem(float x, float y, float z, float radBot, float radTop, float h, int sideNum, Texture* tex) {
 			float ang = 45, dir, xN, yN;
 
 			if(tex != NULL) {
@@ -600,7 +675,8 @@ void GraphicsOGL :: display() {
 			// Draw Top of Player Model
 			glBegin(GL_TRIANGLE_FAN);
 				glTexCoord2f(.5, .5);
-					glVertex3f(x,y,z+height);
+				glNormal3f(0.,0.,1.);
+					glVertex3f(x,y,z+h);
 
 				for(int i = 0; i <= sideNum; i++) {
 					dir = ang + 1.*i/sideNum*360;
@@ -609,14 +685,16 @@ void GraphicsOGL :: display() {
 					yN = calcLenY(1,dir);
 
 					glTexCoord2f(.5 + .5*xN,.5 + .5*yN);
-						glVertex3f(x+xN*rad, y+yN*rad, z+height);
+					glNormal3f(0.,0.,1.);
+						glVertex3f(x+xN*radTop, y+yN*radTop, z+h);
 				}
 			glEnd();
 
-			if(height != 0) {
-				// Draw Top of Player Model
+			if(h != 0) {
+				// Draw Bottom of Player Model
 				glBegin(GL_TRIANGLE_FAN);
 					glTexCoord2f(.5, .5);
+					glNormal3f(0.,0.,-1.);
 						glVertex3f(x,y,z);
 
 					for(int i = 0; i <= sideNum; i++) {
@@ -626,7 +704,8 @@ void GraphicsOGL :: display() {
 						yN = calcLenY(1,dir);
 
 						glTexCoord2f(.5 + .5*xN,.5 + .5*yN);
-							glVertex3f(x+xN*rad, y+yN*rad, z);
+						glNormal3f(0.,0.,-1.);
+							glVertex3f(x+xN*radBot, y+yN*radBot, z);
 					}
 				glEnd();
 
@@ -639,9 +718,11 @@ void GraphicsOGL :: display() {
 							yN = calcLenY(1,dir);
 
 						glTexCoord2f(0,0);
-							glVertex3f(xN*rad, yN*rad, height);
+						glNormal3f(xN,yN,0.);
+							glVertex3f(xN*radTop, yN*radTop, z+h);
 						glTexCoord2f(0,1);
-							glVertex3f(xN*rad, yN*rad, 0);
+						glNormal3f(xN,yN,0.);
+							glVertex3f(xN*radBot, yN*radBot, z);
 
 
 						dir = ang + (i+1.)/sideNum*360;
@@ -649,9 +730,11 @@ void GraphicsOGL :: display() {
 							yN = calcLenY(1,dir);
 
 						glTexCoord2f(1,1);
-							glVertex3f(x+xN*rad, y+yN*rad, z);
+						glNormal3f(xN,yN,0.);
+							glVertex3f(x+xN*radBot, y+yN*radBot, z);
 						glTexCoord2f(1,0);
-							glVertex3f(x+xN*rad, y+yN*rad, z+height);
+						glNormal3f(xN,yN,0.);
+							glVertex3f(x+xN*radTop, y+yN*radTop, z+h);
 					glEnd();
 				}
 			}
@@ -662,27 +745,35 @@ void GraphicsOGL :: display() {
 			}
 		}
 
+		void GraphicsOGL :: draw3DPrism(float x, float y, float z, float rad, float h, int sideNum) {
+			draw3DPrism(x,y,z,rad,h,sideNum,NULL);
+		}
+		void GraphicsOGL :: draw3DPrism(float x, float y, float z, float rad, float h, int sideNum, Texture* tex) {
+			draw3DFrustem(x,y,z,rad,rad,h,sideNum,tex);
+		}
+
 //SHADERS
 
+	void GraphicsOGL :: setShaderVariable(string varName, float value) {
+		glUniform1f(glGetUniformLocation(curProgram, varName.c_str()), value);
+	}
 
 	void GraphicsOGL :: disableShaders() {
-		textureController->getTexture("Noise")->unbind(GL_TEXTURE2);
+		// TOTALLY BREAKS TEXTURES
 		glUseProgram(0);
+		//textureController->getTexture("Noise")->unbind(GL_TEXTURE2);
 	}
 
 	void GraphicsOGL :: enableShader(string name) {
-		enableShader(shaderController->getProgram(name));
-	}
-
-	void GraphicsOGL :: enableShader(GLuint program) {
+		curShader = shaderController->getShader(name);
 
 		Texture* noiseTex = textureController->getTexture("Noise");
 
 		// Set Current Shader Program
-		curProgram = program;
+		curProgram = curShader->getProgram();
 
 		// Enable Current Shader
-		glUseProgram(program);
+		glUseProgram(curProgram);
 
 		// ** Pass Screen Resolution and Time Value (Used in Animations) to Shader
 		glUniform2fv(glGetUniformLocation(curProgram, "iResolution"), 1, resolution);			
@@ -690,13 +781,16 @@ void GraphicsOGL :: display() {
 		glUniform1f(glGetUniformLocation(curProgram, "iRadius"), 0);
 
 
+
 		// Get Camera Position and Direction
-		float camPos[3], sCamPos[3], camDir[3];
+		float camNormal[3], camPos[3], sCamPos[3], camDir[3];
+		glCamera->getNormal(camNormal);
 		glCamera->getPosition(camPos);
 		glCamera->getShaderPosition(sCamPos);
 		glCamera->getDirection(camDir);
 
 		// ** Pass Camera Position and Direction to Shader
+		glUniform3fv(glGetUniformLocation(curProgram, "camNormal"), 1, camNormal);		
 		glUniform3fv(glGetUniformLocation(curProgram, "rCamPos"), 1, camPos);
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamPos"), 1, sCamPos);
 		glUniform3fv(glGetUniformLocation(curProgram, "iCamDir"), 1, camDir);  
@@ -707,7 +801,7 @@ void GraphicsOGL :: display() {
 		glUniform1i(glGetUniformLocation(curProgram, "Texture0"), 0);
     		glUniform1i(glGetUniformLocation(curProgram, "Texture1"), 1);
     		glUniform1i(glGetUniformLocation(curProgram, "noiseTex"), 2);
-			noiseTex->bind(GL_TEXTURE2);
+			//noiseTex->bind(GL_TEXTURE2);
 
 		
 
@@ -774,7 +868,7 @@ void GraphicsOGL :: display() {
 		int len = str.length();
 		char c;
 
-		float s = 8, e = -1;
+		float s = curFont->getWidth(), e = -1;
 
 		float dX = x, dY = y;
 
@@ -814,6 +908,7 @@ void GraphicsOGL :: setPerspective() {
 	glLoadIdentity();
 	//glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH);
+	glDisable(GL_LIGHTING);
 }
 
 

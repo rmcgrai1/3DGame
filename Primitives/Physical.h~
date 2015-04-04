@@ -45,7 +45,6 @@ class Physical : public Instantiable {
 		virtual void land() = 0;				// What Happens when Landing
 
 
-
 	protected:
 								// CONSTRUCTOR(S)
 		Physical(float, float, float);				// Position Constructor

@@ -22,6 +22,8 @@ void Water :: update(GraphicsOGL* gl, float deltaTime) {
 
 void Water :: draw(GraphicsOGL* gl, float deltaTime) {
 
+	gl->logMessage("Water.cpp, draw()");
+
 	if(!gl->isPCSlow())
 		gl->enableShader("Water");
 		

@@ -5,19 +5,25 @@
 #define TREE_H
 
 #include "Branch.h"
-#include "../Primitives/Physical.h"
+#include "Environmental.h"
 #include "../Graphics/GraphicsOGL.h"
+#include "../Data/SortedList.h"
 
-class Tree : public Physical {
+class Tree : public Environmental {
 	public:
-		Tree(int,int,int);
-		void update(Controller*, float);
-		void draw(Controller*, float);
+		Tree(float,float,float);
+		virtual void update(GraphicsOGL*, float);
+		virtual void draw(GraphicsOGL*, float);
 
-	private:
-		void land();
+		static SortedList<Tree*> treeList;
 
+	protected:
 		Branch* root;
+		float size;
+		float toSize;
+
+		bool isGrowing;
+		float growWobble;
 };
 
 #endif

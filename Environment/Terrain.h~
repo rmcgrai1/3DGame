@@ -32,6 +32,6 @@ class Terrain : public Drawable2 {
 
 		Heightmap* heightmap;
 		Water* water;
-}
+};
 
 #endif

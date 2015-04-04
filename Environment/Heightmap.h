@@ -16,7 +16,7 @@ class Heightmap : public Drawable2 {
 
 	public:
 		Heightmap(float, float, float);
-		Heightmap(TextureController*, float, float, string);
+		Heightmap(TextureController*, float, float, float, string);
 		Heightmap(float, float, int**);
 		Heightmap(float, float, float**);
 
@@ -25,6 +25,7 @@ class Heightmap : public Drawable2 {
 		float getHeightIJ(int, int);
 		float getHeightXY(float, float);
 		void getNormal(float, float, float [3]);
+		void getFloorRotations(float, float, float&, float&);
 		bool isFloor(float, float);
 		bool isWall(float, float);
 	private:

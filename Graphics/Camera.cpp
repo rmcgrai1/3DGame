@@ -77,6 +77,18 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 }
 
 
+void Camera :: getNormal(float vec[3]) {
+	vec[0] = toX-camX;
+	vec[1] = toY-camY;
+	vec[2] = toZ-camZ;
+
+	float len = sqrt(sqr(vec[0]) + sqr(vec[1]) + sqr(vec[2]));
+
+	vec[0] /= len;
+	vec[1] /= len;
+	vec[2] /= len;
+}
+
 void Camera :: getPosition(float vec[3]) {
 	vec[0] = camX;
 	vec[1] = camY;

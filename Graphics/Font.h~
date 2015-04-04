@@ -12,10 +12,11 @@ class Font2D {
 	public:
 		Font2D(string,bool);
 		Texture* getChar(char);
+		int getSize();
 
 	private:
-		void addChar(char,string,int,char**);
-		void addChar(char,int,char**);
+		void addChar(char,string);
+		void addChar(char);
 
 		map<char, Texture*> fontMap;
 		bool isCaseEnabled;
