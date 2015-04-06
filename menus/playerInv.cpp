@@ -21,7 +21,9 @@ playerInv::playerInv() {
 	inv = new Inventory;
 	mouseX = 0;
 	mouseY = 0;
-	updateDrawCoords(64,96,640,480);
+	invDim = new PosSpec(0,0,640,480);
+	insDim = new PosSpec(0,0,640,480);
+	updateDrawCoords(invDim);
 	Cursor = Textures->newTexture("Images/Menus/Cursor.png", false);
 }
 
@@ -30,11 +32,11 @@ void playerInv::draw(GraphicsOGL* gl, float deltaTime) {
 	inv->draw(gl, deltaTime);
 }
 
-void playerInv::update(InputController* Input, int x, int y, int invwidth, int invheight, double Rot) {
-	updateDrawCoords(x, y, invwidth, invheight);
+void playerInv::update(InputController* Input, PosSpec *NEWinvDim, double Rot) {
+	updateDrawCoords(NEWinvDim);
 	
 	//update all inventories here
-	inv->update(leftx,topy,inswidth,insheight,Rot);
+	inv->update(insDim,Rot);
 	
 	mouseX = Input->getMouseX();
 	mouseY = Input->getMouseY();
@@ -73,11 +75,9 @@ void playerInv::update(InputController* Input, int x, int y, int invwidth, int i
 	PrevRightMouseState = ThisRightMouseState; // record current button state in previous button state for next iteration
 }
 
-void playerInv::updateDrawCoords(int x, int y, int fullwidth, int fullheight) {
-	leftx = x+fullwidth/10;
-	topy = y+fullheight/5;
-	inswidth = fullwidth*4/5;
-	insheight = fullheight*3/5;
+void playerInv::updateDrawCoords(PosSpec *Dim) {
+	delete [] insDim;
+	insDim = Dim->InsetFraction(0.1,0.2);
 }
 
 int playerInv::posInRange(int x, int y, int x1, int y1, int x2, int y2) {

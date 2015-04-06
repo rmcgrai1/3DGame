@@ -31,7 +31,7 @@
 #include "../Characters/NPC.h"
 #include "../Environment/Tree.h"
 #include "../Environment/Terrain.h"
-#include "../inventory/inventory.h"
+#include "../menus/menu.h"
 #include "../Text/TextController.h"
 #include "../Environment/PineTree.h"
 //#include "../menus/menu.h"

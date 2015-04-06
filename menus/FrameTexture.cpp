@@ -6,6 +6,7 @@
 #include "../Graphics/Texture.h"
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/GraphicsOGL.h"
+#include "PosSpec.h"
 
 #include "FrameTexture.h"
 using namespace std;
@@ -22,8 +23,12 @@ FrameTexture::FrameTexture(TexturePack *TP, string Folder) {
 	}
 }
 
-void FrameTexture::drawat(GraphicsOGL* gl, int x, int y, int x2, int y2, int *inCoords) {
-	UpdateDrawCoords(x2-x, y2-y);
+void FrameTexture::drawat(GraphicsOGL* gl, PosSpec *Dim, PosSpec *inCoords) {
+	UpdateDrawCoords(Dim->getWidth(), Dim->getHeight());
+	int x = Dim->getLeftX();
+	int y = Dim->getTopY();
+	int x2 = Dim->getRightX();
+	int y2 = Dim->getBottomY();
 	int blank = 0;
 	int *dummy = &blank;
 	int curX = x;
@@ -41,10 +46,8 @@ void FrameTexture::drawat(GraphicsOGL* gl, int x, int y, int x2, int y2, int *in
 		if(i==4 && inCoords) {
 			int itemwidth = SpriteDim[4][0]*xNum*SpriteScales[0];
 			int itemheight = SpriteDim[4][1]*yNum*SpriteScales[1];
-			inCoords[0] = curX;
-			inCoords[1] = curY[1];
-			inCoords[2] = itemwidth;
-			inCoords[3] = itemheight;
+			inCoords->setTopLeft(curX,curY[1]); // MAY BE INCORRECT INDEX OF curY
+			inCoords->changeDim(itemwidth,itemheight);
 		}
 		tileTexture(gl,curX,curY[i%3],SpriteDim[i][0],SpriteDim[i][1],xNum,yNum,SpriteScales[0],SpriteScales[1],&curX,&curY[i%3],Sprites[i]);
 		
@@ -65,6 +68,12 @@ void FrameTexture::tileTexture(GraphicsOGL* gl, int x, int y, int width, int hei
 }
 
 void FrameTexture::UpdateDrawCoords(int width, int height) {
+	if(!width) {
+		width = 10;
+	}
+	if(!height) {
+		height = 10;
+	}
 	int x;
 	int looping = 1;
 	int forcestop = 0;
@@ -79,7 +88,6 @@ void FrameTexture::UpdateDrawCoords(int width, int height) {
 			y = (xwidth-(SpriteDim[5][0]+SpriteDim[3][0]))/((double)SpriteDim[4][0]); // calculate needed number of repetitions of other rows to match up
 			z = (xwidth-(SpriteDim[8][0]+SpriteDim[6][0]))/((double)SpriteDim[7][0]);
 			SpriteScales[0] = (double)width/(double)xwidth; // calculate needed scale
-			cout << x << "," << y << "," << z << ":" << SpriteScales[0] << endl;
 			if(((y-((double)((int)y))<0.01) && (z-((double)((int)z))<0.01)) || forcestop) { // if whole numbers needed, use this number of multiples
 				looping = 0;
 				SpriteNums[0] = x;

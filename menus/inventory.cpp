@@ -1,11 +1,13 @@
 #include<iostream>
 #include <iomanip>
+#include <iterator>
 #include <vector>
 #include "../Graphics/GraphicsOGL.h"
 #include "../Primitives/Drawable.h"
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
 
+#include "PosSpec.h"
 #include "item.h"
 #include "invslot.h"
 #include "inventory.h"
@@ -22,7 +24,9 @@ Inventory::Inventory() {
 	ShowInventory = 0;
 	mouseX = 0;
 	mouseY = 0;
-	updateDrawCoords(64,96,640,480);
+	PosSpec *tempDim = new PosSpec(64,96,640,480);
+	updateDrawCoords(tempDim);
+	delete [] tempDim;
 	Cursor = Textures->newTexture("Images/Menus/Cursor.png", false);
 	ItemRot = 45;
 	
@@ -35,20 +39,16 @@ Inventory::Inventory() {
 }
 
 void Inventory::draw(GraphicsOGL* gl, float deltaTime) {
-	int row, col, i, x, y;
-	for(row=0;row<3;row++) {
-		for(col=0;col<9;col++) {
-			i = row*9+col;
-			x = leftx + slotwidth*col;
-			y = topy + slotheight*row;
-			
-			Slots[i]->drawat(gl, x, y, x+slotwidth, y+slotheight, ItemRot);
-		}
+	int i = 0;
+	vector<PosSpec*>::iterator j;
+	for(j=slotDims.begin();j!=slotDims.end();j++) {
+		Slots[i]->drawat(gl, (*j), ItemRot);
+		i++;
 	}
 }
 
-void Inventory::update(int x, int y, int invwidth, int invheight, double Rot) {
-	updateDrawCoords(x,y,invwidth,invheight);
+void Inventory::update(PosSpec *Dim, double Rot) {
+	updateDrawCoords(Dim);
 	// Update rotation of items
 	ItemRot = Rot;
 }
@@ -76,38 +76,26 @@ void Inventory::rightclick(int x, int y, InvSlot *CursorSlot) {
 	}
 }
 
-void Inventory::updateDrawCoords(int x, int y, int fullwidth, int fullheight) {
-	leftx = x;
-	topy = y;
-	allwidth = fullwidth;
-	allheight = fullheight;
-	slotwidth = allwidth/9;
-	slotheight = allheight/3;
-	
+void Inventory::updateDrawCoords(PosSpec *Dim) {
+	leftx = Dim->getLeftX();
+	topy = Dim->getTopY();
+	allwidth = Dim->getWidth();
+	allheight = Dim->getHeight();
+	//slotwidth = allwidth/9;
+	//slotheight = allheight/3;
+	Dim->UpdateSplit(9,3, &slotDims);
 	sizepos[0] = leftx;
 	sizepos[1] = topy;
 	sizepos[2] = allwidth;
 	sizepos[3] = allheight;
 }
 
-int Inventory::posInRange(int x, int y, int x1, int y1, int x2, int y2) {
-	if((x1<=x && x<=x2) || (x2<=x && x<=x1)) {
-		if((y1<=y && y<=y2) || (y2<=y && y<=y1)) {
-			return 1;
-		} else {
-			return 0;
-		}
-	} else {
-		return 0;
-	}
-}
-
 InvSlot *Inventory::itemAt(int x, int y) {
 	int i;
 	for(i=0;i<27;i++) {
 		InvSlot *ThisSlot = Slots[i];
-		int *Frame = ThisSlot->GetFrameIntPos();
-		if(posInRange(x,y,Frame[0],Frame[1],Frame[0]+Frame[2],Frame[1]+Frame[3])) {
+		PosSpec *Frame = ThisSlot->GetFrameIntPos();
+		if(Frame->isInside(x,y)) {
 			return ThisSlot;
 		}
 	}

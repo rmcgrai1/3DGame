@@ -18,8 +18,8 @@ class playerInv {
 	public:
 		playerInv(); // constructor
 		void draw(GraphicsOGL*, float);
-		void update(InputController* Input, int x, int y, int invwidth, int invheight, double Rot);
-		void updateDrawCoords(int x, int y, int fullwidth, int fullheight);
+		void update(InputController* Input, PosSpec *NEWinvDim, double Rot);
+		void updateDrawCoords(PosSpec *Dim);
 		int posInRange(int x, int y, int x1, int y1, int x2, int y2);
 		Inventory *InvAt(int x, int y);
 	private:
@@ -33,9 +33,11 @@ class playerInv {
 		int mouseX;
 		int mouseY;
 		
-		int leftx,topy;
-		int inswidth,insheight;
-		int slotwidth,slotheight;
+		PosSpec *invDim;
+		PosSpec *insDim;
+		//int leftx,topy;
+		//int inswidth,insheight;
+		//int slotwidth,slotheight;
 };
 
 #endif
