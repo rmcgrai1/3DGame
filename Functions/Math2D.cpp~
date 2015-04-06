@@ -55,6 +55,10 @@
 		return newDir;
 	}
 
+	float calcAngleDiff(float dir1, float dir2) {
+		return modf((modf(dir1 - dir2, 360) + 540), 360) - 180;
+	}
+
 /*float abs(float n) {
 	return (n > 0) ? n : -n;
 }*/

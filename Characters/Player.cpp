@@ -134,7 +134,10 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 
 	
 	float mouseDir = calcPtDir(320,240, i->getMouseX(), i->getMouseY());
-	toolDirection(-(cDir-90 + mouseDir) + 180);
+	toolDirection(cDir-90 + -mouseDir);
+
+	if(i->checkLeftMouse())
+		attack();
 }
 
 void Player :: land() {

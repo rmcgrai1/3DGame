@@ -124,6 +124,7 @@ class GraphicsOGL {
 
 		//SHADERS
 			void setShaderVariable(string, float);
+			void passShaderShadows();
 			void disableShaders();
 			void enableShader(GLuint);
 			void enableShader(string);

@@ -14,6 +14,8 @@ class Tree : public Environmental {
 		Tree(float,float,float);
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
+		void destroy();
+		void damage(float);
 
 		static SortedList<Tree*> treeList;
 
@@ -26,6 +28,12 @@ class Tree : public Environmental {
 
 		bool isGrowing;
 		float growWobble;
+
+		float fallXYDir;
+		float fallZDir;
+		float fallZVel;
+
+		float damageShakeTimer;
 };
 
 #endif

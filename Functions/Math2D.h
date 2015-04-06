@@ -22,5 +22,6 @@
 
 // MAGICAL!!
 	float calcTurnToDir(float, float);
+	float calcAngleDiff(float, float);
 
 #endif

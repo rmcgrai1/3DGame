@@ -11,6 +11,7 @@
 #include "Character.h"
 #include <cmath>
 #include "../Functions/Math2D.h"
+//#include "../Particles/AttackSwing.h"
 #include "../Environment/Heightmap.h"
 #include "../Particles/SmokeRing.h"
 using namespace std;
@@ -30,6 +31,8 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	faceDir = 0;
 	toolDir = 0;
 
+	attackTimer = -1;
+
 	knockbackTimer = -1;
 	knockbackDir = 0;
 
@@ -41,6 +44,10 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	characterList.add(this);
 }
 
+void Character :: damage(float dDir) {
+	knockback(dDir);
+}
+
 void Character :: update(GraphicsOGL* gl, float deltaTime) {
 
 	// Update Physics/Collisions
@@ -50,6 +57,12 @@ void Character :: update(GraphicsOGL* gl, float deltaTime) {
 	collideCharacter();
 
 	updateHop(deltaTime);
+
+	if(attackTimer > -1) {
+		attackTimer -= deltaTime;
+		if(attackTimer <= -1)
+			attackTimer = -1;
+	}
 
 	if(gl->getInputController()->checkLetter('y'))
 		knockback(0);
@@ -68,6 +81,51 @@ void Character :: update(GraphicsOGL* gl, float deltaTime) {
 			knockbackTimer = -1;
 		}
 	}
+}
+
+void Character :: attack() {
+	if(attackTimer > -1)
+		return;
+
+	//new AttackSwing(x,y,z,toolDirection);
+
+	float atkX, atkY, atkR;
+	atkX = x;
+	atkY = y;
+	atkR = 2*s;
+
+	// Attack Trees
+	for(int i = 0; i < Tree::treeList.size(); i++) {
+		Tree* t = Tree::treeList[i];
+
+		float tX = t->getX(), tY = t->getY();
+		float dis = calcPtDis(atkX,atkY,tX,tY);
+		float tS = t->getSize()*5;
+
+		if(dis < (atkR + tS)) {
+			float dir = calcPtDir(atkX,atkY,tX,tY);
+			if(abs(calcAngleDiff(dir, toolDir)) < 90)
+				t->damage(dir);
+		}
+	}
+
+	for(int i = 0; i < characterList.size(); i++) {
+		Character* c = characterList[i];
+
+		if(c != this) {
+
+			float cX = c->getX(), cY = c->getY();
+			float dis = calcPtDis(atkX,atkY,cX,cY);
+			float cS = s;//t->getSize()*5;
+
+			if(dis < (s*2 + cS)) {
+				float dir = calcPtDir(atkX,atkY,cX,cY);
+				if(abs(calcAngleDiff(dir, toolDir)) < 90)
+					c->damage(dir);
+			}
+		}
+	}
+
 }
 
 void Character :: collideTree() {
@@ -161,6 +219,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	Heightmap* hm = gl->getHeightmap();
 
+
 	float sideNum = 6;
 
 	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
@@ -174,6 +233,20 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->transformTranslation(x,y,grndZ);
 		gl->transformRotationZ(setupRot);
 		gl->transformRotationX(xyRot);	
+		gl->transformRotationZ(-setupRot);
+		gl->transformRotationZ(toolDir);
+
+		gl->transformTranslation(8,0,0);
+
+		gl->draw3DFloor(-8,-8,8,8,0);
+		gl->transformClear();
+	gl->setDepthTest(true);
+
+
+	gl->setDepthTest(false);
+		gl->transformTranslation(x,y,grndZ);
+		gl->transformRotationZ(setupRot);
+		gl->transformRotationX(xyRot);	
 
 		gl->transformScale(1 - (z-grndZ)/70);	
 
@@ -181,6 +254,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 		gl->transformClear();
 	gl->setDepthTest(true);
+
 
 	/*
 	// Draw Several Shadows
@@ -228,13 +302,19 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	gl->enableShader("Character");
 	gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
+	if(knockbackTimer > -1)
+		gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
+	else
+		gl->setShaderVariable("iHit",0);
+
 
 	gl->draw3DPrism(0,0,0,s,h,6);
 
-	gl->disableShaders();
 
 	gl->disableShaders();
 	gl->transformClear();
+
+	gl->setColor(255,255,255);
 }
 
 void Character :: destroy() {
@@ -248,14 +328,17 @@ void Character :: faceDirection(float dir) {
 }
 
 void Character :: toolDirection(float dir) {
-	toolDir += calcTurnToDir(toolDir,dir);
+	toolDir = dir;//+= calcTurnToDir(toolDir,dir);
 }
 
 void Character :: knockback(float kDir) {
-	knockbackDir = kDir;
-	knockbackTimer = 15;
 
-	zVel = 1;
+	if(knockbackTimer == -1) {
+		knockbackDir = kDir;
+		knockbackTimer = 15;
+
+		zVel = 1.5;
+	}
 }
 
 

@@ -201,6 +201,7 @@ void GraphicsOGL :: idle() {
 		Updateable :: removeDestroyed();
 		Drawable2 :: removeDestroyed();
 		Instantiable :: removeDestroyed();
+		Tree :: treeList.removeDestroyed();
 
 		// Draw Current Frame
 		glutPostRedisplay();
@@ -756,6 +757,31 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 
 	void GraphicsOGL :: setShaderVariable(string varName, float value) {
 		glUniform1f(glGetUniformLocation(curProgram, varName.c_str()), value);
+	}
+	void GraphicsOGL :: passShaderShadows() {
+		
+		int numShadows = 0;
+		float shadows[3*100];
+
+			for(int i = 0; i < Character::characterList.size(); i++) {
+				Character* c = Character::characterList[i];
+				
+				shadows[numShadows*3+0] = c->getX();
+				shadows[numShadows*3+1] = c->getY();
+				shadows[numShadows*3+2] = 6;				
+				numShadows++;
+			}
+			for(int i = 0; i < Tree::treeList.size(); i++) {
+				Tree* t = Tree::treeList[i];
+				
+				shadows[numShadows*3+0] = t->getX();
+				shadows[numShadows*3+1] = t->getY();
+				shadows[numShadows*3+2] = 32*t->getSize();				
+				numShadows++;
+			}
+
+		glUniform3fv(glGetUniformLocation(curProgram, "shadows"), 100, shadows);
+		glUniform1i(glGetUniformLocation(curProgram, "shadowNum"),numShadows);
 	}
 
 	void GraphicsOGL :: disableShaders() {

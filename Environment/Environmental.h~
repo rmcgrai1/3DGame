@@ -12,11 +12,18 @@ class Environmental : public Instantiable {
 		Environmental(float,float);
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
+		virtual void damage() = 0;
+
+		float getX();
+		float getY();
+		float getZ();
 
 	protected:
 		float x;
 		float y;
 		float z;
+
+		float health;
 
 	private:
 		void placeOnGround(GraphicsOGL*);

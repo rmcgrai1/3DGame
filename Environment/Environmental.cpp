@@ -5,6 +5,7 @@
 #include "../Primitives/Instantiable.h"
 
 Environmental :: Environmental(float nX, float nY) {
+	health = 100;
 	x = nX;
 	y = nY;
 }

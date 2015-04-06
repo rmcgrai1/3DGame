@@ -110,9 +110,9 @@ Heightmap.o: Environment/Heightmap.cpp Environment/Heightmap.h
 Water.o: Environment/Water.cpp Environment/Water.h
 	g++ -c Environment/Water.cpp
 Tree.o: Environment/Tree.cpp Environment/Tree.h
-	g++ -c Environment/Tree.cpp
+	g++ -c Environment/Tree.cpp -std=c++11
 PineTree.o: Environment/PineTree.cpp Environment/PineTree.h
-	g++ -c Environment/PineTree.cpp
+	g++ -c Environment/PineTree.cpp -std=c++11
 Branch.o: Environment/Branch.cpp Environment/Branch.h
 	g++ -c Environment/Branch.cpp
 

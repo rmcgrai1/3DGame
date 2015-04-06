@@ -64,7 +64,7 @@ Heightmap :: Heightmap(TextureController* tc, float xS, float yS, float zS, stri
 
 		// Set Height to Value of Current Pixel
 		for(int j = 0; j < xNum; j++)
-			setHeight(i,j,hmImg->getValue(j,i));
+			setHeight(i,j,hmImg->getValue(j,i)/255.*zS);
 	}
 
 	texGrass = tc->getTexture("Grass");

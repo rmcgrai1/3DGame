@@ -15,6 +15,9 @@ varying float dp;
 const int numLights = 100;
 uniform vec3 lights[numLights];
 
+uniform int shadowNum;
+uniform vec3 shadows[100];
+
 
 float zDir = (iGlobalTime*10. + 90.)/180.*3.14159;
 float xN = cos(zDir), zN = sin(zDir);
@@ -102,12 +105,22 @@ uniform sampler2D noiseTex;
 	}
 
 
+
+
 float sqr(float x) {
 	return x*x;
 }
 
 float calcDis(vec3 pt1, vec3 pt2) {
-	return sqrt(sqr(pt1.x-pt2.x) + sqr(pt1.y-pt2.y) + sqr(pt1.y-pt2.y));
+	return sqrt(sqr(pt1.x-pt2.x) + sqr(pt1.y-pt2.y) + sqr(pt1.z-pt2.z));
+}
+
+float calcDis(vec2 pt1, vec2 pt2) {
+	return sqrt(sqr(pt1.x-pt2.x) + sqr(pt1.y-pt2.y));
+}
+
+bool isInsideBox(vec2 pt, vec2 ptBox, float r) {
+	return ((pt.x > ptBox.x - r && pt.x < ptBox.x + r) && (pt.y > ptBox.y - r && pt.y < ptBox.y + r));
 }
 
 float contain(float val) {
@@ -167,8 +180,6 @@ vec4 addLighting(vec4 oriColor) {
 	
 	float col = contain((dis/200.))*.7;
 
-	newCol.a = 1.-col;
-
 	return mixColors(newCol, vec4(0.,0.,0.,col));
 }
 
@@ -186,6 +197,24 @@ vec4 addFog(vec4 oriColor) {
 	newCol.a = 1.-col;
 
 	return mixColors(newCol, vec4(getFogColor().rgb,col));
+}
+
+vec4 addShadows(vec4 oriColor) {
+	
+	int i;
+	for(i = 0; i < shadowNum; i++) {
+		vec3 curPos = shadows[i];
+		float curR = curPos.z;
+
+		if(!insideBox(vWVertex.xy,curPos.xy,curR))
+			continue;
+
+		float dis = calcDis(vWVertex.xy,curPos.xy);
+	
+		oriColor.rgb *= pow(contain((dis/curR)),2.);
+	}
+
+	return oriColor;
 }
 
 
@@ -248,5 +277,5 @@ void main() {
 		gl_FragColor.rgb *= dark*dp;
 	//gl_FragColor = vec4(vNormal.xyz,1.); //addFog(gl_FragColor);
 
-	
+	gl_FragColor = addShadows(gl_FragColor);	
 }
