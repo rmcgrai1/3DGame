@@ -34,6 +34,7 @@
 #include "../menus/menu.h"
 #include "../Text/TextController.h"
 #include "../Environment/PineTree.h"
+#include "../Environment/DirtPath.h"
 //#include "../menus/menu.h"
 
 
@@ -43,7 +44,7 @@ using namespace std::chrono;
 
 TextController* tc;
 	
-
+DirtPath* dp;
 GraphicsOGL* ogl;
 void idleCallback() {
 
@@ -147,6 +148,16 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 		new NPC(1000,1018,0);
 		new NPC(1018,1018,0);
+
+		dp = new DirtPath();
+		for(int i = 0; i < 10; i++) {
+			int s = 1000;
+			float x, y, size = 32;
+			x = 1028 + (rand() % s - s/2.);
+			y = 1028 + (rand() % s - s/2.);
+
+			dp->addPt(x, y, size);
+		}
 		
 		myPlayer = new Player(1028,1028,0);
 		
@@ -783,6 +794,11 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 		glUniform3fv(glGetUniformLocation(curProgram, "shadows"), 100, shadows);
 		glUniform1i(glGetUniformLocation(curProgram, "shadowNum"),numShadows);
 	}
+	void GraphicsOGL :: passShaderPath() {
+		
+		glUniform3fv(glGetUniformLocation(curProgram, "pathPts"), 100, dp->pts);
+		glUniform1i(glGetUniformLocation(curProgram, "pathPtNum"), dp->numPts);
+	}
 
 	void GraphicsOGL :: disableShaders() {
 		// TOTALLY BREAKS TEXTURES
@@ -826,6 +842,7 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 		// Pass Texture(s) to Shader
 		glUniform1i(glGetUniformLocation(curProgram, "Texture0"), 0);
     		glUniform1i(glGetUniformLocation(curProgram, "Texture1"), 1);
+    		glUniform1i(glGetUniformLocation(curProgram, "Texture2"), 3);
     		glUniform1i(glGetUniformLocation(curProgram, "noiseTex"), 2);
 			//noiseTex->bind(GL_TEXTURE2);
 

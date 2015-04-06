@@ -11,12 +11,13 @@
 #include "../Graphics/TextureController.h"
 using namespace std;
 
+class Drawable2;
 class Controller;
 class Heightmap : public Drawable2 {
 
 	public:
 		Heightmap(float, float, float);
-		Heightmap(TextureController*, float, float, string);
+		Heightmap(TextureController*, float, float, float, string);
 		Heightmap(float, float, int**);
 		Heightmap(float, float, float**);
 

@@ -9,6 +9,7 @@ varying float sandWeight;
 varying float height;
 uniform sampler2D Texture0;
 uniform sampler2D Texture1;
+uniform sampler2D Texture2;
 
 varying float dp;
 
@@ -17,6 +18,9 @@ uniform vec3 lights[numLights];
 
 uniform int shadowNum;
 uniform vec3 shadows[100];
+
+uniform int pathPtNum;
+uniform vec3 pathPts[100];
 
 
 float zDir = (iGlobalTime*10. + 90.)/180.*3.14159;
@@ -111,6 +115,10 @@ float sqr(float x) {
 	return x*x;
 }
 
+float contain(float val) {
+	return max(0.,min(1.,val));
+}
+
 float calcDis(vec3 pt1, vec3 pt2) {
 	return sqrt(sqr(pt1.x-pt2.x) + sqr(pt1.y-pt2.y) + sqr(pt1.z-pt2.z));
 }
@@ -119,12 +127,25 @@ float calcDis(vec2 pt1, vec2 pt2) {
 	return sqrt(sqr(pt1.x-pt2.x) + sqr(pt1.y-pt2.y));
 }
 
-bool isInsideBox(vec2 pt, vec2 ptBox, float r) {
-	return ((pt.x > ptBox.x - r && pt.x < ptBox.x + r) && (pt.y > ptBox.y - r && pt.y < ptBox.y + r));
+float calcLineDis(vec2 pt, vec2 lPt1, vec2 lPt2) {
+	float dx, dy, t;
+	vec2 pt0;
+
+	dx = lPt2.x - lPt1.x;
+	dy = lPt2.y - lPt1.y;
+	if ((dx == 0.) && (dy == 0.)) 
+		pt0 = lPt1;
+	else {
+		t = (dx*(pt.x-lPt1.x) + dy*(pt.y-lPt1.y)) / (dx*dx+dy*dy);
+			t = contain(t);
+		pt0 = vec2(lPt1.x + t * dx, lPt1.y + t * dy);
+	}
+	
+	return calcDis(pt, pt0);
 }
 
-float contain(float val) {
-	return max(0.,min(1.,val));
+bool isInsideBox(vec2 pt, vec2 ptBox, float r) {
+	return ((pt.x > ptBox.x - r && pt.x < ptBox.x + r) && (pt.y > ptBox.y - r && pt.y < ptBox.y + r));
 }
 
 vec4 getFogColor() {
@@ -178,9 +199,12 @@ vec4 addLighting(vec4 oriColor) {
 	
 	float dis = calcDis(vWVertex.xyz,curLightPos); 
 	
-	float col = contain((dis/200.))*.7;
+	float darkness = contain((dis/200.))*.9;
+	float light = pow(1.-contain((dis/100.))*.9,2.);
 
-	return mixColors(newCol, vec4(0.,0.,0.,col));
+
+	oriColor = mixColors(newCol, vec4(0.,0.,0.,darkness));
+	return mixColors(newCol, vec4(1.,1.,.5,light));
 }
 
 vec4 addFog(vec4 oriColor) {
@@ -206,13 +230,39 @@ vec4 addShadows(vec4 oriColor) {
 		vec3 curPos = shadows[i];
 		float curR = curPos.z;
 
-		if(!insideBox(vWVertex.xy,curPos.xy,curR))
+		if(!isInsideBox(vWVertex.xy,curPos.xy,curR))
 			continue;
 
 		float dis = calcDis(vWVertex.xy,curPos.xy);
 	
 		oriColor.rgb *= pow(contain((dis/curR)),2.);
 	}
+
+	return oriColor;
+}
+
+vec4 addPath(vec4 oriColor) {
+
+	vec4 dirtColor = vec4(texture2D(Texture2, gl_TexCoord[0].xy).rgb,1.);
+	vec3 ptOld, ptCur = pathPts[0];
+
+	int i;
+	for(i = 1; i < pathPtNum; i++) {
+		ptOld = ptCur;
+		ptCur = pathPts[i];
+
+		float curR = ptCur.z;
+
+
+		float dis = calcLineDis(vWVertex.xy,ptOld.xy,ptCur.xy);
+	
+		dirtColor.a = 1.-pow(contain((dis/curR)),2.);
+		oriColor.a = 1.-dirtColor.a;
+
+		oriColor = mixColors(oriColor, dirtColor);
+	}
+
+	oriColor.a = 1.;
 
 	return oriColor;
 }
@@ -272,10 +322,12 @@ void main() {
 	
 	float dark = .7 + .3*dot(sunDirection, vNormal);
 
-	//gl_FragColor = addFog(addLighting(gl_FragColor));
-	gl_FragColor = addFog(gl_FragColor);
+	//gl_FragColor = addFog();
+	gl_FragColor = addFog(addPath(gl_FragColor));
 		gl_FragColor.rgb *= dark*dp;
 	//gl_FragColor = vec4(vNormal.xyz,1.); //addFog(gl_FragColor);
 
 	gl_FragColor = addShadows(gl_FragColor);	
+
+	gl_FragColor = addLighting(gl_FragColor);
 }

@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o Data/SortedList.h
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o TextController.o TextInterpreter.o Data/SortedList.h -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o
+	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -27,6 +27,9 @@ item.o: menus/item.cpp menus/item.h Graphics/Texture.h Graphics/TexturePack.h
 
 FrameTexture.o: menus/FrameTexture.cpp menus/FrameTexture.h Graphics/Texture.h Graphics/TexturePack.h Graphics/GraphicsOGL.h
 	g++ -c menus/FrameTexture.cpp -o FrameTexture.o -std=c++11
+
+PosSpec.o: menus/PosSpec.cpp menus/PosSpec.h
+	g++ -c menus/PosSpec.cpp -o PosSpec.o
 
 
 # FUNCTIONS
@@ -80,8 +83,8 @@ Shader.o: Graphics/Shader.cpp Graphics/Shader.h
 ###############################################################
 Updateable.o: Primitives/Updateable.cpp Primitives/Updateable.h
 	g++ -c Primitives/Updateable.cpp -std=c++11
-Drawable.o: Primitives/Drawable.cpp Primitives/Drawable.h
-	g++ -c Primitives/Drawable.cpp
+Drawable.o: Primitives/Drawable.cpp Primitives/Drawable.h Data/SortedList.h
+	g++ -c Primitives/Drawable.cpp Data/SortedList.h
 Instantiable.o: Primitives/Instantiable.cpp Primitives/Instantiable.h
 	g++ -c Primitives/Instantiable.cpp
 Physical.o: Primitives/Physical.cpp Primitives/Physical.h
@@ -110,11 +113,13 @@ Heightmap.o: Environment/Heightmap.cpp Environment/Heightmap.h
 Water.o: Environment/Water.cpp Environment/Water.h
 	g++ -c Environment/Water.cpp
 Tree.o: Environment/Tree.cpp Environment/Tree.h
-	g++ -c Environment/Tree.cpp
+	g++ -c Environment/Tree.cpp -std=c++11
 PineTree.o: Environment/PineTree.cpp Environment/PineTree.h
-	g++ -c Environment/PineTree.cpp
+	g++ -c Environment/PineTree.cpp -std=c++11
 Branch.o: Environment/Branch.cpp Environment/Branch.h
 	g++ -c Environment/Branch.cpp
+DirtPath.o: Environment/DirtPath.cpp Environment/DirtPath.h
+	g++ -c Environment/DirtPath.h
 
 
 # INPUT/OUTPUT

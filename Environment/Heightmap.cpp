@@ -282,6 +282,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	if(!gl->isPCSlow()) {
 		gl->enableShader("Terrain");
 		gl->passShaderShadows();
+		gl->passShaderPath();
 	}
 
 	if(texGrass != NULL) {
@@ -289,6 +290,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	
 		texGrass->bind(GL_TEXTURE0);
 		texSand->bind(GL_TEXTURE1);
+		gl->getTextureController()->getTexture("Dirt")->bind(GL_TEXTURE3);
 	}
 
 	Drawable2 :: draw(gl, deltaTime);
@@ -335,6 +337,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	if(texSand != NULL) {
 		texSand->unbind();
 	}
+	gl->getTextureController()->getTexture("Dirt")->unbind();
 	// Added to make 2d images render correctly
 }
 

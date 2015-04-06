@@ -10,6 +10,7 @@
 #include "Updateable.h"
 #include "../Data/SortedList.h"
 
+class Heightmap;
 class GraphicsOGL;
 class Drawable2 : public Updateable {
 	public:

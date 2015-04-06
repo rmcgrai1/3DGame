@@ -34,7 +34,6 @@ class Drawable2 : public Updateable {
 
 	private:
 		static SortedList<Drawable2*> drawableList;
-		static deque<Drawable2*> hudList;
 };
 
 #endif
