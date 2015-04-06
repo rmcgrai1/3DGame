@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o
+	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -35,7 +35,7 @@ PosSpec.o: menus/PosSpec.cpp menus/PosSpec.h
 # FUNCTIONS
 ###############################################################
 Math2D.o: Functions/Math2D.cpp Functions/Math2D.h
-	g++ -c Functions/Math2D.cpp
+	g++ -c Functions/Math2D.cpp -std=c++11
 
 
 
@@ -115,7 +115,9 @@ Water.o: Environment/Water.cpp Environment/Water.h
 Tree.o: Environment/Tree.cpp Environment/Tree.h
 	g++ -c Environment/Tree.cpp -std=c++11
 PineTree.o: Environment/PineTree.cpp Environment/PineTree.h
-	g++ -c Environment/PineTree.cpp -std=c++11
+	g++ -c Environment/PineTree.cpp
+Bush.o: Environment/Bush.cpp Environment/Bush.h
+	g++ -c Environment/Bush.cpp
 Branch.o: Environment/Branch.cpp Environment/Branch.h
 	g++ -c Environment/Branch.cpp
 DirtPath.o: Environment/DirtPath.cpp Environment/DirtPath.h

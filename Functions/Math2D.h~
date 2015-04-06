@@ -20,6 +20,9 @@
 
 	float modf(float, float);
 
+
+	unsigned long getTime();
+
 // MAGICAL!!
 	float calcTurnToDir(float, float);
 	float calcAngleDiff(float, float);

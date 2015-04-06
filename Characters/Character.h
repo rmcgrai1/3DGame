@@ -42,6 +42,12 @@ class Character : public Physical {
 		bool isMoving;
 		float attackTimer;
 
+		float wXRot;
+		float wYRot;
+		float wZRot;
+
+		int shape;
+
 	private:
 		void updateHop(float);
 		void collideCharacter();

@@ -2,7 +2,11 @@
 
 
 #include <cmath>
+#include <chrono>
+#include <ctime>
+#include <stdlib.h>
 #include "Math2D.h"
+using namespace std::chrono;
 
 
 
@@ -42,6 +46,19 @@
 
 			return x;
 		}
+	}
+
+	unsigned long getTime() {
+
+		nanoseconds ms = duration_cast< nanoseconds >(
+	 		high_resolution_clock::now().time_since_epoch()
+		);
+
+		return ms.count();
+	}
+
+	float rnd() {
+		return ((getTime()*rand())%100)/100.;
 	}
 
 // MAGICAL!!!

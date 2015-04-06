@@ -57,6 +57,7 @@ class GraphicsOGL {
 
 		// DRAWING
 			void setColor(int,int,int);
+			void setColor(int,int,int,int);
 
 		//2D DRAWING
 			// 2D PRIMITIVES

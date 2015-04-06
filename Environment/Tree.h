@@ -20,11 +20,14 @@ class Tree : public Environmental {
 		static SortedList<Tree*> treeList;
 
 		float getSize();
+		bool getHasShadow();
 
 	protected:
 		Branch* root;
 		float size;
 		float toSize;
+
+		bool hasShadow;
 
 		bool isGrowing;
 		float growWobble;

@@ -16,6 +16,16 @@
 #include "../Particles/SmokeRing.h"
 using namespace std;
 
+#define SH_SPHERE 0
+#define SH_CONE_UP 1
+#define SH_CONE_DOWN 2
+#define SH_PRISM_6 3
+#define SH_PRISM_5 4
+#define SH_CUBE 5
+#define SH_PRISM_3 6
+#define SH_CYLINDER 7
+
+#define ATTACK_TIMER_MAX 16 //12
 
 SortedList<Character*> Character :: characterList;
 
@@ -40,6 +50,14 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	hopZVel = 0;
 	hopSc = 1;
 	hopDir = 1;
+
+	shape = floor(rnd()*8);
+
+	
+	wXRot = 0;
+	wYRot = 0;
+	wZRot = 0;
+
 
 	characterList.add(this);
 }
@@ -89,10 +107,13 @@ void Character :: attack() {
 
 	//new AttackSwing(x,y,z,toolDirection);
 
+	attackTimer = ATTACK_TIMER_MAX;
+
+	float atkAng = 90;
 	float atkX, atkY, atkR;
 	atkX = x;
 	atkY = y;
-	atkR = 2*s;
+	atkR = s + 10*1.3;
 
 	// Attack Trees
 	for(int i = 0; i < Tree::treeList.size(); i++) {
@@ -104,7 +125,7 @@ void Character :: attack() {
 
 		if(dis < (atkR + tS)) {
 			float dir = calcPtDir(atkX,atkY,tX,tY);
-			if(abs(calcAngleDiff(dir, toolDir)) < 90)
+			if(abs(calcAngleDiff(dir, toolDir)) < atkAng)
 				t->damage(dir);
 		}
 	}
@@ -120,7 +141,7 @@ void Character :: attack() {
 
 			if(dis < (s*2 + cS)) {
 				float dir = calcPtDir(atkX,atkY,cX,cY);
-				if(abs(calcAngleDiff(dir, toolDir)) < 90)
+				if(abs(calcAngleDiff(dir, toolDir)) < atkAng)
 					c->damage(dir);
 			}
 		}
@@ -229,19 +250,6 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	//DRAW SHADOW
 	float grndZ = hm->getHeightXY(x,y);
 
-	gl->setDepthTest(false);
-		gl->transformTranslation(x,y,grndZ);
-		gl->transformRotationZ(setupRot);
-		gl->transformRotationX(xyRot);	
-		gl->transformRotationZ(-setupRot);
-		gl->transformRotationZ(toolDir);
-
-		gl->transformTranslation(8,0,0);
-
-		gl->draw3DFloor(-8,-8,8,8,0);
-		gl->transformClear();
-	gl->setDepthTest(true);
-
 
 	/*gl->setDepthTest(false);
 		gl->transformTranslation(x,y,grndZ);
@@ -280,11 +288,9 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->glSet();
 	*/
 
-	
+	gl->enableShader("Character");	
 	gl->transformTranslation(x,y,z+hopZ);
 	
-
-
 	if(onGround/*&& hopZ <= 0*/) {
 		gl->transformRotationZ(setupRot);	
 		gl->transformRotationX(xyRot);
@@ -300,7 +306,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	//gl->transformTranslation(-hopZVel,hopX,0);
 	gl->transformScale(hopSc,hopSc,1/hopSc);
 
-	gl->enableShader("Character");
+
 	gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
 	if(knockbackTimer > -1)
 		gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
@@ -308,12 +314,117 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->setShaderVariable("iHit",0);
 
 
-	gl->draw3DPrism(0,0,0,s,h,6);
+	if(shape == SH_PRISM_6)
+		gl->draw3DPrism(0,0,0,s,h,6);
+	else if(shape == SH_PRISM_5)
+		gl->draw3DPrism(0,0,0,s,h,5);
+	else if(shape == SH_PRISM_3)
+		gl->draw3DPrism(0,0,0,s,h,3);
+	else if(shape == SH_CUBE)
+		gl->draw3DPrism(0,0,0,s,h,4);
+	else if(shape == SH_SPHERE)
+		gl->draw3DSphere(0,0,s,s,13);
+	else if(shape == SH_CONE_DOWN)
+		gl->draw3DCone(0,0,h,s,-h,13);
+	else if(shape == SH_CONE_UP)
+		gl->draw3DCone(0,0,0,s,h,13);
+	else if(shape == SH_CYLINDER)
+		gl->draw3DPrism(0,0,0,s,h,13);
+
+	gl->transformClear();
+
+		// Draw Weapon
+		gl->transformTranslation(x,y,z+hopZ);
+	
+		if(onGround/*&& hopZ <= 0*/) {
+			gl->transformRotationZ(setupRot);	
+			gl->transformRotationX(xyRot);
+			gl->transformRotationZ(-setupRot);
+
+
+			gl->transformRotationZ(faceDir);		
+			gl->transformTranslation(-hopZVel,hopX,0);	
+			gl->transformTranslation(-3*hopZVel,3*hopX,0);
+			gl->transformRotationZ(-faceDir);		
+		}
+		
+		if(attackTimer == -1)
+			gl->transformRotationZ(toolDir);
+		else {
+			//Animation #1
+			// Stab
+			/*gl->transformRotationZ(toolDir);
+
+			float timerPerc = pow(attackTimer/ATTACK_TIMER_MAX,2.);
+
+
+			gl->transformTranslation(7,-6,3);
+			gl->transformRotationY(90*timerPerc);
+			gl->transformTranslation(-7,6,-3);
+
+			gl->transformRotationZ(90*timerPerc);*/
+
+			//Animation #2
+			gl->transformRotationZ(toolDir);
+
+			float timerPerc = attackTimer/ATTACK_TIMER_MAX;			
+				float mTimerPerc = pow(abs(sin(3.14159*(1-timerPerc))),.3);
+
+			//timerPerc = min(1.,1-2*timerPerc);
+
+			float tTimerPerc = min(1.,attackTimer/(ATTACK_TIMER_MAX*.75));
+			tTimerPerc = 1.-tTimerPerc;
+
+			float nXRot, nYRot, nZRot;
+			nXRot = mTimerPerc*(20*cos(3.14159*tTimerPerc));
+			nYRot = mTimerPerc*(90 + 5*cos(3.14159*tTimerPerc));
+
+			//tTimerPerc += (1 - tTimerPerc)/pow(1+timerPerc,.5);
+			nZRot = mTimerPerc*(180*(-.5 + tTimerPerc));
+
+			float f = 1+2*(1.-mTimerPerc);
+
+			wXRot += (nXRot - wXRot)/f;
+			wYRot += (nYRot - wYRot)/f;
+			wZRot += (nZRot - wZRot)/f;
+
+			gl->transformRotationZ(wZRot);
+
+			gl->transformTranslation(7,-6,3);
+			gl->transformRotationY(wYRot);
+			gl->transformRotationX(wXRot);
+			gl->transformTranslation(-7,6,-3);
+
+		}
+
+
+		gl->transformTranslation(7,-6,3);
+
+		gl->transformScale(1,1,1.3);
+
+		gl->setShaderVariable("cDirection", toolDir/180.*3.14159);
+		if(knockbackTimer > -1)
+			gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
+		else
+			gl->setShaderVariable("iHit",0);
+
+
+		// Hilt
+		gl->draw3DPrism(0,0,.5,.5,2,3);
+		gl->draw3DBlock(-.8,-2,2,.8,2,3);
+
+		// Blade
+		gl->draw3DCone(0,0,7,1,3,3);
+		gl->draw3DFrustem(0,0,2,.8,1,5,3);
+
+
+
+
+	gl->transformClear();
+
 
 
 	gl->disableShaders();
-	gl->transformClear();
-
 	gl->setColor(255,255,255);
 }
 

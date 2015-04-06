@@ -35,7 +35,7 @@ PosSpec.o: menus/PosSpec.cpp menus/PosSpec.h
 # FUNCTIONS
 ###############################################################
 Math2D.o: Functions/Math2D.cpp Functions/Math2D.h
-	g++ -c Functions/Math2D.cpp
+	g++ -c Functions/Math2D.cpp -std=c++11
 
 
 
@@ -115,11 +115,13 @@ Water.o: Environment/Water.cpp Environment/Water.h
 Tree.o: Environment/Tree.cpp Environment/Tree.h
 	g++ -c Environment/Tree.cpp -std=c++11
 PineTree.o: Environment/PineTree.cpp Environment/PineTree.h
-	g++ -c Environment/PineTree.cpp -std=c++11
+	g++ -c Environment/PineTree.cpp
+Bush.o: Environment/Bush.cpp Environment/Bush.h
+	g++ -c Environment/Bush.cpp
 Branch.o: Environment/Branch.cpp Environment/Branch.h
 	g++ -c Environment/Branch.cpp
 DirtPath.o: Environment/DirtPath.cpp Environment/DirtPath.h
-	g++ -c Environment/DirtPath.h
+	g++ -c Environment/DirtPath.cpp
 
 
 # INPUT/OUTPUT

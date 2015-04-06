@@ -34,7 +34,7 @@ void NPC :: update(GraphicsOGL* gl, float deltaTime) {
 	//Inputcontroller will be simulated
 	Character :: update(gl, deltaTime);
 
-	//updateControl(gl,deltaTime);
+	updateControl(gl,deltaTime);
 }
 
 void NPC :: draw(GraphicsOGL* gl, float deltaTime) {
@@ -47,9 +47,12 @@ void NPC :: draw(GraphicsOGL* gl, float deltaTime) {
 void NPC :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	srand(time(NULL));
 	InputController* i = gl->getInputController();
-	float dir = rand()%10-5, cDir = gl->getCamDir(), aDir;
+	float dir = 10*rnd()-5, cDir = gl->getCamDir(), aDir;
 	direction += dir;
 	isMoving = true;
+
+	faceDirection(direction);
+	toolDirection(direction);
 	/*int randMove = rand()%360;
 	switch(randMove){
 		case 1: 

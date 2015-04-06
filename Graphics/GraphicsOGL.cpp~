@@ -34,6 +34,7 @@
 #include "../menus/menu.h"
 #include "../Text/TextController.h"
 #include "../Environment/PineTree.h"
+#include "../Environment/Bush.h"
 #include "../Environment/DirtPath.h"
 //#include "../menus/menu.h"
 
@@ -128,7 +129,6 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		textureController = new TextureController();
 		shaderController = new ShaderController();
 
-		tc = new TextController();
 
 		for(int i = 0; i < 50; i++) {
 			int s = 1000;
@@ -144,10 +144,38 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 			new PineTree(x,y,size,cR,cG,cB);
 		}
 
+		for(int i = 0; i < 20; i++) {
+			int s = 1000;
+			float x, y, size;
+			x = 1028 + (rand() % s - s/2.);
+			y = 1028 + (rand() % s - s/2.);
+			size = 1 + .5*rnd();
+
+			float cR, cG, cB;
+			cR = .2 + .2*rnd();
+			cG = .6 + .4*rnd();
+			cB = .3 + .5*rnd();
+
+			new Bush(x,y,.25*size,cR,cG,cB);
+		}
+
+
 		myMenu = new Menu();
 
-		new NPC(1000,1018,0);
-		new NPC(1018,1018,0);
+		for(int i = 0; i < 15; i++) {
+			int s = 1000;
+			float x, y, size;
+			x = 1028 + (rand() % s - s/2.);
+			y = 1028 + (rand() % s - s/2.);
+			size = 1 + .5*rnd();
+
+			float cR, cG, cB;
+			cR = .2 + .2*rnd();
+			cG = .6 + .4*rnd();
+			cB = .3 + .5*rnd();
+
+			new NPC(x,y,0);
+		}
 
 		dp = new DirtPath();
 		for(int i = 0; i < 10; i++) {
@@ -163,7 +191,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		
 		terrain = new Terrain(textureController,2048*5,2048*5, 500, "Resources/Images/test.png",150);
 		
-		tc->setText("`Color:#FF0000`Shaquille``, this is pretty sweet, yeah?\nCheck this out.\n\nSo awesome.");
+		tc->setText("Welcome to `Color:#FF0000`GAME TITLE``!\n\nExplore the land, kill monsters, and try to find the town.");
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
 	glutIdleFunc(idleCallback);
@@ -317,6 +345,22 @@ void GraphicsOGL :: display() {
 		color[1] = G/255.;
 		color[2] = B/255.;
 		color[3] = 1.;
+
+		glUniform4fv(glGetUniformLocation(curProgram, "iColor"), 1, color);
+	}
+
+	void GraphicsOGL :: setColor(int R, int G, int B, int A) {
+
+		glColor4ub(R,G,B,A);
+
+		if(curProgram == 0)
+			return;
+
+		float color[4];
+		color[0] = R/255.;
+		color[1] = G/255.;
+		color[2] = B/255.;
+		color[3] = A/255.;
 
 		glUniform4fv(glGetUniformLocation(curProgram, "iColor"), 1, color);
 	}
@@ -516,8 +560,14 @@ void GraphicsOGL :: display() {
 
 				for(float j = 0; j < numPts; j++) {
 
-					zDir1 = 90*2*r*(.5-(i/numPts));
-					zDir2 = 90*2*r*(.5-((i+1)/numPts));
+					float perc1, perc2;
+					perc1 = .5-(i/numPts);
+						perc1 = sin(3.14159*(-.5 + i/numPts));
+					perc2 = .5-((i+1)/numPts);//sin(3.14159*(.5-((i+1)/numPts)));
+						perc2 = sin(3.14159*(-.5 + (i+1)/numPts));
+
+					zDir1 = 90*perc1;
+					zDir2 = 90*perc2;
 
 					xyN1 = calcLenX(1,zDir1);
 					xyN2 = calcLenX(1,zDir2);
@@ -545,12 +595,12 @@ void GraphicsOGL :: display() {
 						xN2 = calcLenX(1,dir)*xyN2;
 						yN2 = calcLenY(1,dir)*xyN2;
 
-					glTexCoord2f((j+1)/numPts,(i+1)/numPts);
-					glNormal3f(xN2,yN2,zN2);
-						glVertex3f(x+xN2*r, y+yN2*r, z+zN2*r);
 					glTexCoord2f((j+1)/numPts,i/numPts);
 					glNormal3f(xN1,yN1,zN1);
 						glVertex3f(x+xN1*r, y+yN1*r, z+zN1*r);
+					glTexCoord2f((j+1)/numPts,(i+1)/numPts);
+					glNormal3f(xN2,yN2,zN2);
+						glVertex3f(x+xN2*r, y+yN2*r, z+zN2*r);
 				}
 
 				glEnd();
@@ -673,7 +723,7 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 		}
 
 		void GraphicsOGL :: draw3DFrustem(float x, float y, float z, float radBot, float radTop, float h, int sideNum) {
-			draw3DFrustem(x,y,z,radBot,radTop,h,sideNum);
+			draw3DFrustem(x,y,z,radBot,radTop,h,sideNum,NULL);
 		}
 
 		void GraphicsOGL :: draw3DFrustem(float x, float y, float z, float radBot, float radTop, float h, int sideNum, Texture* tex) {
@@ -784,11 +834,14 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 			}
 			for(int i = 0; i < Tree::treeList.size(); i++) {
 				Tree* t = Tree::treeList[i];
+
+				if(t->getHasShadow()) {
 				
-				shadows[numShadows*3+0] = t->getX();
-				shadows[numShadows*3+1] = t->getY();
-				shadows[numShadows*3+2] = 32*t->getSize();				
-				numShadows++;
+					shadows[numShadows*3+0] = t->getX();
+					shadows[numShadows*3+1] = t->getY();
+					shadows[numShadows*3+2] = 32*t->getSize();				
+					numShadows++;
+				}
 			}
 
 		glUniform3fv(glGetUniformLocation(curProgram, "shadows"), 100, shadows);

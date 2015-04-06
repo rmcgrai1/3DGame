@@ -244,10 +244,9 @@ vec4 addShadows(vec4 oriColor) {
 vec4 addPath(vec4 oriColor) {
 
 	vec4 dirtColor = vec4(texture2D(Texture2, gl_TexCoord[0].xy).rgb,1.);
+	
 	vec3 ptOld, ptCur = pathPts[0];
-
-	int i;
-	for(i = 1; i < pathPtNum; i++) {
+	for(int i = 1; i < pathPtNum; i++) {
 		ptOld = ptCur;
 		ptCur = pathPts[i];
 
@@ -324,10 +323,11 @@ void main() {
 
 	//gl_FragColor = addFog();
 	gl_FragColor = addFog(addPath(gl_FragColor));
-		gl_FragColor.rgb *= dark*dp;
 	//gl_FragColor = vec4(vNormal.xyz,1.); //addFog(gl_FragColor);
 
 	gl_FragColor = addShadows(gl_FragColor);	
+
+		gl_FragColor.rgb *= dark*dp;
 
 	//gl_FragColor = addLighting(gl_FragColor);
 }

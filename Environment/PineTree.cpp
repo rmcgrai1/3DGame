@@ -1,23 +1,11 @@
 // PineTree.cpp
 
-#include <ctime>
-#include <stdlib.h>
 #include "../Graphics/GraphicsOGL.h"
+#include "../Functions/Math2D.h"
 #include "PineTree.h"
 #include "Tree.h"
 #include "../Graphics/Texture.h"
-#include <chrono>
-using namespace std::chrono;
 
-
-unsigned long getTime() {
-
-	nanoseconds ms = duration_cast< nanoseconds >(
- 		high_resolution_clock::now().time_since_epoch()
-	);
-
-	return ms.count();
-}
 
 
 PineTree :: PineTree(float nX, float nY, float size, float colR, float colG, float colB) : Tree(nX,nY,size) {
@@ -25,6 +13,8 @@ PineTree :: PineTree(float nX, float nY, float size, float colR, float colG, flo
 	colRed = colR;
 	colGreen = colG;
 	colBlue = colB;
+
+	hasShadow = true;
 }
 
 void PineTree :: update(GraphicsOGL* gl, float deltaT) {
@@ -62,8 +52,8 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 
 	float aX = 0, aY = 0;
 	if(damageShakeTimer > -1) {
-		aX = 2.*(((getTime()*rand())%100)/100. - .5);
-		aY = 2.*(((getTime()*rand())%100)/100. - .5);
+		aX = 2.*(rnd() - .5);
+		aY = 2.*(rnd() - .5);
 	}
 	
 

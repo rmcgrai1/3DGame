@@ -26,6 +26,8 @@ class Tree : public Environmental {
 		float size;
 		float toSize;
 
+		bool hasShadow;
+
 		bool isGrowing;
 		float growWobble;
 

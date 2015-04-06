@@ -80,7 +80,6 @@ void Tree :: update(GraphicsOGL* gl, float deltaTime) {
 		}
 
 		if(size < .01) {
-			size = 1;
 			destroy();
 		}
 	}

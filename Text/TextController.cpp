@@ -82,6 +82,10 @@ void TextController :: update(GraphicsOGL* gl, float deltaT) {
 			//shouldRedraw = false;
 		}
 	}
+	else {
+		if(gl->getInputController()->checkLetter('u'))
+			setText("");
+	}
 
 }
 
@@ -107,8 +111,8 @@ void TextController :: draw(GraphicsOGL* gl, float deltaT) {
 	char c;
 
 	float startX, startY, dX, dY, xS, yS, e = -1;
-	startX = dX = 80;
-	startY = dY = 0;
+	startX = dX = 50;
+	startY = dY = 50;
 
 	// Draw All of Text
 	int si = curText.size();
@@ -166,6 +170,17 @@ void TextController :: draw(GraphicsOGL* gl, float deltaT) {
 				dX += gl->drawCharScaled(dX,dY, xS, yS, c) + e*xS;
 		}
 	}
+
+	gl->setColor(20,20,20);
+	gl->drawRect(20,20,620,150);
+
+	gl->setColor(180,180,180);
+	gl->drawRect(20+1,20+1,620-1,150-1);
+
+
+	gl->setColor(40,40,40,240);
+	gl->fillRect(20,20,620,150);
+
 
 
 	gl->setPerspective();

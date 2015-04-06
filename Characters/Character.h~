@@ -24,6 +24,8 @@ class Character : public Physical {
 
 		static float GRAVITY_HOP_ACCELERATION;
 
+		static SortedList<Character*> characterList;
+
 	protected:
 		virtual void attack();
 		virtual void land();
@@ -40,6 +42,8 @@ class Character : public Physical {
 		bool isMoving;
 		float attackTimer;
 
+		int shape;
+
 	private:
 		void updateHop(float);
 		void collideCharacter();
@@ -49,8 +53,6 @@ class Character : public Physical {
 		float hopDir;
 		
 		static Texture* shTex;
-
-		static SortedList<Character*> characterList;
 };
 
 #endif

@@ -49,6 +49,10 @@ float Tree :: getSize() {
 	return size;
 }
 
+bool Tree :: getHasShadow() {
+	return hasShadow;
+}
+
 void Tree :: update(GraphicsOGL* gl, float deltaTime) {
 	Environmental :: update(gl, deltaTime);
 
