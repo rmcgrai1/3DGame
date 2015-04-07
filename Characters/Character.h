@@ -19,12 +19,22 @@ class Character : public Physical {
 		void faceDirection(float);
 		void toolDirection(float);
 
-		virtual void damage(float);
+		virtual void damage(Character*,float);
 		virtual void destroy();
 
 		static float GRAVITY_HOP_ACCELERATION;
 
 		static SortedList<Character*> characterList;
+
+		float getHP();
+		float getMaxHP();
+		float getTarget();
+		float getTargetShift();
+
+		void drawStatWindow(GraphicsOGL*, float);
+
+		Character* target;
+		float targetShift;
 
 	protected:
 		virtual void attack();
@@ -33,6 +43,8 @@ class Character : public Physical {
 
 		float knockbackDir;
 		float knockbackTimer;
+
+		float targetTimer;
 
 		float faceDir;
 		float toolDir;
@@ -46,7 +58,16 @@ class Character : public Physical {
 		float wYRot;
 		float wZRot;
 
+		// STATS
+			int level;
+			float hp;
+			float maxHP;
+			float atk;
+			float def;
+
 		int shape;
+
+		float calcDamage(float, Character*, Character*);
 
 	private:
 		void updateHop(float);

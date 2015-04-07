@@ -191,6 +191,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		
 		terrain = new Terrain(textureController,2048*5,2048*5, 500, "Resources/Images/test.png",150);
 		
+		tc = new TextController();
 		tc->setText("Welcome to `Color:#FF0000`GAME TITLE``!\n\nExplore the land, kill monsters, and try to find the town.");
 
 	//Set Up OpenGL Callbacks (Updating Functions...)
@@ -220,6 +221,9 @@ InputController* GraphicsOGL :: getInputController() {
 Heightmap* GraphicsOGL :: getHeightmap() {
 	return terrain->getHeightmap();
 }
+TextController* GraphicsOGL :: getTextController() {
+	return tc;
+}
 TextureController* GraphicsOGL :: getTextureController() {
 	return textureController;
 }
@@ -241,6 +245,7 @@ void GraphicsOGL :: idle() {
 		Drawable2 :: removeDestroyed();
 		Instantiable :: removeDestroyed();
 		Tree :: treeList.removeDestroyed();
+		Character :: characterList.removeDestroyed();
 
 		// Draw Current Frame
 		glutPostRedisplay();
@@ -298,6 +303,11 @@ void GraphicsOGL :: display() {
 	// DRAW HUD
 
 	setOrtho();
+		drawHealth(20,20, myPlayer->getHP(), myPlayer->getMaxHP());
+
+		if(myPlayer->target != NULL)
+			myPlayer->target->drawStatWindow(this,myPlayer->targetShift);
+
 		setFont("8bit");
 		// TEMPORARY FIX
 		drawString(-20,-20,"0");
@@ -310,9 +320,9 @@ void GraphicsOGL :: display() {
 
 
 		float s = 1;
-		drawStringScaled(0,0,s,s,fpsStr);
-		drawStringScaled(0,20,s,s,dirStr);
-		drawStringScaled(0,40,s,s,posStr);
+		drawStringScaled(0,400,s,s,fpsStr);
+		drawStringScaled(0,420,s,s,dirStr);
+		drawStringScaled(0,440,s,s,posStr);
 
 
 	// Flush Graphics to Screen
@@ -814,6 +824,59 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 			draw3DFrustem(x,y,z,rad,rad,h,sideNum,tex);
 		}
 
+// Draw Health
+	void GraphicsOGL :: drawHealth(float dX, float dY, float amt, float
+maxAmt) {
+		float s;
+		if(maxAmt <= 20)
+			s = 1;
+		else
+			s = .5;
+		drawHealth(dX,dY,s,amt,maxAmt);
+	}
+
+	void GraphicsOGL :: drawHealth(float dX, float dY, float scale, float amt, float maxAmt) {
+		if(amt < 0)
+			amt = 0;
+
+		Texture *h0, *h1, *h2, *h3, *h4, *cur;
+		h0 = textureController->getTexture("Heart0");
+		h1 = textureController->getTexture("Heart1");
+		h2 = textureController->getTexture("Heart2");
+		h3 = textureController->getTexture("Heart3");
+		h4 = textureController->getTexture("Heart4");
+		
+		float startX = dX;
+		float s = 16;
+		int lineSkip = 10/scale;
+		for(int i = 0; i < maxAmt; i++) {
+
+			if(i != 0 && i % lineSkip == 0) {
+				dX = startX;
+				dY += scale*(s+1);
+			}
+
+			if(amt == 0)
+				cur = h0;
+			else if(amt >= 1) {
+				cur = h4;
+				amt--;
+			}
+			else {
+				if(amt >= .66)
+					cur = h3;
+				else if(amt >= .33)
+					cur = h2;
+				else
+					cur = h1;
+				amt = 0;
+			}
+
+			drawTextureScaled(dX,dY,scale*h0->getWidth()/s,scale*h0->getHeight()/s,cur);
+			dX += scale*(s+1);
+		}
+	}
+
 //SHADERS
 
 	void GraphicsOGL :: setShaderVariable(string varName, float value) {
@@ -821,27 +884,49 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 	}
 	void GraphicsOGL :: passShaderShadows() {
 		
+		float camPos[3], camX, camY, camFOV, camDir;
+		glCamera->getPosition(camPos);
+		camX = camPos[0];
+		camY = camPos[1];
+		camDir = glCamera->getCamDir();
+
+		camFOV = 45;
+
 		int numShadows = 0;
-		float shadows[3*100];
+		float shadows[3*100], curX, curY, curR;
 
 			for(int i = 0; i < Character::characterList.size(); i++) {
 				Character* c = Character::characterList[i];
-				
-				shadows[numShadows*3+0] = c->getX();
-				shadows[numShadows*3+1] = c->getY();
+				curX = c->getX();
+				curY = c->getY();
+
+				if(abs(calcAngleDiff(calcPtDir(camX,camY,curX,curY),camDir)) > camFOV)
+					continue;
+
+				shadows[numShadows*3+0] = curX;
+				shadows[numShadows*3+1] = curY;
 				shadows[numShadows*3+2] = 6;				
 				numShadows++;
 			}
 			for(int i = 0; i < Tree::treeList.size(); i++) {
 				Tree* t = Tree::treeList[i];
 
-				if(t->getHasShadow()) {
+				if(!t->getHasShadow())
+					continue;
+
+				curX = t->getX();
+				curY = t->getY();
+				curR = 32*t->getSize();
+
+				float aX = calcLenX(curR,camDir+90), aY = calcLenY(curR,camDir+90), toDir = min(abs(calcAngleDiff(calcPtDir(camX,camY,curX+aX,curY+aY),camDir)), abs(calcAngleDiff(calcPtDir(camX,camY,curX-aX,curY-aY),camDir)));
 				
-					shadows[numShadows*3+0] = t->getX();
-					shadows[numShadows*3+1] = t->getY();
-					shadows[numShadows*3+2] = 32*t->getSize();				
-					numShadows++;
-				}
+				if(toDir > camFOV)
+					continue;
+
+				shadows[numShadows*3+0] = curX;
+				shadows[numShadows*3+1] = curY;
+				shadows[numShadows*3+2] = curR;				
+				numShadows++;
 			}
 
 		glUniform3fv(glGetUniformLocation(curProgram, "shadows"), 100, shadows);

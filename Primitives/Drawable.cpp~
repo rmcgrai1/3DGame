@@ -54,7 +54,6 @@ void Drawable2 :: setVisible(int newV) {
 
 void Drawable2 :: destroy() {
 	Updateable :: destroy();
-
 	drawableList.destroy(this);
 }
 

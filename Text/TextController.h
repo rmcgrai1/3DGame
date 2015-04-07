@@ -35,6 +35,7 @@ class TextController : public Drawable2 {
 		void clearFormat();			// Resetting Format
 		void setFormat(Format);			// Setting Format
 		void setColor(int,int,int);		// Setting Color
+		bool isTextBoxOpen();
 
 
 	private:				// PRIVATE

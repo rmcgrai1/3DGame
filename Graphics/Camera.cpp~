@@ -87,8 +87,6 @@ void Camera :: getNormal(float vec[3]) {
 	vec[0] /= len;
 	vec[1] /= len;
 	vec[2] /= len;
-
-	vec[0] = 0;
 }
 
 void Camera :: getPosition(float vec[3]) {

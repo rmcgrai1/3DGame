@@ -14,7 +14,7 @@ using namespace std;
 // Create Null Format
 Format formNull = {255,255,255,1,0,0};
 
-TextController :: TextController() : Drawable2() {
+TextController :: TextController() : Drawable2(TYPE_MENU) {
 
 
 	// Create Text Interpreter Object
@@ -231,4 +231,9 @@ void TextController :: clearScreen() {
 // Erase Text
 void TextController :: clearTextBox() {
 	curText = "";
+}
+
+
+bool TextController :: isTextBoxOpen() {
+	return shouldRedraw;
 }

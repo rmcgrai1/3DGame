@@ -44,6 +44,8 @@ Font2D :: Font2D(string fontName, bool ca) {
 	addChar(')');
 	addChar('[');
 	addChar(']');
+	addChar('\\');
+	addChar('/');
 }
 
 int Font2D :: getWidth() {

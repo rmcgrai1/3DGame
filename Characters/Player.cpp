@@ -57,7 +57,16 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 		cX = x-calcLenX(camDis,nCDir);
 		cY = y-calcLenY(camDis,nCDir);	
 
-		gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,x,y,floorZ+8);
+		if(target == NULL || !gl->getInputController()->checkLetter('q'))
+			gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,x,y,floorZ+8);
+		else {
+			float tS = targetShift*.1, toX, toY, toZ;
+			toX = tS*(target->getX()) + (1-tS)*(x);
+			toY = tS*(target->getY()) + (1-tS)*(y);
+			toZ = floorZ+8;
+
+			gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,toX,toY,toZ);
+		}
 }
 
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {

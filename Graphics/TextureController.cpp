@@ -29,6 +29,11 @@ void TextureController :: initialize() {
 	addTexture("pineBranch","Resources/Images/pineBranch.jpg");
 	addTexture("bark","Resources/Images/bark1.png");
 	addTexture("Dirt","Resources/Images/dirt.jpg");
+	addTexture("Heart0","Resources/Images/heart0.png");
+	addTexture("Heart1","Resources/Images/heart1.png");
+	addTexture("Heart2","Resources/Images/heart2.png");
+	addTexture("Heart3","Resources/Images/heart3.png");
+	addTexture("Heart4","Resources/Images/heart4.png");
 }
 void TextureController :: addTexture(string name, string fileName) {
 	textureMap[name] = new Texture(fileName,false);

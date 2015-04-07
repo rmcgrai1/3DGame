@@ -83,7 +83,7 @@ void TextController :: update(GraphicsOGL* gl, float deltaT) {
 		}
 	}
 	else {
-		if(gl->getInputController()->checkLetter('u')
+		if(gl->getInputController()->checkLetter('u'))
 			setText("");
 	}
 
@@ -231,4 +231,9 @@ void TextController :: clearScreen() {
 // Erase Text
 void TextController :: clearTextBox() {
 	curText = "";
+}
+
+
+bool TextController :: isTextBoxOpen() {
+	return shouldRedraw;
 }

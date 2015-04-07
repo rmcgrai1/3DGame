@@ -26,6 +26,8 @@ using namespace std;
 #define SH_CYLINDER 7
 
 #define ATTACK_TIMER_MAX 16 //12
+#define TARGET_TIMER_MAX 50
+#define TARGET_DISTANCE_MAX 200
 
 SortedList<Character*> Character :: characterList;
 
@@ -37,6 +39,15 @@ float s = 6, h = 8;
 
 Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 
+	float baseHP = rnd()*100;
+	float baseAtk = rnd()*100;
+	float baseDef = rnd()*100;
+
+	level = ceil(rnd()*50);
+	hp = maxHP = (baseHP + 50)*level/50 + 10;//3.*level/10;
+	atk = (baseAtk)*level/50 + 5;
+	def = (baseDef)*level/50 + 5;
+
 	hopX = 0;
 	faceDir = 0;
 	toolDir = 0;
@@ -45,6 +56,10 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 
 	knockbackTimer = -1;
 	knockbackDir = 0;
+
+	target = NULL;
+	targetShift = 0;
+	targetTimer = -1;
 
 	hopZ = 0;
 	hopZVel = 0;
@@ -62,8 +77,29 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	characterList.add(this);
 }
 
-void Character :: damage(float dDir) {
-	knockback(dDir);
+float Character :: calcDamage(float attackPower, Character* attacker, Character* defender) {
+	
+	float modifier = 1.*1*1*1*(.85 + .15*rnd());
+
+	return ((2.*attacker->level + 10)/250*(attacker->atk/defender->def)*attackPower + 2)*modifier;
+}
+
+float Character :: getHP() {
+	return hp;
+}
+
+float Character :: getMaxHP() {
+	return maxHP;
+}
+
+void Character :: damage(Character* attacker, float dDir) {
+	if(knockbackTimer == -1) {
+		hp -= calcDamage(50,attacker,this);
+		knockback(dDir);
+
+		if(hp <= 0)
+			destroy();
+	}
 }
 
 void Character :: update(GraphicsOGL* gl, float deltaTime) {
@@ -80,6 +116,55 @@ void Character :: update(GraphicsOGL* gl, float deltaTime) {
 		attackTimer -= deltaTime;
 		if(attackTimer <= -1)
 			attackTimer = -1;
+	}
+
+	float camPos[3], camX, camY, camFOV, camDir;
+		gl->getCamera()->getPosition(camPos);
+		camX = camPos[0];
+		camY = camPos[1];
+		camDir = gl->getCamera()->getCamDir();
+
+		camFOV = 45/2;
+
+	if(targetTimer > -1) {
+
+		targetShift += (1 - targetShift)/10;
+
+		if(target != NULL)
+			if(target->getHP() > 0) {
+				if(calcPtDis(x,y,target->getX(),target->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,target->getX(),target->getY()),camDir)) < camFOV)
+					targetTimer = TARGET_TIMER_MAX;	
+			}
+			else
+				targetTimer = -1;
+
+		targetTimer -= deltaTime;
+		if(targetTimer <= -1)
+			targetTimer = -1;
+	}
+	else {
+		if(target != NULL) {
+			targetShift += (0 - targetShift)/10;
+		
+			if(targetShift < .05)
+				target = NULL;
+		}
+		else {
+			
+
+			for(int i = 0; i < characterList.size(); i++) {
+				Character* c = characterList[i];
+
+				if(c == this)
+					continue;
+
+				if(calcPtDis(x,y,c->getX(),c->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,c->getX(),c->getY()),camDir)) < camFOV) {
+					targetTimer = TARGET_TIMER_MAX;
+					target = c;
+					break;
+				}
+			}
+		}
 	}
 
 	if(gl->getInputController()->checkLetter('y'))
@@ -141,8 +226,12 @@ void Character :: attack() {
 
 			if(dis < (s*2 + cS)) {
 				float dir = calcPtDir(atkX,atkY,cX,cY);
-				if(abs(calcAngleDiff(dir, toolDir)) < atkAng)
-					c->damage(dir);
+				if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
+					c->damage(this,dir);
+
+					target = c;
+					targetTimer = TARGET_TIMER_MAX;
+				}
 			}
 		}
 	}
@@ -426,6 +515,85 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	gl->disableShaders();
 	gl->setColor(255,255,255);
+}
+
+/*string to_string(float num) {
+	return to_string(static_cast<long float>(num));
+}*/
+
+void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
+
+	float oX, oY, dX, dY, w = 200, h = 200;
+	dX = oX = 640-w*perc;
+	dY = oY = 480-h;
+	dX += 16;
+	dY += 16;
+
+	string diff, shp;
+
+	if(level < 10)
+		diff = "Weak";
+	else if(level < 20)
+		diff = "Intermediate";
+	else if(level < 30)
+		diff = "Skilled";
+	else if(level < 40)
+		diff = "Master";
+	else
+		diff = "Legend";
+	
+	switch(shape) {
+		case SH_PRISM_6: 
+			shp = "Hex"; break;
+		case SH_PRISM_5:
+			shp = "Pent"; break;
+		case SH_PRISM_3:
+			shp = "Tri"; break;
+		case SH_CUBE:
+			shp = "Cube"; break;
+		case SH_SPHERE:
+			shp = "Sphere"; break;
+		case SH_CONE_DOWN:
+			shp = "Inverse Cone"; break;
+		case SH_CONE_UP:
+			shp = "Cone"; break;
+		case SH_CYLINDER:
+			shp = "Cylinder"; break;
+	}
+	
+	gl->setColor(255,255,255);
+	gl->drawString(dX,dY,"  " + diff + " " + shp);
+		dY += 25;
+
+
+	int at, de, he, mHe;
+	at = atk;	
+	de = def;
+	he = hp;
+	mHe = maxHP;
+
+	gl->drawString(dX,dY,"Lvl: " + to_string(level));
+		dY += 15;
+	gl->drawString(dX,dY,"Atk: " + to_string(at));
+		dX += w/2-16;
+	gl->drawString(dX,dY,"Def: " + to_string(de));
+		dX = oX+16;
+		dY += 15;
+	gl->drawString(dX,dY,"HP: " + to_string(he) + " / " + to_string(mHe));
+		dY += 15;
+	gl->drawHealth(dX,dY,he,mHe);
+
+		dY += 15;
+	
+
+	gl->setColor(20,20,20);
+	gl->drawRect(oX,oY,oX+w,oY+h);
+
+	gl->setColor(180,180,180);
+	gl->drawRect(oX+1,oY+1,oX+w-1,oY+h-1);
+
+	gl->setColor(20,20,20,200);
+	gl->fillRect(oX,oY,oX+w,oY+h);
 }
 
 void Character :: destroy() {

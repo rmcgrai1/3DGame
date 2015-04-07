@@ -17,10 +17,11 @@
 #include "../Environment/Terrain.h"
 #include "../Characters/Player.h"
 #include "../menus/menu.h"
-
+#include "../Text/TextController.h"
 
 class Camera;
 class Heightmap;
+class TextController;
 class GraphicsOGL {
 	public:
 		GraphicsOGL(int, char* []);
@@ -39,8 +40,10 @@ class GraphicsOGL {
 		Player* getPlayer();
 		Menu* getMenu();
 
+		Camera* getCamera();
 		InputController* getInputController();
 		TextureController* getTextureController();
+		TextController* getTextController();
 
 		// Slow PC??
 			int isPCSlow();
@@ -79,6 +82,9 @@ class GraphicsOGL {
 				float drawCharScaled(float, float, float, float, char);
 				void drawString(float, float, string);
 				void drawStringScaled(float, float, float, float, string);
+
+				void drawHealth(float,float,float,float);
+				void drawHealth(float,float,float,float,float);
 
 
 		// 3D DRAWING

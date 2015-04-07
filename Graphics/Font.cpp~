@@ -44,6 +44,8 @@ Font2D :: Font2D(string fontName, bool ca) {
 	addChar(')');
 	addChar('[');
 	addChar(']');
+	addChar('\');
+	addChar('//');
 }
 
 int Font2D :: getWidth() {
@@ -76,6 +78,9 @@ void Font2D :: addChar(char c) {
 void Font2D :: addChar(char c, string fileName) {
 	string str = "Loading file for ";
 	str = str + c + " at " + fileName;
+
+	string name = "";
+		name += c;
 
 	Texture* t = new Texture(name, fileName, true);
 
