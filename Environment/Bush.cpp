@@ -82,8 +82,8 @@ void Bush :: draw(GraphicsOGL* gl, float deltaT) {
 	/*gl->enableShader("pineBark");
 	gl->draw3DPrism(0,0,0,4,30, fidelity, barkTex);
 	gl->draw3DCone(0,0,0,5,30, fidelity, barkTex);*/
-
-	gl->enableShader("pineBranch");
+	if(!gl->isPCSlow())
+		gl->enableShader("pineBranch");
 
 	if(damageShakeTimer > -1)
 		gl->setColor(255*colRed, .2*255*colGreen, .2*255*colBlue);

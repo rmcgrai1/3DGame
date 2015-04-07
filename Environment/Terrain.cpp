@@ -38,7 +38,9 @@ void Terrain :: drawFirst(GraphicsOGL* gl, float deltaTime) {
 
 	Texture* cloudTex = gl->getTextureController()->getTexture("Noise");
 
-	gl->enableShader("Sky");
+	if(!gl->isPCSlow())
+		gl->enableShader("Sky");
+		
 		cloudTex->bind();
 		gl->transformTranslation(p->getX(),p->getY(),p->getZ());
 

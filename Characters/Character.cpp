@@ -377,7 +377,8 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->glSet();
 	*/
 
-	gl->enableShader("Character");	
+	if(!gl->isPCSlow())
+		gl->enableShader("Character");	
 	gl->transformTranslation(x,y,z+hopZ);
 	
 	if(onGround/*&& hopZ <= 0*/) {

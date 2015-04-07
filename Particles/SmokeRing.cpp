@@ -45,7 +45,8 @@ void SmokeRing :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->transformRotationX(xyRot);
 		gl->transformRotationZ(-setupRot);
 
-		gl->enableShader("SmokeRing");	
+		if(!gl->isPCSlow())
+			gl->enableShader("SmokeRing");	
 		gl->setShaderVariable("iSmoke", percSmoke*alpha);
 		gl->draw3DCircle(0,0,.5,curSize,10);
 		gl->disableShaders();
