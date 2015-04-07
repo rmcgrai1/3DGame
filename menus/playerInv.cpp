@@ -94,8 +94,8 @@ int playerInv::posInRange(int x, int y, int x1, int y1, int x2, int y2) {
 
 Inventory *playerInv::InvAt(int x, int y) {
 	//check all inventories here
-	int *Frame = inv->GetFramePos();
-	if(posInRange(x,y,Frame[0],Frame[1],Frame[0]+Frame[2],Frame[1]+Frame[3])) {
+	PosSpec *Frame = inv->GetFramePos();
+	if(Frame->isInside(x,y)) {
 		return inv;
 	}
 	

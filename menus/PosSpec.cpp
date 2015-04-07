@@ -95,6 +95,21 @@ void PosSpec::InsetByAmount(int xIns, int yIns) {
 	addDimCenter(-2*xIns, -2*yIns);
 }
 
+void PosSpec::InsetCopyByFraction(double xFrac, double yFrac, PosSpec *output) {
+	*output = *this;
+	output->InsetByFraction(xFrac,yFrac);
+}
+
+void PosSpec::ScaleCopyByFraction(double xFrac, double yFrac, PosSpec *output) {
+	*output = *this;
+	output->ScaleByFraction(xFrac,yFrac);
+}
+
+void PosSpec::InsetCopyByAmount(int xIns, int yIns, PosSpec *output) {
+	*output = *this;
+	output->InsetByAmount(xIns, yIns);
+}
+
 int PosSpec::isInside(int x, int y) {
 	if((leftx<=x && x<=rightx) || (rightx<=x && x<=leftx)) {
 		if((topy<=y && y<=bottomy) || (bottomy<=y && y<=topy)) {

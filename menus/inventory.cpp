@@ -24,6 +24,7 @@ Inventory::Inventory() {
 	ShowInventory = 0;
 	mouseX = 0;
 	mouseY = 0;
+	sizepos = new PosSpec;
 	PosSpec *tempDim = new PosSpec(64,96,640,480);
 	updateDrawCoords(tempDim);
 	delete [] tempDim;
@@ -77,17 +78,8 @@ void Inventory::rightclick(int x, int y, InvSlot *CursorSlot) {
 }
 
 void Inventory::updateDrawCoords(PosSpec *Dim) {
-	leftx = Dim->getLeftX();
-	topy = Dim->getTopY();
-	allwidth = Dim->getWidth();
-	allheight = Dim->getHeight();
-	//slotwidth = allwidth/9;
-	//slotheight = allheight/3;
 	Dim->UpdateSplit(9,3, &slotDims);
-	sizepos[0] = leftx;
-	sizepos[1] = topy;
-	sizepos[2] = allwidth;
-	sizepos[3] = allheight;
+	*sizepos = *Dim;
 }
 
 InvSlot *Inventory::itemAt(int x, int y) {
@@ -102,7 +94,7 @@ InvSlot *Inventory::itemAt(int x, int y) {
 	return NULL;
 }
 
-int *Inventory::GetFramePos() {
+PosSpec *Inventory::GetFramePos() {
 	return sizepos;
 }
 

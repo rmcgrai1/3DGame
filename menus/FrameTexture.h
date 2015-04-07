@@ -15,7 +15,7 @@ class FrameTexture {
 	public:
 		FrameTexture(TexturePack *TP = new TexturePack, string Folder = "Images/Inventory/BlankSlot"); // constructor
 		void drawat(GraphicsOGL* gl, PosSpec *Dim, PosSpec *inCoords); // draws the frame at this position and stores the coordinates of the inside in inCoords array
-		void tileTexture(GraphicsOGL* gl, int x, int y, int width, int height, int xNum, int yNum, double xScale, double yScale, int *finalX, int *finalY, Texture* Tex); // tiles a texture at a position, with specified scale a specified numbert of times
+		void tileTexture(GraphicsOGL* gl, int x, int y, int width, int height, int xNum, int yNum, double xScale, double yScale, int *finalX, int *finalY, Texture* Tex); // tiles a texture at a position, with specified scale a specified number of times
 		void UpdateDrawCoords(int width, int height);
 	private:
 		TexturePack *Textures;
@@ -25,7 +25,7 @@ class FrameTexture {
 		int prevheight;
 		double SpriteScales[2];
 		int SpriteNums[6];
-		int *SpriteDim[9];
+		PosSpec *SpriteDim[9];
 		Texture *Sprites[9];
 };
 

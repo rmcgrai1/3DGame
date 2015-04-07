@@ -70,22 +70,27 @@ int Menu::getMenuShowStatus() {
 }
 
 void Menu::updateDrawCoords(GraphicsOGL* gl) {
+	int needsupdate = 0;
 	if(gl) {
 		if(gl->getScreenWidth()!=scrDim->getWidth()) {
 			scrDim->setWidth(gl->getScreenWidth());
 			cout << "Menu screen width changed to " << scrDim->getWidth() << endl;
+			needsupdate = 1;
 		}
 		if(gl->getScreenHeight()!=scrDim->getHeight()) {
 			scrDim->setHeight(gl->getScreenHeight());
 			cout << "Menu screen height changed to " << scrDim->getHeight() << endl;
+			needsupdate = 1;
 		}
 	} else { // gl is NULL - must assume default screen dimensions (should happen in constructor)
 		scrDim->changeDim(640,480);
 		cout << "Menu screen dimensions defaulted to " << scrDim->getWidth() << "x" << scrDim->getHeight() << endl;
+		needsupdate = 1;
 	}
 	
-	invDim->setTopLeft(scrDim->getWidth()/10,scrDim->getHeight()/5);
-	invDim->changeDim(scrDim->getWidth()*4/5,scrDim->getHeight()*3/5);
+	if(needsupdate) {
+		scrDim->InsetCopyByFraction(0.1,0.2,invDim);
+	}
 }
 
 ostream& operator<<(ostream& output, const Menu menu) {

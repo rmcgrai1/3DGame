@@ -29,8 +29,8 @@ void InvSlot::drawat(GraphicsOGL* gl, PosSpec *Dim, double rot) {
 	}
 	if(ItemType) {
 		string countStr = to_string(count);
-		double xScale = (double)FrameIntPos->getWidth()/60;
-		double yScale = (double)FrameIntPos->getHeight()/200;
+		double xScale = (double)FrameIntPos->getWidth()/40;
+		double yScale = (double)FrameIntPos->getHeight()/40;
 		gl->drawStringScaled(FrameIntPos->getRightX()-8*countStr.length()*xScale,FrameIntPos->getBottomY()-8*yScale,xScale,yScale,countStr);
 		ItemType->DisplayAt(gl,FrameIntPos,rot);
 	}

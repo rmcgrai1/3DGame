@@ -23,7 +23,7 @@ class Inventory {
 		void rightclick(int x, int y, InvSlot *CursorSlot);
 		void updateDrawCoords(PosSpec *Dim);
 		InvSlot *itemAt(int x, int y);
-		int *GetFramePos();
+		PosSpec *GetFramePos();
 	private:
 		InvSlot *Slots[27];
 		vector<Item*> items;
@@ -35,7 +35,7 @@ class Inventory {
 		int mouseX;
 		int mouseY;
 		
-		int sizepos[4];
+		PosSpec *sizepos;
 		int leftx,topy;
 		int allwidth,allheight;
 		vector<PosSpec*> slotDims;

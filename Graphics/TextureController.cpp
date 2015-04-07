@@ -26,9 +26,9 @@ void TextureController :: initialize() {
 	addTexture("Sand","Resources/Images/sand.png");
 	addTexture("Noise","Resources/Images/noise.png");
 	addTexture("Shadow","Resources/Images/shadow.png");
-	addTexture("pineBranch","Resources/Images/pineBranch.jpg");
+	addTexture("pineBranch","Resources/Images/pineBranch.png");
 	addTexture("bark","Resources/Images/bark1.png");
-	addTexture("Dirt","Resources/Images/dirt.jpg");
+	addTexture("Dirt","Resources/Images/dirt.png");
 	addTexture("Heart0","Resources/Images/heart0.png");
 	addTexture("Heart1","Resources/Images/heart1.png");
 	addTexture("Heart2","Resources/Images/heart2.png");

@@ -18,21 +18,22 @@
 #include <vector>
 #include <map>
 #include "../Graphics/Texture.h"
+#include "../menus/PosSpec.h"
 
 using namespace std;
 class TexturePack {
 	public:
 		TexturePack(string Folder = "Resources"); // constructor
 		Texture *newTexture(const string&, bool);
-		int *newDim(const string&);
+		PosSpec *newDim(const string&);
 		void ChangeFolder(string Folder);
 		string GetFolder();
 	private:
-		int *loadDim(const string&);
+		PosSpec *loadDim(const string&);
 		
 		string FolderPath;
 		static vector<string> DimFilePaths;
-		static map<string, int*> Dim;
+		static map<string, PosSpec*> Dim;
 		static map<string, Texture*> Textures;
 		static map<string, bool> IsFonts;
 		static vector<string> FilePaths;

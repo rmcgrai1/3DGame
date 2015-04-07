@@ -19,6 +19,9 @@ class PosSpec {
 		void InsetByFraction(double xFrac, double yFrac);
 		void ScaleByFraction(double xFrac, double yFrac);
 		void InsetByAmount(int xIns, int yIns);
+		void InsetCopyByFraction(double xFrac, double yFrac, PosSpec *output);
+		void ScaleCopyByFraction(double xFrac, double yFrac, PosSpec *output);
+		void InsetCopyByAmount(int xIns, int yIns, PosSpec *output);
 		int isInside(int x, int y);
 		void setTopLeft(int x, int y);
 		void setTopLeftStretch(int x, int y);

@@ -44,12 +44,12 @@ void FrameTexture::drawat(GraphicsOGL* gl, PosSpec *Dim, PosSpec *inCoords) {
 			curX = x;
 		}
 		if(i==4 && inCoords) {
-			int itemwidth = SpriteDim[4][0]*xNum*SpriteScales[0];
-			int itemheight = SpriteDim[4][1]*yNum*SpriteScales[1];
+			int itemwidth = SpriteDim[4]->getWidth()*xNum*SpriteScales[0];
+			int itemheight = SpriteDim[4]->getHeight()*yNum*SpriteScales[1];
 			inCoords->setTopLeft(curX,curY[1]); // MAY BE INCORRECT INDEX OF curY
 			inCoords->changeDim(itemwidth,itemheight);
 		}
-		tileTexture(gl,curX,curY[i%3],SpriteDim[i][0],SpriteDim[i][1],xNum,yNum,SpriteScales[0],SpriteScales[1],&curX,&curY[i%3],Sprites[i]);
+		tileTexture(gl,curX,curY[i%3],SpriteDim[i]->getWidth(),SpriteDim[i]->getHeight(),xNum,yNum,SpriteScales[0],SpriteScales[1],&curX,&curY[i%3],Sprites[i]);
 		
 	}
 }
@@ -79,14 +79,14 @@ void FrameTexture::UpdateDrawCoords(int width, int height) {
 	int forcestop = 0;
 	double y,z;
 	if(width!=prevwidth) { // if width has changed
-		int xStart = (width-(SpriteDim[0][0]+SpriteDim[2][0]))/SpriteDim[1][0]-1;
+		int xStart = (width-(SpriteDim[0]->getWidth()+SpriteDim[2]->getWidth()))/SpriteDim[1]->getWidth()-1;
 		xStart = (xStart>0)?xStart:1;
 		x = xStart;
 		while(looping) { // find a matching scale and number of copies of middle segment for widths
 			x++; // try all multiples of first dimension
-			int xwidth = SpriteDim[0][0]+SpriteDim[1][0]*x+SpriteDim[2][0]; // calculate total width of first row (before scaling)
-			y = (xwidth-(SpriteDim[5][0]+SpriteDim[3][0]))/((double)SpriteDim[4][0]); // calculate needed number of repetitions of other rows to match up
-			z = (xwidth-(SpriteDim[8][0]+SpriteDim[6][0]))/((double)SpriteDim[7][0]);
+			int xwidth = SpriteDim[0]->getWidth()+SpriteDim[1]->getWidth()*x+SpriteDim[2]->getWidth(); // calculate total width of first row (before scaling)
+			y = (xwidth-(SpriteDim[5]->getWidth()+SpriteDim[3]->getWidth()))/((double)SpriteDim[4]->getWidth()); // calculate needed number of repetitions of other rows to match up
+			z = (xwidth-(SpriteDim[8]->getWidth()+SpriteDim[6]->getWidth()))/((double)SpriteDim[7]->getWidth());
 			SpriteScales[0] = (double)width/(double)xwidth; // calculate needed scale
 			if(((y-((double)((int)y))<0.01) && (z-((double)((int)z))<0.01)) || forcestop) { // if whole numbers needed, use this number of multiples
 				looping = 0;
@@ -104,14 +104,15 @@ void FrameTexture::UpdateDrawCoords(int width, int height) {
 	looping = 1;
 	forcestop = 0;
 	if(height!=prevheight) { // if height has changed
-		int xStart = (height-(SpriteDim[0][1]+SpriteDim[6][1]))/SpriteDim[3][1]-1;
+		cout << *SpriteDim[3] << endl;
+		int xStart = (height-(SpriteDim[0]->getHeight()+SpriteDim[6]->getHeight()))/SpriteDim[3]->getHeight()-1;
 		xStart = (xStart>0)?xStart:1;
 		x = xStart;
 		while(looping) { // find a matching scale and number of copies of middle segment for heights
 			x++; // try all multiples of first dimension
-			int xheight = SpriteDim[0][1]+SpriteDim[3][1]*x+SpriteDim[6][1]; // calculate total height of first column (before scaling)
-			y = (xheight-(SpriteDim[7][1]+SpriteDim[1][1]))/((double)SpriteDim[4][1]); // calculate needed number of repetitions of other columns to match up
-			z = (xheight-(SpriteDim[8][1]+SpriteDim[2][1]))/((double)SpriteDim[5][1]);
+			int xheight = SpriteDim[0]->getHeight()+SpriteDim[3]->getHeight()*x+SpriteDim[6]->getHeight(); // calculate total height of first column (before scaling)
+			y = (xheight-(SpriteDim[7]->getHeight()+SpriteDim[1]->getHeight()))/((double)SpriteDim[4]->getHeight()); // calculate needed number of repetitions of other columns to match up
+			z = (xheight-(SpriteDim[8]->getHeight()+SpriteDim[2]->getHeight()))/((double)SpriteDim[5]->getHeight());
 			SpriteScales[1] = (double)height/(double)xheight; // calculate needed scale
 			if(((y-((double)((int)y))<0.01) && (z-((double)((int)z))<0.01)) || forcestop) { // if whole numbers needed, use this number of multiples
 				looping = 0;
