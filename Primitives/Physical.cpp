@@ -37,7 +37,7 @@ void Physical :: update(GraphicsOGL* gl, float deltaTime) {
 	// Update Physics
 	updateMotion(deltaTime);
 	// Update Collisions
-	collideHeightmap(gl->getHeightmap());
+	collideHeightmap(gl, gl->getHeightmap());
 }
 	
 void Physical :: draw(GraphicsOGL* gl, float deltaTime) {
@@ -71,9 +71,15 @@ void Physical :: destroy() {
 	float Physical :: getZ() {
 		return z;
 	}
+	float Physical :: getVelocity() {
+		return vel;
+	}
+	float Physical :: getDirection() {
+		return direction;
+	}
 
 
-bool Physical :: collideHeightmap(Heightmap* hm) {
+bool Physical :: collideHeightmap(GraphicsOGL* gl, Heightmap* hm) {
 
 	// Get Height from Heightmap at Position
 	float h = hm->getHeightXY(x,y);
@@ -93,7 +99,7 @@ bool Physical :: collideHeightmap(Heightmap* hm) {
 
 			// Run Landing Function (Might Bounce, Play Sound?)
 			if(zVel != GRAVITY_ACCELERATION) {
-				land();
+				land(gl);
 			}
 
 			// If Z Vel Not Bouncing after Land(), Make Sure it's Set to 0!

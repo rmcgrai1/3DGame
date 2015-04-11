@@ -18,10 +18,12 @@
 #include "../Characters/Player.h"
 #include "../menus/menu.h"
 #include "../Text/TextController.h"
+#include "../Sound/SoundController.h"
 
 class Camera;
 class Heightmap;
 class TextController;
+class SoundController;
 class GraphicsOGL {
 	public:
 		GraphicsOGL(int, char* []);
@@ -33,6 +35,8 @@ class GraphicsOGL {
 		void display();
 
 		void logMessage(string);
+		void playSound(string);
+		void playSound(string,float,float,float,float,float,float);
 
 
 		void setDepthTest(bool);
@@ -44,6 +48,7 @@ class GraphicsOGL {
 		InputController* getInputController();
 		TextureController* getTextureController();
 		TextController* getTextController();
+		SoundController* getSoundController();
 
 		// Slow PC??
 			int isPCSlow();
@@ -174,6 +179,7 @@ class GraphicsOGL {
 			TextureController* textureController;
 			ShaderController* shaderController;
 			FontController* fontController;
+			SoundController* sc;
 
 		//Shader Variables
 			Shader* curShader;

@@ -30,7 +30,8 @@ class Physical : public Instantiable {
 		float getX();						// Get X
 		float getY();						// Get Y
 		float getZ();						// Get Z
-
+		float getVelocity();
+		float getDirection();
 								// CONSTANTS
 		static const float GRAVITY_ACCELERATION;		// Acceleration due to Gravity
 
@@ -39,10 +40,10 @@ class Physical : public Instantiable {
 		void updateMotion(float);				// Update Physical Motion
 
 								// COLLISION FUNCTIONS
-		bool collideHeightmap(Heightmap*);			// Collide with Heightmap
+		bool collideHeightmap(GraphicsOGL*, Heightmap*);			// Collide with Heightmap
 
 								// VIRTUAL FUNCTIONS
-		virtual void land() = 0;				// What Happens when Landing
+		virtual void land(GraphicsOGL*) = 0;				// What Happens when Landing
 
 
 	protected:

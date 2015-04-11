@@ -149,6 +149,6 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 		attack();
 }
 
-void Player :: land() {
-	Character :: land();
+void Player :: land(GraphicsOGL* gl) {
+	Character :: land(gl);
 }

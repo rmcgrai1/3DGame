@@ -13,7 +13,7 @@ deque<Updateable*> Updateable :: removeUList;
 
 Updateable :: Updateable() {
 
-	cout << "No type specified for some UPDATEABLE object." << endl;
+	//cout << "No type specified for some UPDATEABLE object." << endl;
 
 	oType = TYPE_NONE;
 	updateableList.push_back(this);

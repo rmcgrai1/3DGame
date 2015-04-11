@@ -42,13 +42,13 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 	focusZ += toZD;
 	
 	//Update Listener Source
-	/*float n, nX, nY, nZ;
-	n = (float) (Math.sqrt(Math2D.sqr(toX-cX) + Math2D.sqr(toY-cY) + Math2D.sqr(focusZ-camZ)));
+	float n, nX, nY, nZ;
+	n = (float) (sqrt(sqr(toX-cX) + sqr(toY-cY) + sqr(focusZ-camZ)));
 	nX = (toX-cX)/n;
 	nY = (toY-cY)/n;
-	nZ = (focusZ-camZ)/n;*/
+	nZ = (focusZ-camZ)/n;
 	
-	//SoundController.updateListener(cX,cY,camZ, cX-camX,cY-camY,cZD, nX,nY,nZ, 0,0,1);
+	gl->getSoundController()->updateListener(cX,cY,camZ, cX-camX,cY-camY,cZD, nX,nY,nZ, 0,0,1);
 		
 	
 	// Change to projection matrix.

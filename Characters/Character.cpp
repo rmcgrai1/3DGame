@@ -14,6 +14,7 @@
 //#include "../Particles/AttackSwing.h"
 #include "../Environment/Heightmap.h"
 #include "../Particles/SmokeRing.h"
+
 using namespace std;
 
 #define SH_SPHERE 0
@@ -25,7 +26,7 @@ using namespace std;
 #define SH_PRISM_3 6
 #define SH_CYLINDER 7
 
-#define ATTACK_TIMER_MAX 16 //12
+#define ATTACK_TIMER_MAX 11 //12
 #define TARGET_TIMER_MAX 50
 #define TARGET_DISTANCE_MAX 200
 
@@ -51,6 +52,8 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	hopX = 0;
 	faceDir = 0;
 	toolDir = 0;
+
+	isHurt = false;
 
 	attackTimer = -1;
 
@@ -96,6 +99,7 @@ void Character :: damage(Character* attacker, float dDir) {
 	if(knockbackTimer == -1) {
 		hp -= calcDamage(50,attacker,this);
 		knockback(dDir);
+		isHurt = true;
 
 		if(hp <= 0)
 			destroy();
@@ -110,7 +114,7 @@ void Character :: update(GraphicsOGL* gl, float deltaTime) {
 	collideTree();
 	collideCharacter();
 
-	updateHop(deltaTime);
+	updateHop(gl, deltaTime);
 
 	if(attackTimer > -1) {
 		attackTimer -= deltaTime;
@@ -126,6 +130,8 @@ void Character :: update(GraphicsOGL* gl, float deltaTime) {
 
 		camFOV = 45/2;
 
+
+	// FIND TARGET
 	if(targetTimer > -1) {
 
 		targetShift += (1 - targetShift)/10;
@@ -167,9 +173,6 @@ void Character :: update(GraphicsOGL* gl, float deltaTime) {
 		}
 	}
 
-	if(gl->getInputController()->checkLetter('y'))
-		knockback(0);
-
 	if(knockbackTimer > -1) {
 		faceDirection(knockbackDir+180);
 		toolDirection(knockbackDir+180);
@@ -181,6 +184,7 @@ void Character :: update(GraphicsOGL* gl, float deltaTime) {
 
 		if(knockbackTimer <= -1) {
 			vel = 0;
+			isHurt = false;
 			knockbackTimer = -1;
 		}
 	}
@@ -190,6 +194,7 @@ void Character :: attack() {
 	if(attackTimer > -1)
 		return;
 
+	SoundController::playSound("swordSwing",this);
 	//new AttackSwing(x,y,z,toolDirection);
 
 	attackTimer = ATTACK_TIMER_MAX;
@@ -210,8 +215,12 @@ void Character :: attack() {
 
 		if(dis < (atkR + tS)) {
 			float dir = calcPtDir(atkX,atkY,tX,tY);
-			if(abs(calcAngleDiff(dir, toolDir)) < atkAng)
+			if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
+				SoundController::playSound("swordHitWood",this);
 				t->damage(dir);
+				knockback(dir+180);
+				break;
+			}
 		}
 	}
 
@@ -227,6 +236,8 @@ void Character :: attack() {
 			if(dis < (s*2 + cS)) {
 				float dir = calcPtDir(atkX,atkY,cX,cY);
 				if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
+					SoundController::playSound("swordHitFlesh",this);
+					SoundController::playSound("attackCollision",this);
 					c->damage(this,dir);
 
 					target = c;
@@ -387,7 +398,9 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->transformRotationZ(-setupRot);
 
 
-		gl->transformRotationZ(faceDir);		
+		gl->transformRotationZ(faceDir);
+		gl->transformRotationX(-hopX*10);		
+		gl->transformRotationY(-hopZVel*10);		
 		gl->transformTranslation(-hopZVel,hopX,0);	
 	}
 	else
@@ -398,7 +411,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 
 	gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
-	if(knockbackTimer > -1)
+	if(isHurt)
 		gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
 	else
 		gl->setShaderVariable("iHit",0);
@@ -493,7 +506,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->transformScale(1,1,1.3);
 
 		gl->setShaderVariable("cDirection", toolDir/180.*3.14159);
-		if(knockbackTimer > -1)
+		if(isHurt)
 			gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
 		else
 			gl->setShaderVariable("iHit",0);
@@ -622,7 +635,7 @@ void Character :: knockback(float kDir) {
 }
 
 
-void Character :: updateHop(float deltaT) {
+void Character :: updateHop(GraphicsOGL* gl, float deltaT) {
 	float hopZVelP = hopZVel;
 	float chAmt = 10;
 
@@ -630,8 +643,10 @@ void Character :: updateHop(float deltaT) {
 		hopZVel += GRAVITY_HOP_ACCELERATION;
 		hopZ += hopZVel;
 		if(hopZ <= 0) {
-			if(hopZVel != GRAVITY_HOP_ACCELERATION)
+			if(hopZVel != GRAVITY_HOP_ACCELERATION) {
 				new SmokeRing(x,y,z,2,8,4,1.3);
+				SoundController::playSound("fsGrass",this);
+			}
 
 			hopZ = hopZVel = 0;
 
@@ -663,8 +678,9 @@ void Character :: hop() {
 }
 
 
-void Character :: land() {
+void Character :: land(GraphicsOGL* gl) {
 
 	hopSc *= 2;
 	new SmokeRing(x,y,z,4,13,7,2);
+	SoundController::playSound("fsGrass");
 }

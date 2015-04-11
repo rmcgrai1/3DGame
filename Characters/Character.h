@@ -9,6 +9,7 @@
 #include "../Primitives/Physical.h"
 #include "../Graphics/Texture.h"
 
+
 class GraphicsOGL;
 class Character : public Physical {
 	public:
@@ -38,9 +39,10 @@ class Character : public Physical {
 
 	protected:
 		virtual void attack();
-		virtual void land();
+		virtual void land(GraphicsOGL*);
 		void hop();
 
+		bool isHurt;
 		float knockbackDir;
 		float knockbackTimer;
 
@@ -70,7 +72,7 @@ class Character : public Physical {
 		float calcDamage(float, Character*, Character*);
 
 	private:
-		void updateHop(float);
+		void updateHop(GraphicsOGL*, float);
 		void collideCharacter();
 		void collideTree();
 		

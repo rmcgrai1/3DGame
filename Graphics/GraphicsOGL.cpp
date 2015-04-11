@@ -36,6 +36,7 @@
 #include "../Environment/PineTree.h"
 #include "../Environment/Bush.h"
 #include "../Environment/DirtPath.h"
+#include "../Sound/SoundController.h"
 //#include "../menus/menu.h"
 
 
@@ -87,9 +88,18 @@ Menu* GraphicsOGL :: getMenu() {
 	return myMenu;
 }
 
+
+// IO
 void GraphicsOGL :: logMessage(string str) {
 	//cout << str << endl;
 }
+void GraphicsOGL :: playSound(string snd) {
+	sc->playSound(snd);
+}
+void GraphicsOGL :: playSound(string snd, float x, float y, float z, float vX, float vY, float vZ) {
+	sc->playSound(snd, x, y, z, vX, vY, vZ);
+}
+
 
 void GraphicsOGL :: setCulling(bool val) {
 	(val) ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -119,6 +129,9 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_ALPHA_TEST);
 	glEnable(GL_TEXTURE_2D);
+
+
+		sc = new SoundController(argc,argv);
 
 		//Load Resources, Create GraphicsOGL's Objects
 		glCamera = new Camera();
@@ -227,9 +240,12 @@ TextController* GraphicsOGL :: getTextController() {
 TextureController* GraphicsOGL :: getTextureController() {
 	return textureController;
 }
+SoundController* GraphicsOGL :: getSoundController() {
+	return sc;
+}
 
 int GraphicsOGL :: isPCSlow() {
-	return (avgFPS < 50);
+	return (avgFPS < 30);
 }
 
 
@@ -241,6 +257,7 @@ void GraphicsOGL :: idle() {
 		// Update All Updateable Objects
 		Updateable :: updateAll(this, 1);
 
+		sc->cleanAll();
 		Updateable :: removeDestroyed();
 		Drawable2 :: removeDestroyed();
 		Instantiable :: removeDestroyed();

@@ -7,7 +7,6 @@
 #include <deque>
 #include "../Characters/Character.h"
 #include "../Graphics/Texture.h"
-#include "../Graphics/GraphicsOGL.h"
 
 class Player : public Character {
 	public:
@@ -16,7 +15,7 @@ class Player : public Character {
 		void draw(GraphicsOGL*, float);
 
 	protected:
-		void land();
+		void land(GraphicsOGL*);
 
 	private:
 		void updateControl(GraphicsOGL*, float);
