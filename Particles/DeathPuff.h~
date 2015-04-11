@@ -18,6 +18,7 @@ class DeathPuff : public Particle {
 		float toZ;
 		float toPerc;
 		float rad;
+		float percDiv;
 };
 
 #endif

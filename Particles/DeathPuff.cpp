@@ -1,7 +1,9 @@
 // DeathPuff.cpp
 
 
+#include "../Functions/Math2D.h"
 #include <iostream>
+#include <cmath>
 #include "../Graphics/GraphicsOGL.h"
 #include "DeathPuff.h"
 #include "Particle.h"
@@ -11,6 +13,11 @@ DeathPuff :: DeathPuff(float nX,float nY,float nZ, float nTX, float nTY, float n
 	toX = nTX;
 	toY = nTY;
 	toZ = nTZ;
+
+	float n = sqrt(toX*toX + toY*toY + toZ*toZ);
+	toX /= n;
+	toY /= n;
+	toZ /= n;
 
 	rad = startR;
 
@@ -28,13 +35,25 @@ void DeathPuff :: update(GraphicsOGL* gl, float deltaTime) {
 		
 void DeathPuff :: draw(GraphicsOGL* gl, float deltaTime) {
 
+	float flyRad = 40;
+	float movePerc = abs(sin(toPerc*3.14159));
 	float dX, dY, dZ;
-	dX = (1-toPerc)*x + toPerc*toX;
-	dY = (1-toPerc)*y + toPerc*toY;
-	dZ = (1-toPerc)*z + toPerc*toZ;
+	dX = x + flyRad*toPerc*toX;
+	dY = y + flyRad*toPerc*toY;
+	dZ = z + flyRad*toPerc*toZ;
 
+	float s = 2;
+	float aX, aY, aZ;
+	aX = toPerc*s*(-.5+rnd());
+	aY = toPerc*s*(-.5+rnd());
+	aZ = toPerc*s*(-.5+rnd());
+
+	//if(!gl->isPCSlow())
+	//	gl->enableShader("Character");	
 	gl->transformClear();
-		gl->transformTranslation(dX,dY,dZ);
-		gl->draw3DSphere(0,0,0,toPerc*rad,10);
+		gl->transformTranslation(dX+aX,dY+aY,dZ+aZ);
+		gl->draw3DSphere(0,0,0,movePerc*rad,4);
 	gl->transformClear();
+
+	gl->disableShaders();
 }

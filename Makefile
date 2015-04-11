@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o SoundController.o Sound.o Data/SortedList.h DirtPath.o Bush.o Model.o Pos3D.o Face.o Mtl.o
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o Sound.o SoundController.o Model.o Pos3D.o Face.o Mtl.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng -lalut -lopenal
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o SoundController.o Sound.o Data/SortedList.h DirtPath.o Bush.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o
+	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o Sound.o SoundController.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng -lalut -lopenal
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -46,6 +46,8 @@ Particle.o: Particles/Particle.cpp Particles/Particle.h
 
 SmokeRing.o: Particles/SmokeRing.cpp Particles/SmokeRing.h
 	g++ -c Particles/SmokeRing.cpp
+DeathPuff.o: Particles/DeathPuff.cpp Particles/DeathPuff.h
+	g++ -c Particles/DeathPuff.cpp
 
 
 # GRAPHICS

@@ -21,6 +21,7 @@ class Sound {
 		Sound(string fileName);
 		Sound(string fileName, float volume);
 
+		ALuint playMusic();
 		void playSound(ALuint src);
 		void playSound(int index);	
 		ALuint playSound(double x, double y, double z, double vX, double vY, double vZ);

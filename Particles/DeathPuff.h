@@ -8,7 +8,7 @@
 
 class DeathPuff : public Particle {
 	public:
-		DeathPuff(float,float,float,float,float,float,float);
+		DeathPuff(float,float,float,float,float,float,float,float);
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);
 
@@ -18,7 +18,7 @@ class DeathPuff : public Particle {
 		float toZ;
 		float toPerc;
 		float rad;
-		float percDiv
+		float percDiv;
 };
 
 #endif

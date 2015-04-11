@@ -27,25 +27,17 @@ SoundController :: SoundController(int argc, char** argv) {
 	alutInit(&argc, argv);
 
         //LOAD SOUNDS
+        loadSound("musTwoson", "Resources/Music/Twoson.wav",.3);        
         loadSound("fsGrass", "Resources/Sounds/fsGrass.wav");        
         loadSound("swordSwing", "Resources/Sounds/swordSwing.wav",1.5);        
+	loadSound("death", "Resources/Sounds/death.wav",3);        
+	loadSound("exploding", "Resources/Sounds/exploding.wav",2.5);        
         loadSound("swordHitFlesh", "Resources/Sounds/swordHitFlesh.wav",3);
         loadSound("swordHitWood", "Resources/Sounds/swordHitWood.wav",1.5);
 	loadSound("attackCollision", "Resources/Sounds/attackCollision.wav",.1);
-        
-        
-        //Ensure that OpenAL Devices are Closed After Program Ends
-        /*Runtime runtime = Runtime.getRuntime();
-        runtime.addShutdownHook(
-            new Thread(
-                new Runnable() {
-                    void run() {
-                        kill();
-                    }
-                }
-            )
-        );*/
-	}
+
+	playMusic("musTwoson");        
+}
 
 SoundController :: ~SoundController() {
 	kill();
@@ -76,7 +68,11 @@ void SoundController :: loadSound(string name, string fileName, float volume) {
 	soundMap[name] = snd;
 	soundList.push_back(snd);
 }
+
 	
+ALuint SoundController :: playMusic(string name) {
+	soundMap[name]->playMusic();
+}
 
 ALuint SoundController :: playSound(string name, Character* inst) {
 	float x, y, z, vel, dir, vX, vY, vZ;

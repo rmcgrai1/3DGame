@@ -3,6 +3,7 @@
 #ifndef SOUNDCONTROLLER_H
 #define SOUNDCONTROLLER_H
 
+#include "../Graphics/GraphicsOGL.h"
 #include "Sound.h"
 #include <iostream>
 #include <AL/alut.h>
@@ -11,7 +12,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "../Characters/Character.h"
 using namespace std;
 
 class SoundController {
@@ -21,8 +21,10 @@ class SoundController {
 
 		void cleanAll();	
 		int getNumPlaying();	
+		void loadMusic(string name, string fileName);
 		void loadSound(string name, string fileName);
 		void loadSound(string name, string fileName, float volume);	
+		static ALuint playMusic(string name);
 		static ALuint playSound(string name, double x, double y, double z, double vX, double vY, double vZ);
 		static ALuint playSound(string name);
 		static ALuint playSound(string name,Character*);

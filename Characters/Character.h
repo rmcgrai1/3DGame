@@ -56,6 +56,14 @@ class Character : public Physical {
 		bool isMoving;
 		float attackTimer;
 
+
+		float destroyTimer;
+		float destroyToX;
+		float destroyToY;
+		float destroyToZ;
+		float destroyShrTimer;
+
+
 		float wXRot;
 		float wYRot;
 		float wZRot;

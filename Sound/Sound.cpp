@@ -36,7 +36,9 @@ int Sound :: loadALData(string fileName) {
 
 
 	alGenBuffers(1, &buffer);
+
 	alutLoadWAVFile(name, &format, &data, &size, &freq, &loop);
+
 	alBufferData(buffer, format, data, size, freq);
 	alutUnloadWAV(format, data, size, freq);
 
@@ -57,7 +59,24 @@ int Sound :: loadALData(string fileName) {
 	        al.alDeleteSources(1, source, 0);
 	        ALut.alutExit();
 	    }*/
-	    
+   
+
+ALuint Sound :: playMusic() {
+	ALuint src;    
+		
+        // Bind buffer with a source.
+        alGenSources(1, &src);
+        
+        alSourcei (src, AL_BUFFER,   buffer);
+        alSourcef (src, AL_GAIN,     volume);
+        alSourcei (src, AL_LOOPING,  true);
+
+        sources.push_back(src);
+        
+        playSound(src);
+        
+        return src;
+}	    
 	
 void Sound :: playSound(ALuint src) {
 	alSourcePlay(src);

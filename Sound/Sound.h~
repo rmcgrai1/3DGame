@@ -3,7 +3,6 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-
 #include <iostream>
 #include <AL/alut.h>
 #include <AL/al.h>
@@ -22,6 +21,7 @@ class Sound {
 		Sound(string fileName);
 		Sound(string fileName, float volume);
 
+		void playMusic();
 		void playSound(ALuint src);
 		void playSound(int index);	
 		ALuint playSound(double x, double y, double z, double vX, double vY, double vZ);

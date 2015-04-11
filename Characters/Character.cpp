@@ -14,7 +14,7 @@
 //#include "../Particles/AttackSwing.h"
 #include "../Environment/Heightmap.h"
 #include "../Particles/SmokeRing.h"
-
+#include "../Particles/DeathPuff.h"
 using namespace std;
 
 #define SH_SPHERE 0
@@ -30,6 +30,8 @@ using namespace std;
 #define KNOCKBACK_TIMER_MAX 15
 #define TARGET_TIMER_MAX 50
 #define TARGET_DISTANCE_MAX 200
+#define DESTROY_TIMER_MAX 60
+#define DESTSHR_TIMER_MAX 25
 
 SortedList<Character*> Character :: characterList;
 
@@ -65,6 +67,8 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	targetShift = 0;
 	targetTimer = -1;
 
+	destroyShrTimer = destroyTimer = destroyToX = destroyToY = destroyToZ = -1;
+
 	hopZ = 0;
 	hopZVel = 0;
 	hopSc = 1;
@@ -97,17 +101,48 @@ float Character :: getMaxHP() {
 }
 
 void Character :: damage(Character* attacker, float dDir) {
-	if(knockbackTimer == -1) {
+	if(hp > 0 && knockbackTimer == -1) {
 		hp -= calcDamage(50,attacker,this);
 		knockback(dDir);
 		isHurt = true;
 
-		if(hp <= 0)
-			destroy();
+		if(hp <= 0) {
+			SoundController::playSound("exploding",this);
+			destroyTimer = DESTROY_TIMER_MAX;
+			destroyToX = x + calcLenX(5,dDir);
+			destroyToY = y + calcLenY(5,dDir);
+			destroyToZ = z + 2;
+		}
 	}
 }
 
 void Character :: update(GraphicsOGL* gl, float deltaTime) {
+
+
+	if(destroyTimer > -1) {
+		x += (destroyToX - x)/10;
+		y += (destroyToY - y)/10;
+		z += (destroyToZ - z)/10;
+
+		destroyTimer -= deltaTime;
+
+		if(destroyTimer <= -1) {
+			SoundController::playSound("death",this);
+			destroyTimer = -2;
+			destroyShrTimer = 1;
+		}
+		return;
+	}
+	else if(destroyTimer == -2) {
+
+		destroyShrTimer += (0 - destroyShrTimer)/1.5;
+
+		if(destroyShrTimer < .01)
+			destroy();
+
+		return;
+	}
+
 
 	// Update Physics/Collisions
 	Physical :: update(gl, deltaTime);
@@ -388,9 +423,43 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	}
 	gl->glSet();
 	*/
+		float destShrSc;
+		float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
+		float upZ = 10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
+		float scZ = .5*sin(upF*6*3.14159);
+
+		if(!isHurt) {
+			upZ = 0;
+			scZ = 0;
+		}
+
+		if(destroyShrTimer == -1)
+			destShrSc = 1;
+		else
+			destShrSc = destroyShrTimer;
+
+		float destShPerc = 1 - destroyTimer/DESTROY_TIMER_MAX;
+		float destShX, destShY, destShZ;
+
+		if(destroyTimer == -1) {
+			destShPerc = 0;
+			destShX = 0;
+			destShY = 0;
+			destShZ = 0;
+		}
+		else {
+			destShX = 2*destShPerc*(rnd()-.5);
+			destShY = 2*destShPerc*(rnd()-.5);
+			destShZ = 2*destShPerc*(rnd()-.5);
+			scZ = 0;
+		}
+
+		
+
 
 	if(!gl->isPCSlow())
 		gl->enableShader("Character");	
+	gl->transformTranslation(destShX,destShY,destShZ);
 	gl->transformTranslation(x,y,z+hopZ);
 	
 	if(onGround/*&& hopZ <= 0*/) {
@@ -408,11 +477,16 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->transformRotationZ(faceDir);
 
 	//gl->transformTranslation(-hopZVel,hopX,0);
-	gl->transformScale(hopSc,hopSc,1/hopSc);
+	gl->transformScale(hopSc,hopSc,1/hopSc + scZ);
 
+	gl->transformTranslation(0,0,1.*h/2);
+	gl->transformScale(destShrSc);
+	gl->transformTranslation(0,0,-1.*h/2);
 
 	gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
-	if(isHurt)
+	if(destroyTimer > -1)
+		gl->setShaderVariable("iHit", destShPerc);
+	else if(isHurt)
 		gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
 	else
 		gl->setShaderVariable("iHit",0);
@@ -471,6 +545,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			//Animation #2
 			gl->transformRotationZ(toolDir);
 
+
 			float timerPerc = attackTimer/ATTACK_TIMER_MAX;			
 				float mTimerPerc = pow(abs(sin(3.14159*(1-timerPerc))),.3);
 
@@ -501,15 +576,12 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 		}
 
-		float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
-		float upZ = 10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
 
-		if(!isHurt)
-			upZ = 0;
 
 		gl->transformTranslation(7,-6,3 + upZ);
 
-		gl->transformScale(1,1,1.3);
+		gl->transformScale(1,1,1.3+scZ);
+		gl->transformScale(destShrSc);
 
 		gl->setShaderVariable("cDirection", toolDir/180.*3.14159);
 		if(isHurt)
@@ -618,8 +690,46 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 }
 
 void Character :: destroy() {
-	Physical :: destroy();
 
+	/*if(shape == SH_PRISM_6)
+		gl->draw3DPrism(0,0,0,s,h,6);
+	else if(shape == SH_PRISM_5)
+		gl->draw3DPrism(0,0,0,s,h,5);
+	else if(shape == SH_PRISM_3)
+		gl->draw3DPrism(0,0,0,s,h,3);
+	else if(shape == SH_CUBE)
+		gl->draw3DPrism(0,0,0,s,h,4);
+	else if(shape == SH_SPHERE)
+		gl->draw3DSphere(0,0,s,s,13);
+	else if(shape == SH_CONE_DOWN)
+		gl->draw3DCone(0,0,h,s,-h,13);
+	else if(shape == SH_CONE_UP)
+		gl->draw3DCone(0,0,0,s,h,13);
+	else if(shape == SH_CYLINDER)
+		gl->draw3DPrism(0,0,0,s,h,13);*/
+
+	
+	float dX,dY,dZ, si, sm;
+	float xD, yD;
+	si = .2;
+	sm = 20;
+
+		
+		xD = calcLenX(1,faceDir);
+		yD = calcLenY(1,faceDir);
+
+		for(float xi = 0; xi < 1; xi += si)
+			for(float yi = 0; yi < 1; yi += si) 
+				for(float zi = 0; zi < 1; zi += si) {
+					dX = x;
+					dY = y;
+					dZ = z;
+
+					new DeathPuff(dX,dY,dZ, 2*(xi-.5), 2*(yi-.5),2*(zi-.5),.5, 20);
+				}
+
+
+	Physical :: destroy();
 	characterList.destroy(this);
 }
 

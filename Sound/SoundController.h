@@ -21,8 +21,10 @@ class SoundController {
 
 		void cleanAll();	
 		int getNumPlaying();	
+		void loadMusic(string name, string fileName);
 		void loadSound(string name, string fileName);
 		void loadSound(string name, string fileName, float volume);	
+		static ALuint playMusic(string name);
 		static ALuint playSound(string name, double x, double y, double z, double vX, double vY, double vZ);
 		static ALuint playSound(string name);
 		static ALuint playSound(string name,Character*);

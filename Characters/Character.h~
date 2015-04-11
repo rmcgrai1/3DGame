@@ -11,7 +11,6 @@
 
 
 class GraphicsOGL;
-class SoundController;
 class Character : public Physical {
 	public:
 		Character(float, float, float);
@@ -56,6 +55,14 @@ class Character : public Physical {
 		float hopX;	
 		bool isMoving;
 		float attackTimer;
+
+
+		float destroyTimer;
+		float destroyToX;
+		float destroyToY;
+		float destroyToZ;
+		float destroyShr
+
 
 		float wXRot;
 		float wYRot;
