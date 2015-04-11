@@ -19,7 +19,7 @@ Mtl::Mtl(string Directory, TexturePack *TP) {
 void Mtl::InterpretLine(string Line) {
 	//TEMPORARY hardcoded options
 	Properties["map_Kd"] = "Metal_Brass_Ceiling.png";
-	TextureProperties["map_Kd"] = Textures->newTexture("Images/Items/dirt.png", 0);//Textures->newTexture(WorkingDir + "/" + "Metal_Brass_Ceiling.png", 0);
+	TextureProperties["map_Kd"] = Textures->newTexture(WorkingDir + "/" + "Metal_Brass_Ceiling.png", 0);
 	numProperties["map_Kd"] = new double[1];
 	numProperties["map_Kd"][0] = 0.0;
 	PropertyLength["map_Kd"] = 0;

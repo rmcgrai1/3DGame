@@ -865,16 +865,30 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 		Pos3D *TexCoord;
 		Pos3D *VNormal;
 		int i,j;
-		
 
+		Texture *Tex = Faces[0]->getMaterial()->getTexture("map_Kd");
+		Texture *PrevTex = Tex;
+		if(Tex != NULL) {
+			glEnable(GL_TEXTURE_2D);
+			Tex->bind();
+		}
 		glBegin(GL_TRIANGLES);
 			for(j = 0; j < FaceCount; j++) {
 				ThisFace = Faces[j];
 				ThisMaterial = ThisFace->getMaterial();
-				Texture *tex = ThisMaterial->getTexture("map_Kd");
-				if(tex != NULL) {
-					glEnable(GL_TEXTURE_2D);
-					tex->bind();
+				Tex = ThisMaterial->getTexture("map_Kd");
+				if(Tex != PrevTex) {
+					glEnd();
+					if(PrevTex != NULL) {
+						glDisable(GL_TEXTURE_2D);
+						PrevTex->unbind();
+					}
+					if(Tex != NULL) {
+						glEnable(GL_TEXTURE_2D);
+						Tex->bind();
+					}
+					glBegin(GL_TRIANGLES);
+					PrevTex = Tex;
 				}
 				for(i=0;i<3;i++) {
 					Vertex = ThisFace->getVertex(Vertices,VertexCount,i);
@@ -884,12 +898,12 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 					glNormal3f(VNormal->getX(),VNormal->getY(),VNormal->getZ());
 					glVertex3f(Vertex->getX(),Vertex->getY(),Vertex->getZ());
 				}
-				if(tex != NULL) {
-					glDisable(GL_TEXTURE_2D);
-					tex->unbind();
-				}
 			}
 		glEnd();
+		if(Tex != NULL) {
+			glDisable(GL_TEXTURE_2D);
+			Tex->unbind();
+		}
 	}
 
 
