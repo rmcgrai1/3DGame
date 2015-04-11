@@ -32,9 +32,9 @@ Inventory::Inventory() {
 	ItemRot = 45;
 	
 	//TEST CODE to add some items to slots
-	items.push_back(new Item("stone", "Images/Items/stone", Textures));
+	items.push_back(new Item("stone", "Models/Items/stone", Textures));
 	Slots[8]->AddItem(items.back(), 54);
-	items.push_back(new Item("dirt", "Images/Items/dirt", Textures));
+	items.push_back(new Item("dirt", "Models/Items/dirt", Textures));
 	Slots[10]->AddItem(items.back(), 42);
 	
 }

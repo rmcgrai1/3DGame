@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o Model.o Pos3D.o Face.o Mtl.o
+	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o Model.o Pos3D.o Face.o Mtl.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -78,6 +78,17 @@ ShaderController.o: Graphics/ShaderController.cpp Graphics/ShaderController.h
 Shader.o: Graphics/Shader.cpp Graphics/Shader.h
 	g++ -c Graphics/Shader.cpp
 
+
+# MODELS
+###############################################################
+Model.o: Graphics/models/Model.cpp Graphics/models/Model.h Graphics/models/Pos3D.h Graphics/models/Face.h Graphics/models/Mtl.h
+	g++ -c Graphics/models/Model.cpp
+Pos3D.o: Graphics/models/Pos3D.cpp Graphics/models/Pos3D.h
+	g++ -c Graphics/models/Pos3D.cpp
+Face.o: Graphics/models/Face.cpp Graphics/models/Face.h Graphics/models/Pos3D.h Graphics/models/Mtl.h
+	g++ -c Graphics/models/Face.cpp
+Mtl.o: Graphics/models/Mtl.cpp Graphics/models/Mtl.h
+	g++ -c Graphics/models/Mtl.cpp
 
 # PRIMITIVES
 ###############################################################
