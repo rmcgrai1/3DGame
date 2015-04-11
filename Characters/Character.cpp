@@ -502,7 +502,11 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		}
 
 		float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
-		float upZ = isHurt*10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
+		float upZ = 10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
+
+		if(!isHurt)
+			upZ = 0;
+
 		gl->transformTranslation(7,-6,3 + upZ);
 
 		gl->transformScale(1,1,1.3);
