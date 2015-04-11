@@ -19,6 +19,8 @@
 #include "../menus/menu.h"
 #include "../Text/TextController.h"
 #include "../Sound/SoundController.h"
+#include "models/Model.h"
+
 
 class Camera;
 class Heightmap;
@@ -132,8 +134,10 @@ class GraphicsOGL {
 				void draw3DPrism(float,float,float,float,float,int, Texture*);
 
 				void draw3DLine(float,float,float,float,float,float);
+			//3D MODEL
+			void draw3DModel(Model *);
 
-
+				
 		//SHADERS
 			void setShaderVariable(string, float);
 			void passShaderShadows();

@@ -18,11 +18,16 @@
 #include "../Characters/Player.h"
 #include "../menus/menu.h"
 #include "../Text/TextController.h"
+<<<<<<< HEAD
 #include "../Sound/SoundController.h"
+=======
+#include "models/Model.h"
+>>>>>>> 705ea0fc04228f1ed1f0dc2c0c4b7f102d58c447
 
 class Camera;
 class Heightmap;
 class TextController;
+class SoundController;
 class GraphicsOGL {
 	public:
 		GraphicsOGL(int, char* []);
@@ -131,8 +136,10 @@ class GraphicsOGL {
 				void draw3DPrism(float,float,float,float,float,int, Texture*);
 
 				void draw3DLine(float,float,float,float,float,float);
+			//3D MODEL
+			void draw3DModel(Model *);
 
-
+				
 		//SHADERS
 			void setShaderVariable(string, float);
 			void passShaderShadows();

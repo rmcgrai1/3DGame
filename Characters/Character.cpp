@@ -27,6 +27,7 @@ using namespace std;
 #define SH_CYLINDER 7
 
 #define ATTACK_TIMER_MAX 11 //12
+#define KNOCKBACK_TIMER_MAX 15
 #define TARGET_TIMER_MAX 50
 #define TARGET_DISTANCE_MAX 200
 
@@ -500,8 +501,9 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 		}
 
-
-		gl->transformTranslation(7,-6,3);
+		float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
+		float upZ = isHurt*10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
+		gl->transformTranslation(7,-6,3 + upZ);
 
 		gl->transformScale(1,1,1.3);
 
@@ -594,6 +596,7 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 		dX = oX+16;
 		dY += 15;
 	gl->drawString(dX,dY,"HP: " + to_string(he) + " / " + to_string(mHe));
+
 		dY += 15;
 	gl->drawHealth(dX,dY,he,mHe);
 
@@ -628,7 +631,7 @@ void Character :: knockback(float kDir) {
 
 	if(knockbackTimer == -1) {
 		knockbackDir = kDir;
-		knockbackTimer = 15;
+		knockbackTimer = KNOCKBACK_TIMER_MAX;
 
 		zVel = 1.5;
 	}

@@ -37,7 +37,10 @@
 #include "../Environment/Bush.h"
 #include "../Environment/DirtPath.h"
 #include "../Sound/SoundController.h"
-//#include "../menus/menu.h"
+#include "models/Model.h"
+#include "models/Face.h"
+#include "models/Pos3D.h"
+#include "models/Mtl.h"
 
 
 using namespace std;
@@ -844,6 +847,51 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 		void GraphicsOGL :: draw3DPrism(float x, float y, float z, float rad, float h, int sideNum, Texture* tex) {
 			draw3DFrustem(x,y,z,rad,rad,h,sideNum,tex);
 		}
+
+	//3D MODEL
+	void GraphicsOGL :: draw3DModel(Model *ModelToDraw) {
+		Pos3D **Vertices = ModelToDraw->getVertices();
+		Pos3D **TexCoords = ModelToDraw->getTexCoords();
+		Pos3D **VNormals = ModelToDraw->getVNormals();
+		Face **Faces = ModelToDraw->getFaces();
+		int VertexCount = ModelToDraw->getVertexCount();
+		int TexCoordCount = ModelToDraw->getTexCoordCount();
+		int VNormalCount = ModelToDraw->getVNormalCount();
+		int FaceCount = ModelToDraw->getFaceCount();
+		
+		Mtl *ThisMaterial;
+		Face *ThisFace;
+		Pos3D *Vertex;
+		Pos3D *TexCoord;
+		Pos3D *VNormal;
+		int i,j;
+		
+
+		glBegin(GL_TRIANGLES);
+			for(j = 0; j < FaceCount; j++) {
+				ThisFace = Faces[j];
+				ThisMaterial = ThisFace->getMaterial();
+				Texture *tex = ThisMaterial->getTexture("map_Kd");
+				if(tex != NULL) {
+					glEnable(GL_TEXTURE_2D);
+					tex->bind();
+				}
+				for(i=0;i<3;i++) {
+					Vertex = ThisFace->getVertex(Vertices,VertexCount,i);
+					TexCoord = ThisFace->getTexCoord(TexCoords,TexCoordCount,i);
+					VNormal = ThisFace->getVNormal(VNormals,VNormalCount,i);
+					glTexCoord2f(TexCoord->getX(),TexCoord->getY());
+					glNormal3f(VNormal->getX(),VNormal->getY(),VNormal->getZ());
+					glVertex3f(Vertex->getX(),Vertex->getY(),Vertex->getZ());
+				}
+				if(tex != NULL) {
+					glDisable(GL_TEXTURE_2D);
+					tex->unbind();
+				}
+			}
+		glEnd();
+	}
+
 
 // Draw Health
 	void GraphicsOGL :: drawHealth(float dX, float dY, float amt, float

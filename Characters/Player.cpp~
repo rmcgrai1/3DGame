@@ -18,7 +18,7 @@
 #include "../Environment/Heightmap.h"
 using namespace std;
 
-
+s
 float nCDir = 0;
 float jumpSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*24));
 
@@ -149,6 +149,6 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 		attack();
 }
 
-void Player :: land() {
-	Character :: land();
+void Player :: land(GraphicsOGL* gl) {
+	Character :: land(gl);
 }
