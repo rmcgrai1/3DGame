@@ -1,6 +1,9 @@
 uniform mat4 uMVPMatrix;
+uniform mat4 modelMatrix;
 attribute vec4 vPosition;                  // (x,y,z)
 attribute vec4 vColour;                    // (r,g,b,a)
+
+varying vec4 vWVertex;
 
 varying vec2 v_vTexcoord;
 varying vec3 vNormal;
@@ -34,6 +37,8 @@ void main() {
     	vColor = vec4(1.,1.,1.,1.);
 	gl_TexCoord[0] = gl_MultiTexCoord0;
     
+
+	vWVertex = gl_Vertex*modelMatrix;
 
 	float camNX, camNY;
 	camNX = camNormal.x;

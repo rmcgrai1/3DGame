@@ -85,6 +85,25 @@ void Sound :: playSound(ALuint src) {
 void Sound :: playSound(int index) {
 	alSourcePlay(sources[0]);
 }
+
+ALuint Sound :: playSound() {
+	ALuint src;
+					    
+		
+        // Bind buffer with a source.
+        alGenSources(1, &src);
+        
+        alSourcei (src, AL_BUFFER,   buffer);
+        alSourcef (src, AL_PITCH,    1.0f);
+        alSourcef (src, AL_GAIN,     volume);
+        alSourcei (src, AL_LOOPING,  loop);
+
+        sources.push_back(src);
+        
+        playSound(src);
+        
+        return src;
+}
 	
 ALuint Sound :: playSound(double x, double y, double z, double vX, double vY, double vZ) {
 

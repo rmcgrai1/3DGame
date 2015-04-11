@@ -13,8 +13,10 @@ uniform sampler2D Texture2;
 
 varying float dp;
 
-const int numLights = 100;
-uniform vec3 lights[numLights];
+uniform int lightNum;
+uniform float lightRads[100];
+uniform vec3 lights[100];
+uniform vec4 lightColors[100];
 
 uniform int shadowNum;
 uniform vec3 shadows[100];
@@ -26,7 +28,6 @@ uniform vec3 pathPts[100];
 float zDir = (iGlobalTime*10. + 90.)/180.*3.14159;
 float xN = cos(zDir), zN = sin(zDir);
 float dayAmt = (zN+1.)/2.;
-
 vec3 sunDirection = normalize(vec3(0.,zN,xN));
 
 
@@ -190,29 +191,35 @@ vec4 mixColors(vec4 col1, vec4 col2) {
 	return mixed;
 }
 
-vec4 addLighting(vec4 oriColor) {
 
-	vec4 newCol = oriColor;
+vec4 addLighting(vec4 oriColor, float lightness) {
 
-	vec3 curLightPos = lights[0];
+	float totalLight = 1.;
 
+	for(int i = 0; i < lightNum; i++) {
+		vec3 curLightPos = lights[i];
+		vec4 curLightColor = lightColors[i];
+		float curLightR = lightRads[i];
 	
-	float dis = calcDis(vWVertex.xyz,curLightPos); 
+		float dis = calcDis(vWVertex.xyz,curLightPos.xyz); 
 	
-	float darkness = contain((dis/200.))*.9;
-	float light = pow(1.-contain((dis/100.))*.9,2.);
+		float darkness = contain(pow(dis/curLightR, 1)); // 2
+		//float light = pow(1.-contain((dis/100.))*.9,2.);
 
+		totalLight *= darkness;
 
-	oriColor = mixColors(newCol, vec4(0.,0.,0.,darkness));
-	return mixColors(newCol, vec4(1.,1.,.5,light));
+		oriColor.rgb += curLightColor.rgb*(1.-darkness)*curLightColor.a;
+	}
+
+	lightness = contain(lightness + (1.-totalLight));
+
+	oriColor.rgb *= lightness; //mixColors(newCol, vec4(1.,1.,.5,light));
+	return oriColor;
 }
 
 vec4 addFog(vec4 oriColor) {
 
 	vec4 newCol = oriColor;
-
-	vec3 curLightPos = lights[0];
-
 	
 	float dis = calcDis(vWVertex.xyz,vec3(rCamPos.xyz)); 
 	
@@ -223,10 +230,10 @@ vec4 addFog(vec4 oriColor) {
 	return mixColors(newCol, vec4(getFogColor().rgb,col));
 }
 
-vec4 addShadows(vec4 oriColor) {
+float addShadows() {
 	
-	int i;
-	for(i = 0; i < shadowNum; i++) {
+	float sh = 1.;
+	for(int i = 0; i < shadowNum; i++) {
 		vec3 curPos = shadows[i];
 		float curR = curPos.z;
 
@@ -235,10 +242,10 @@ vec4 addShadows(vec4 oriColor) {
 
 		float dis = calcDis(vWVertex.xy,curPos.xy);
 	
-		oriColor.rgb *= pow(contain((dis/curR)),2.);
+		sh *= pow(contain((dis/curR)),2.);
 	}
 
-	return oriColor;
+	return sh;
 }
 
 vec4 addPath(vec4 oriColor) {
@@ -319,14 +326,12 @@ void main() {
 		gl_FragColor = caustics(gl_FragColor, gl_TexCoord[0].xy);
 
 	
-	float dark = .7 + .3*dot(sunDirection, vNormal);
+	float dark = .6 + .4*dot(sunDirection, vNormal);
 
-	//gl_FragColor = addFog();
 	gl_FragColor = addFog(addPath(gl_FragColor));
-		gl_FragColor.rgb *= dark*dp;
 	//gl_FragColor = vec4(vNormal.xyz,1.); //addFog(gl_FragColor);
 
-	gl_FragColor = addShadows(gl_FragColor);	
+		//gl_FragColor.rgb *= dark*dp;
 
-	//gl_FragColor = addLighting(gl_FragColor);
+	gl_FragColor = addLighting(gl_FragColor,dark*dp*addShadows());
 }

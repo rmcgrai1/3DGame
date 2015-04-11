@@ -283,6 +283,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->enableShader("Terrain");
 		gl->passShaderShadows();
 		gl->passShaderPath();
+		gl->passShaderLights();
 	}
 
 	if(texGrass != NULL) {

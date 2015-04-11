@@ -8,6 +8,16 @@ Environmental :: Environmental(float nX, float nY) {
 	health = 100;
 	x = nX;
 	y = nY;
+	z = -1;
+	onGround = false;
+}
+
+Environmental :: Environmental(float nX, float nY, float nZ) {
+	health = 100;
+	x = nX;
+	y = nY;
+	z = nZ;
+	onGround = false;
 }
 
 void Environmental :: update(GraphicsOGL* gl, float deltaT) {
@@ -30,7 +40,7 @@ float Environmental :: getZ() {
 }
 
 void Environmental :: placeOnGround(GraphicsOGL* gl) {
-	if(!onGround) {
+	if(z == -1 && !onGround) {
 		onGround = true;
 		z = gl->getHeightmap()->getHeightXY(x,y);
 	}

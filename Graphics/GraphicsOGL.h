@@ -140,8 +140,13 @@ class GraphicsOGL {
 				
 		//SHADERS
 			void setShaderVariable(string, float);
+			void setShaderInt(string, int);
+			void setShaderVec3(string, float[3]);
+			void passModelMatrix();
+			void passShaderUpdate();
 			void passShaderShadows();
 			void passShaderPath();
+			void passShaderLights();
 			void disableShaders();
 			void enableShader(GLuint);
 			void enableShader(string);

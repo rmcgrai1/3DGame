@@ -51,7 +51,7 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 
 
 	float aX = 0, aY = 0;
-	if(damageShakeTimer > -1) {
+	if(damageShakeTimer != -1) {
 		aX = 2.*(rnd() - .5);
 		aY = 2.*(rnd() - .5);
 	}
@@ -83,7 +83,7 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 	if(!gl->isPCSlow())
 		gl->enableShader("pineBranch");
 
-	if(damageShakeTimer > -1)
+	if(damageShakeTimer != -1)
 		gl->setColor(255*colRed, .2*255*colGreen, .2*255*colBlue);
 	else
 		gl->setColor(255*colRed, 255*colGreen, 255*colBlue);
@@ -96,7 +96,7 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 		uR = r;
 		uDZ = dZ;
 		uH = h;
-		for (int j = 0; j < 2; j++) {
+		for (int j = 0; j < 1; j++) {
 			uDZ += 3;
 
 			//float aR, aG, aB;
@@ -106,8 +106,15 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 			
 			gl->setShaderVariable("iDark", pow((3.-i)/3.,2.));
 
-			gl->draw3DCone(0,0,uDZ,uR,uH, fidelity, branchTex);
-			gl->draw3DCone(0,0,uDZ,uR*1.1,uH*.8, fidelity, branchTex);
+
+			float fR = sin((fallZDir/90.)*3.14159)*(-fallZVel*0);
+			gl->transformTranslation(0,0,uDZ);
+			gl->transformRotationZ(fallXYDir);
+			gl->transformRotationY(fR);
+			gl->transformRotationZ(-fallXYDir);
+			gl->draw3DCone(0,0,0,uR,uH, fidelity, branchTex);
+			gl->transformTranslation(0,0,-uDZ);
+			//gl->draw3DCone(0,0,uDZ,uR*1.1,uH*.8, fidelity, branchTex);
 		}
 	}
 

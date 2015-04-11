@@ -9,13 +9,17 @@
 #include "TextInterpreter.h"
 #include "../Primitives/Drawable.h"
 #include "../Graphics/GraphicsOGL.h"
+#include "../Sound/SoundController.h"
 using namespace std;
+
+#define WAIT_TIMER_MAX 2
 
 // Create Null Format
 Format formNull = {255,255,255,1,0,0};
 
 TextController :: TextController() : Drawable2(TYPE_MENU) {
 
+	waitTimer = -1;
 
 	// Create Text Interpreter Object
 	teInt = new TextInterpreter();
@@ -32,6 +36,13 @@ void TextController :: update(GraphicsOGL* gl, float deltaT) {
 
 	// If Text is Marching...
 	if(isAdvancing) {
+
+		waitTimer -= deltaT;
+		
+		if(waitTimer < -1)
+			waitTimer += WAIT_TIMER_MAX;
+		else
+			return;
 
 		// Increment Text Positions
 		allPos++;
@@ -70,8 +81,10 @@ void TextController :: update(GraphicsOGL* gl, float deltaT) {
 			}
 		}		
 		// Otherwise, Add Char to Text
-		else
+		else {
+			SoundController :: playSound("text");
 			curText += allText.at(allPos);
+		}
 
 
 		// If Text Ended, Pause

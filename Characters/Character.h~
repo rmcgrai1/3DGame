@@ -29,6 +29,7 @@ class Character : public Physical {
 
 		float getHP();
 		float getMaxHP();
+		float getDeathPerc();
 		float getTarget();
 		float getTargetShift();
 
@@ -61,7 +62,7 @@ class Character : public Physical {
 		float destroyToX;
 		float destroyToY;
 		float destroyToZ;
-		float destroyShr
+		float destroyShrTimer;
 
 
 		float wXRot;

@@ -1,6 +1,7 @@
 // Tree.cpp
 
 
+#include "../Sound/SoundController.h"
 #include "Tree.h"
 #include "Branch.h"
 #include <stdlib.h>
@@ -15,6 +16,7 @@ Tree :: Tree(float x, float y, float newSize) : Environmental(x,y) {
 	health = 3;
 
 	isGrowing = true;
+	hasShadow = true;
 
 	//root = new Branch(0,5, 15., 0, 90);
 	size = .05;
@@ -39,6 +41,7 @@ void Tree :: destroy() {
 
 void Tree :: damage(float newDir) {
 	if(damageShakeTimer == -1) {
+		SoundController :: playSound("treeDamage",this);
 		fallXYDir = newDir;
 		damageShakeTimer = 10;
 		health--;
@@ -61,15 +64,20 @@ void Tree :: update(GraphicsOGL* gl, float deltaTime) {
 
 		if(damageShakeTimer <= -1) {
 			damageShakeTimer = -1;
+
+			if(health <= 0) {
+				SoundController :: playSound("treeDie",this);
+				damageShakeTimer = -2;
+			}
 		}
 	}
-	if(health <= 0 && damageShakeTimer <= 0) {
-		damageShakeTimer = 0;
+	if(health <= 0 && damageShakeTimer == -2) {
 		if(fallZVel != 10000) {
 			fallZVel += .0625;
 			fallZDir += fallZVel;
 
 			if(fallZDir >= 90) {
+				SoundController :: playSound("heavyFall",this);
 				fallZDir = 90;
 				fallZVel *= -.25;
 

@@ -100,6 +100,15 @@ float Character :: getMaxHP() {
 	return maxHP;
 }
 
+float Character :: getDestroyFraction() {
+	if(destroyTimer == -1)
+		return -1;
+	else if(destroyTimer > -1)
+		return 1 - destroyTimer/DESTROY_TIMER_MAX;
+	else
+		return destroyShrTimer;
+}
+
 void Character :: damage(Character* attacker, float dDir) {
 	if(hp > 0 && knockbackTimer == -1) {
 		hp -= calcDamage(50,attacker,this);
@@ -423,6 +432,9 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	}
 	gl->glSet();
 	*/
+
+		Texture* texWood = gl->getTextureController()->getTexture("bark");
+
 		float destShrSc;
 		float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
 		float upZ = 10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
@@ -433,10 +445,12 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			scZ = 0;
 		}
 
-		if(destroyShrTimer == -1)
+		if(destroyTimer > -1)
+			destShrSc = 1+.3*pow(getDestroyFraction(),3.);
+		else if(destroyShrTimer == -1)
 			destShrSc = 1;
 		else
-			destShrSc = destroyShrTimer;
+			destShrSc = 1.3*destroyShrTimer;
 
 		float destShPerc = 1 - destroyTimer/DESTROY_TIMER_MAX;
 		float destShX, destShY, destShZ;
@@ -448,17 +462,20 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			destShZ = 0;
 		}
 		else {
-			destShX = 2*destShPerc*(rnd()-.5);
-			destShY = 2*destShPerc*(rnd()-.5);
-			destShZ = 2*destShPerc*(rnd()-.5);
+			destShX = 5*destShPerc*(rnd()-.5);
+			destShY = 5*destShPerc*(rnd()-.5);
+			destShZ = 5*destShPerc*(rnd()-.5);
 			scZ = 0;
 		}
 
 		
 
 
-	if(!gl->isPCSlow())
-		gl->enableShader("Character");	
+	if(!gl->isPCSlow()) {
+		gl->enableShader("Character");
+		gl->passShaderShadows();
+		gl->passShaderLights();
+	}
 	gl->transformTranslation(destShX,destShY,destShZ);
 	gl->transformTranslation(x,y,z+hopZ);
 	
@@ -491,6 +508,10 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	else
 		gl->setShaderVariable("iHit",0);
 
+	gl->passModelMatrix();
+
+	float charPos[3] = {x,y,z};
+	gl->setShaderVec3("charPos", charPos);
 
 	if(shape == SH_PRISM_6)
 		gl->draw3DPrism(0,0,0,s,h,6);
@@ -590,9 +611,10 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			gl->setShaderVariable("iHit",0);
 
 
+		gl->passModelMatrix();
 		// Hilt
-		gl->draw3DPrism(0,0,.5,.5,2,3);
-		gl->draw3DBlock(-.8,-2,2,.8,2,3);
+		gl->draw3DPrism(0,0,.5,.5,2,3,texWood);
+		gl->draw3DBlock(-.8,-2,2,.8,2,3,texWood);
 
 		// Blade
 		gl->draw3DCone(0,0,7,1,3,3);
@@ -788,7 +810,7 @@ void Character :: updateHop(GraphicsOGL* gl, float deltaT) {
 
 void Character :: hop() {
 	if(hopZ == 0) {
-		hopZVel = hopSpeed;
+		hopZVel = hopSpeed*(1. + .1*(rnd()-.5));
 
 		hopDir *= -1;
 	}

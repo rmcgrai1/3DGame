@@ -45,6 +45,8 @@ class TextController : public Drawable2 {
 		bool isAdvancing;			// Is Text Marching?
 		int allPos;				// "Real" Position
 		int curPos;				// "Display" Position
+
+		float waitTimer;
 		TextInterpreter* teInt;			// Text Interpreter
 		string allText;				// "Real" Text
 		string curText;				// "Display" Text

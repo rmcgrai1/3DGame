@@ -18,11 +18,9 @@
 #include "../Characters/Player.h"
 #include "../menus/menu.h"
 #include "../Text/TextController.h"
-<<<<<<< HEAD
 #include "../Sound/SoundController.h"
-=======
 #include "models/Model.h"
->>>>>>> 705ea0fc04228f1ed1f0dc2c0c4b7f102d58c447
+
 
 class Camera;
 class Heightmap;
@@ -142,8 +140,12 @@ class GraphicsOGL {
 				
 		//SHADERS
 			void setShaderVariable(string, float);
+			void setShaderInt(string, int);
+			void passModelMatrix();
+			void passShaderUpdate();
 			void passShaderShadows();
 			void passShaderPath();
+			void passShaderLights();
 			void disableShaders();
 			void enableShader(GLuint);
 			void enableShader(string);

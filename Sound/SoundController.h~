@@ -3,6 +3,7 @@
 #ifndef SOUNDCONTROLLER_H
 #define SOUNDCONTROLLER_H
 
+#include "../Environment/Environmental.h"
 #include "../Graphics/GraphicsOGL.h"
 #include "Sound.h"
 #include <iostream>
@@ -28,6 +29,7 @@ class SoundController {
 		static ALuint playSound(string name, double x, double y, double z, double vX, double vY, double vZ);
 		static ALuint playSound(string name);
 		static ALuint playSound(string name,Character*);
+		static ALuint playSound(string name,Environmental*);
 		void updateListener(double cX, double cY, double cZ, double vX, double vY, double vZ, double nDirX, double nDirY, double nDirZ, double nUpX, double nUpY, double nUpZ);
 		void kill();
 		void killSource(string name, ALuint source);	

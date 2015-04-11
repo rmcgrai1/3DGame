@@ -29,6 +29,7 @@ class Character : public Physical {
 
 		float getHP();
 		float getMaxHP();
+		float getDestroyFraction();
 		float getTarget();
 		float getTargetShift();
 

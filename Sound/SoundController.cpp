@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 #include "../Characters/Character.h"
+#include "../Environment/Environmental.h"
 using namespace std;
 
 map<string, Sound*> SoundController :: soundMap;
@@ -27,16 +28,22 @@ SoundController :: SoundController(int argc, char** argv) {
 	alutInit(&argc, argv);
 
         //LOAD SOUNDS
-        loadSound("musTwoson", "Resources/Music/Twoson.wav",.3);        
+        loadSound("musTwoson", "Resources/Music/Twoson.wav",.1);        
         loadSound("fsGrass", "Resources/Sounds/fsGrass.wav");        
-        loadSound("swordSwing", "Resources/Sounds/swordSwing.wav",1.5);        
+        loadSound("swordSwing", "Resources/Sounds/swordSwing.wav",1.5);
+	loadSound("text", "Resources/Sounds/text.wav",.25);        
 	loadSound("death", "Resources/Sounds/death.wav",3);        
+
+	loadSound("treeDamage", "Resources/Sounds/treeDamage.wav",.25);        
+	loadSound("treeDie", "Resources/Sounds/treeDie.wav",0);        
+
+	loadSound("heavyFall", "Resources/Sounds/heavyFall.wav",5);        
 	loadSound("exploding", "Resources/Sounds/exploding.wav",3);        
         loadSound("swordHitFlesh", "Resources/Sounds/swordHitFlesh.wav",3);
         loadSound("swordHitWood", "Resources/Sounds/swordHitWood.wav",1.5);
 	loadSound("attackCollision", "Resources/Sounds/attackCollision.wav",.1);
 
-	playMusic("musTwoson");        
+	playMusic("musTwoson");
 }
 
 SoundController :: ~SoundController() {
@@ -88,6 +95,14 @@ ALuint SoundController :: playSound(string name, Character* inst) {
 	vZ = 0;
 
 	return playSound(name, x, y, z, vX, vY, vZ);
+}
+ALuint SoundController :: playSound(string name, Environmental* inst) {
+	float x, y, z, vel, dir, vX, vY, vZ;
+	x = inst->getX();
+	y = inst->getY();
+	z = inst->getZ();
+
+	return playSound(name, x, y, z, 0,0,0);
 }	
 ALuint SoundController :: playSound(string name, double x, double y, double z, double vX, double vY, double vZ) {
 	Sound* snd = soundMap[name];
@@ -99,7 +114,12 @@ ALuint SoundController :: playSound(string name, double x, double y, double z, d
 }
 	
 ALuint SoundController :: playSound(string name) {
-	return playSound(name, listenerX, listenerY, listenerZ, 0, 0, 0);
+	Sound* snd = soundMap[name];
+	
+	if(snd != NULL)
+		return snd->playSound();
+	else
+		return -1;
 }
 	
 	

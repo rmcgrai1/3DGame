@@ -271,8 +271,6 @@ void Heightmap :: generateNormals() {
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
-	return;
-
 	gl->logMessage("Heightmap.cpp, draw()");
 
 	glEnable(GL_LIGHTING);

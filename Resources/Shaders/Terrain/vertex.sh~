@@ -83,7 +83,7 @@ void main()
     	grassWeight = 1.-tDis; 
 	sandWeight = tDis;//pow(1.5*tDis,5.);
 
-	dp = calcDark();
+	dp = 1.;//calcDark();
 
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 }
