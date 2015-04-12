@@ -12,21 +12,25 @@
 
 #include "Model.h"
 
-Pos3D **Model::Vertices;
+/*Pos3D **Model::Vertices;
 Pos3D **Model::TexCoords;
 Pos3D **Model::VNormals;
 Face **Model::Faces;
 int Model::VertexCount;
 int Model::TexCoordCount;
 int Model::VNormalCount;
-int Model::FaceCount;
+int Model::FaceCount;*/
 
 using namespace std;
 Model::Model(string Location, TexturePack *TP) { // defaults to loading "model.obj" in the specified folder
-	Model(Location, "model.obj", TP);
+	Initialize(Location, "model.obj", TP);
 }
 
 Model::Model(string Location, string filename, TexturePack *TP) {
+	Initialize(Location, filename, TP);
+}
+
+void Model::Initialize(string Location, string filename, TexturePack *TP) {
 	Textures = TP;
 	directory = Location;
 	subfile = filename;
@@ -83,25 +87,26 @@ Model::Model(string Location, string filename, TexturePack *TP) {
 	Mtl *ThisMaterial = new Mtl(directory,Textures);
 	ThisMaterial->InterpretLine("map_Kd Metal_Brass_Ceiling.jpg");
 	Materials["__Metal_Brass_Ceiling__Metal_Brass_Ceiling_jpg"] = ThisMaterial;
+	cout << ThisMaterial->getTexture("map_Kd") << endl;
 	//TEMPORARY: loading dummy materials into model (end)
 	
 	//TEMPORARY: loading dummy faces into model
 	Face *ThisFace;
-	ThisFace = new Face(1,1,1, 2,3,2, 3,4,3);
+	ThisFace = new Face(1,1,1, 2,3,2, 3,4,3, ThisMaterial);
 	AllFaces->push_back(ThisFace);
-	ThisFace = new Face(1,1,1, 3,3,3, 6,4,6);
+	ThisFace = new Face(1,1,1, 3,3,3, 6,4,6, ThisMaterial);
 	AllFaces->push_back(ThisFace);
-	ThisFace = new Face(1,1,1, 6,4,6, 4,2,4);
+	ThisFace = new Face(1,1,1, 6,4,6, 4,2,4, ThisMaterial);
 	AllFaces->push_back(ThisFace);
-	ThisFace = new Face(4,3,4, 6,2,6, 5,1,5);
+	ThisFace = new Face(4,3,4, 6,2,6, 5,1,5, ThisMaterial);
 	AllFaces->push_back(ThisFace);
-	ThisFace = new Face(4,1,4, 5,3,5, 1,2,1);
+	ThisFace = new Face(4,1,4, 5,3,5, 1,2,1, ThisMaterial);
 	AllFaces->push_back(ThisFace);
-	ThisFace = new Face(2,4,2, 1,2,1, 5,3,5);
+	ThisFace = new Face(2,4,2, 1,2,1, 5,3,5, ThisMaterial);
 	AllFaces->push_back(ThisFace);
-	ThisFace = new Face(2,1,2, 5,3,5, 3,2,3);
+	ThisFace = new Face(2,1,2, 5,3,5, 3,2,3, ThisMaterial);
 	AllFaces->push_back(ThisFace);
-	ThisFace = new Face(3,2,3, 5,3,5, 6,4,6);
+	ThisFace = new Face(3,2,3, 5,3,5, 6,4,6, ThisMaterial);
 	AllFaces->push_back(ThisFace);
 	//TEMPORARY: loading dummy faces into model (end)
 	

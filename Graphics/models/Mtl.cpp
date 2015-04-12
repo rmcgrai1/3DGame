@@ -5,10 +5,10 @@
 #include "../../Graphics/Texture.h"
 
 #include "Mtl.h"
-map<string, string> Mtl::Properties;
+/*map<string, string> Mtl::Properties;
 map<string, Texture *> Mtl::TextureProperties;
 map<string, double *> Mtl::numProperties;
-map<string, int> Mtl::PropertyLength;
+map<string, int> Mtl::PropertyLength;*/
 
 using namespace std;
 Mtl::Mtl(string Directory, TexturePack *TP) {

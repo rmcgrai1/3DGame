@@ -3,6 +3,7 @@
 #include "../Graphics/GraphicsOGL.h"
 #include "../Graphics/TexturePack.h"
 #include "../Graphics/Texture.h"
+#include "../Graphics/models/Model.h"
 #include "PosSpec.h"
 
 #include "item.h"
@@ -47,6 +48,10 @@ void Item::SetName(string newName) {
 
 string Item::GetName() {
 	return Name;
+}
+
+Model *Item::GetModel() {
+	return Mod;
 }
 
 ostream& operator<<(ostream& output, const Item item) {

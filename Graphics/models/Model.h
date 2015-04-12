@@ -28,23 +28,24 @@ class Model {
 		int getVNormalCount();
 		int getFaceCount();
 	private:
+		void Initialize(string Location, string filename, TexturePack *TP);
 		void UpdateLists();
 		
 		TexturePack *Textures;
 		string directory;
 		string subfile;
 		vector<Pos3D *> *AllVertices;
-		static Pos3D ** Vertices;
-		static int VertexCount;
+		/*static */Pos3D ** Vertices;
+		/*static */int VertexCount;
 		vector<Pos3D *> *AllTexCoords;
-		static Pos3D ** TexCoords;
-		static int TexCoordCount;
+		/*static */Pos3D ** TexCoords;
+		/*static */int TexCoordCount;
 		vector<Pos3D *> *AllVNormals;
-		static Pos3D ** VNormals;
-		static int VNormalCount;
+		/*static */Pos3D ** VNormals;
+		/*static */int VNormalCount;
 		vector<Face *> *AllFaces;
-		static Face ** Faces;
-		static int FaceCount;
+		/*static */Face ** Faces;
+		/*static */int FaceCount;
 		
 		map<string, Mtl *> Materials;
 };
