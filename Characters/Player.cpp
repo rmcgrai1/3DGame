@@ -65,6 +65,8 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 			toY = tS*(target->getY()) + (1-tS)*(y);
 			toZ = floorZ+8;
 
+			//direction = calcPtDir(x,y,target->getX(),target->getY());
+
 			gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,toX,toY,toZ);
 		}
 }

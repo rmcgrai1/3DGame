@@ -107,12 +107,12 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 			gl->setShaderVariable("iDark", pow((3.-i)/3.,2.));
 
 
-			float fR = sin((fallZDir/90.)*3.14159)*(-fallZVel*0);
+			float fR = sin((fallZDir/90.)*3.14159)*(-fallZVel*10);
 			gl->transformTranslation(0,0,uDZ);
 			gl->transformRotationZ(fallXYDir);
 			gl->transformRotationY(fR);
 			gl->transformRotationZ(-fallXYDir);
-			gl->draw3DCone(0,0,0,uR,uH, fidelity, branchTex);
+				gl->draw3DCone(0,0,0,uR,uH, fidelity, branchTex);
 			gl->transformTranslation(0,0,-uDZ);
 			//gl->draw3DCone(0,0,uDZ,uR*1.1,uH*.8, fidelity, branchTex);
 		}

@@ -15,6 +15,27 @@ using namespace std::chrono;
 		return x*x;
 	}
 
+
+// RANDOM
+	float rnd() {
+		return ((getTime()*rand())%1000)/1000.;
+	}
+	float rnd(float cap) {
+		return rnd()*cap;
+	}
+	float rnd(float mi, float ma) {
+		return mi + rnd(ma-mi);
+	}
+	unsigned long getTime() {
+
+		nanoseconds ms = duration_cast< nanoseconds >(
+	 		high_resolution_clock::now().time_since_epoch()
+		);
+
+		return ms.count();
+	}
+
+
 // GEOMETRIC
 	float calcPtDis(float x1, float y1, float x2, float y2) {
 		return sqrt(sqr(x2-x1) + sqr(y2-y1));
@@ -48,18 +69,6 @@ using namespace std::chrono;
 		}
 	}
 
-	unsigned long getTime() {
-
-		nanoseconds ms = duration_cast< nanoseconds >(
-	 		high_resolution_clock::now().time_since_epoch()
-		);
-
-		return ms.count();
-	}
-
-	float rnd() {
-		return ((getTime()*rand())%100)/100.;
-	}
 
 // MAGICAL!!!
 	float calcTurnToDir(float dir, float toDir) {

@@ -18,7 +18,7 @@
 #include "../Environment/Heightmap.h"
 using namespace std;
 
-s
+
 float nCDir = 0;
 float jumpSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*24));
 
@@ -64,6 +64,8 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 			toX = tS*(target->getX()) + (1-tS)*(x);
 			toY = tS*(target->getY()) + (1-tS)*(y);
 			toZ = floorZ+8;
+
+			ncDir = calcPtDir(x,y,target->getX(),target->getY());
 
 			gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,toX,toY,toZ);
 		}

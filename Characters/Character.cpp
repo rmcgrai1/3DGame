@@ -25,6 +25,7 @@ using namespace std;
 #define SH_CUBE 5
 #define SH_PRISM_3 6
 #define SH_CYLINDER 7
+#define SH_DIAMOND 8
 
 #define ATTACK_TIMER_MAX 11 //12
 #define KNOCKBACK_TIMER_MAX 15
@@ -42,6 +43,13 @@ float s = 6, h = 8;
 
 
 Character :: Character(float x, float y, float z) : Physical(x,y,z) {
+
+	appR = rnd();
+	appG = rnd();
+	appB = rnd();
+	appXS = rnd(.8,1.2);
+	appYS = rnd(.8,1.2);
+	appZS = rnd(.8,1.2);
 
 	float baseHP = rnd()*100;
 	float baseAtk = rnd()*100;
@@ -74,7 +82,7 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	hopSc = 1;
 	hopDir = 1;
 
-	shape = floor(rnd()*8);
+	shape = floor(rnd()*9);
 
 	
 	wXRot = 0;
@@ -263,7 +271,7 @@ void Character :: attack() {
 			if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
 				SoundController::playSound("swordHitWood",this);
 				t->damage(dir);
-				knockback(dir+180);
+				knockback(.25,dir+180);
 				break;
 			}
 		}
@@ -476,6 +484,8 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->passShaderShadows();
 		gl->passShaderLights();
 	}
+	gl->setColor(255*appR,255*appG,255*appB);
+
 	gl->transformTranslation(destShX,destShY,destShZ);
 	gl->transformTranslation(x,y,z+hopZ);
 	
@@ -495,6 +505,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	//gl->transformTranslation(-hopZVel,hopX,0);
 	gl->transformScale(hopSc,hopSc,1/hopSc + scZ);
+	gl->transformScale(appXS,appYS,appZS);
 
 	gl->transformTranslation(0,0,1.*h/2);
 	gl->transformScale(destShrSc);
@@ -529,9 +540,28 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->draw3DCone(0,0,0,s,h,13);
 	else if(shape == SH_CYLINDER)
 		gl->draw3DPrism(0,0,0,s,h,13);
+	else if(shape == SH_DIAMOND) {
+		gl->draw3DFrustem(0,0,0,0,s,h/2,4);
+		gl->draw3DFrustem(0,0,h/2,s,0,h/2,4);
+	}
 
 	gl->transformClear();
 
+
+	if(!gl->isPCSlow()) {
+		gl->enableShader("Blade");
+		gl->passShaderShadows();
+		gl->passShaderLights();
+
+		gl->setColor(200,200,200);
+		gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
+		if(destroyTimer > -1)
+			gl->setShaderVariable("iHit", destShPerc);
+		else if(isHurt)
+			gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
+		else
+			gl->setShaderVariable("iHit",0);
+	}
 		// Draw Weapon
 		gl->transformTranslation(x,y,z+hopZ);
 	
@@ -673,6 +703,8 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 			shp = "Cone"; break;
 		case SH_CYLINDER:
 			shp = "Cylinder"; break;
+		case SH_DIAMOND:
+			shp = "Diamond"; break;
 	}
 	
 	gl->setColor(255,255,255);
@@ -770,6 +802,16 @@ void Character :: knockback(float kDir) {
 		knockbackTimer = KNOCKBACK_TIMER_MAX;
 
 		zVel = 1.5;
+	}
+}
+
+void Character :: knockback(float f, float kDir) {
+
+	if(knockbackTimer == -1) {
+		knockbackDir = kDir;
+		knockbackTimer = f*KNOCKBACK_TIMER_MAX;
+
+		zVel = f*1.5;
 	}
 }
 

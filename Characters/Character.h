@@ -17,6 +17,7 @@ class Character : public Physical {
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 		void knockback(float kDir);
+		void knockback(float, float);
 		void faceDirection(float);
 		void toolDirection(float);
 
@@ -57,6 +58,13 @@ class Character : public Physical {
 		bool isMoving;
 		float attackTimer;
 
+
+		float appR;
+		float appG;
+		float appB;
+		float appXS;
+		float appYS;
+		float appZS;
 
 		float destroyTimer;
 		float destroyToX;

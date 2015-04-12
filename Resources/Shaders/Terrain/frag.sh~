@@ -326,7 +326,7 @@ void main() {
 		gl_FragColor = caustics(gl_FragColor, gl_TexCoord[0].xy);
 
 	
-	float dark = .6 + .4*dot(sunDirection, vNormal);
+	float dark = .6 + .4*(dot(sunDirection, vNormal);
 
 	gl_FragColor = addFog(addPath(gl_FragColor));
 	//gl_FragColor = vec4(vNormal.xyz,1.); //addFog(gl_FragColor);

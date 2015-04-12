@@ -879,6 +879,11 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 					}
 				glEnd();
 
+				float zD, xy, zN;
+				zD = calcPtDir(0,0,radBot-radTop,h)+90;
+				xy = calcLenX(1,zD);
+				zN = calcLenY(1,zD);
+
 				// Draw Side Faces of Player Model
 				for(int i = 0; i < sideNum; i++) {
 					glBegin(GL_QUADS);
@@ -888,10 +893,10 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 							yN = calcLenY(1,dir);
 
 						glTexCoord2f(0,0);
-						glNormal3f(xN,yN,0.);
+						glNormal3f(xy*xN,xy*yN,zN);
 							glVertex3f(xN*radTop, yN*radTop, z+h);
 						glTexCoord2f(0,1);
-						glNormal3f(xN,yN,0.);
+						glNormal3f(xy*xN,xy*yN,zN);
 							glVertex3f(xN*radBot, yN*radBot, z);
 
 
@@ -900,10 +905,10 @@ void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, in
 							yN = calcLenY(1,dir);
 
 						glTexCoord2f(1,1);
-						glNormal3f(xN,yN,0.);
+						glNormal3f(xy*xN,xy*yN,zN);
 							glVertex3f(x+xN*radBot, y+yN*radBot, z);
 						glTexCoord2f(1,0);
-						glNormal3f(xN,yN,0.);
+						glNormal3f(xy*xN,xy*yN,zN);
 							glVertex3f(x+xN*radTop, y+yN*radTop, z+h);
 					glEnd();
 				}
@@ -1114,12 +1119,13 @@ maxAmt) {
 
 
 				// BUG
-				/*float aX = calcLenX(curR,camDir+90), aY = calcLenY(curR,camDir+90), toDir = min(abs(calcAngleDiff(calcPtDir(camX,camY,curX+aX,curY+aY),camDir)), abs(calcAngleDiff(calcPtDir(camX,camY,curX-aX,curY-aY),camDir)));
-				
-				cout << "bound tree" << endl;
+				float aX, aY, toDir;
+				aX = calcLenX(curRad,camDir+90);
+				aY = calcLenY(curRad,camDir+90);
+				toDir = min(abs(calcAngleDiff(calcPtDir(camX,camY,curX+aX,curY+aY),camDir)),abs(calcAngleDiff(calcPtDir(camX,camY,curX-aX,curY-aY),camDir)));
 
-				if(toDir > camFOV)
-					continue;*/
+				//if(toDir > camFOV)
+				//	continue;
 
 				shadowLocations[numShadows*3+0] = curX;
 				shadowLocations[numShadows*3+1] = curY;

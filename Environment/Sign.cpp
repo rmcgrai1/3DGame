@@ -1,10 +1,12 @@
 // Sign.cpp
 
+#include "../Functions/Math2D.h"
 #include "Sign.h"
 #include "../GraphicsOGL.h"
 #include <string>
 
 Sign :: Sign(float nX, float nY, float nZ, string newText) : Environmental(nX, nY, nZ) {
+	xyDir = rnd(360);
 	text = newText;
 	isDisplaying = false;
 }

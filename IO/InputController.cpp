@@ -24,6 +24,9 @@ void keyboardUpCallback(unsigned char key, int x, int y) {
 void keyboardSpecialCallback(int key, int x, int y) {
 	inp->updateKeyboardSpecial(key, x, y);
 }
+void keyboardSpecialUpCallback(int key, int x, int y) {
+	inp->updateKeyboardSpecialUp(key, x, y);
+}
 
 
 InputController :: InputController() {
@@ -53,6 +56,7 @@ InputController :: InputController() {
 	glutKeyboardFunc(keyboardCallback);
 	glutKeyboardUpFunc(keyboardUpCallback);
 	glutSpecialFunc(keyboardSpecialCallback);
+	glutSpecialUpFunc(keyboardSpecialUpCallback);
 }
 
 int InputController :: getMouseX() {
@@ -110,6 +114,9 @@ void InputController :: updateKeyboardUp(unsigned char key, int x, int y) {
 }
 void InputController :: updateKeyboardSpecial(int key, int x, int y) {
 	isShiftDown = (glutGetModifiers() == GLUT_ACTIVE_SHIFT);
+}
+void InputController :: updateKeyboardSpecialUp(int key, int x, int y) {
+	isShiftDown = false;
 }
 
 float InputController :: getWASDDir() {

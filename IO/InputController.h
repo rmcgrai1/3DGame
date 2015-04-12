@@ -15,6 +15,7 @@ class InputController {
 		void updateKeyboard(unsigned char, int, int);
 		void updateKeyboardUp(unsigned char, int, int);
 		void updateKeyboardSpecial(int, int, int);
+		void updateKeyboardSpecialUp(int, int, int);
 
 		bool checkLeftMouse();
 		bool checkRightMouse();

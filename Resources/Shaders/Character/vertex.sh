@@ -11,6 +11,7 @@ uniform vec3 camNormal;
 varying vec4 vColor;
 varying vec3 wvNormal;
 varying float dp;
+varying float lp;
 
 uniform float cDirection;
 
@@ -44,8 +45,15 @@ void main() {
 	camNX = camNormal.x;
 	camNY = camNormal.y;
 
-	//vNormal = gl_Normal;
-	vNormal = rotateNormal(gl_Normal, cDirection+((180. + 45.)/180.*3.14159));
+	vNormal = rotateNormal(gl_Normal, cDirection+((180. + 110.)/180.*3.14159));
+	lp = pow(1.-abs(dot(vNormal, camNormal)),2.);
+	
+	//LEFT DARK
+	vNormal = rotateNormal(gl_Normal, cDirection+((180. + 145.)/180.*3.14159));
+	dp = 1.; //pow(abs(dot(vNormal, camNormal)),.5);
+
+	// RIGHT DARK
+	vNormal = rotateNormal(gl_Normal, cDirection+((180. + 35.)/180.*3.14159));
 		//vNormal = rotateNormal(vNormal, calcDir(camNX, camNY));
 		//vNormal = (gl_ModelViewMatrix * vNormal).xyz;
 	
@@ -53,9 +61,8 @@ void main() {
     	wvNormal = normalize((gl_ModelViewMatrix * vec4(vNormal, 0.0)).xyz);
     	float power = 1.0; //Increase to reduce the effect or decrease to increase the effect
 
-    	dp = pow(dot(wvPosition, vNormal) + 1.0, power);
-	
-	dp = abs(dot(vNormal, camNormal));
+    	//dp = pow(dot(wvPosition, vNormal) + 1.0, power);
+	dp *= abs(dot(vNormal, camNormal));	
 }
 
 

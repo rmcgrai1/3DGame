@@ -1,6 +1,7 @@
 varying vec3 vNormal;
-varying vec4 vColor;
+uniform vec4 iColor;
 varying float dp;
+varying float lp;
 
 uniform int textureBound;
 uniform sampler2D tex;
@@ -106,10 +107,19 @@ float addShadows() {
 
 void main() {
 
-	gl_FragColor = vec4(1.,1.-iHit,1.-iHit,1.)*vec4(vec3(dp),1.); //vec4(vNormal,1.);
-
 	if(textureBound == 1)
-		gl_FragColor *= texture2D(tex,gl_TexCoord[0].xy);
-	
-	gl_FragColor = addLighting(gl_FragColor,addShadows());
+		gl_FragColor = texture2D(tex,gl_TexCoord[0].xy);
+	else
+		gl_FragColor = iColor;	
+
+	gl_FragColor.r = contain(gl_FragColor.r+lp);
+	gl_FragColor.g = contain(gl_FragColor.g+lp);
+	gl_FragColor.b = contain(gl_FragColor.b+lp);
+
+	gl_FragColor.rgb *= dp;
+
+	gl_FragColor = addLighting(gl_FragColor,contain(1.5*addShadows()));
+
+	gl_FragColor.r = contain(gl_FragColor.r+iHit);
+	gl_FragColor.gb *= 1.-iHit;
 }

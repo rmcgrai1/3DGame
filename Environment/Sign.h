@@ -13,6 +13,7 @@ class Sign : public Environmental {
 		void draw(GraphicsOGL*, float);
 		
 	private:
+		float xyDir;
 		string text;
 		bool isDisplaying;
 };

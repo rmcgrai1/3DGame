@@ -10,19 +10,24 @@
 // BASIC
 	float sqr(float);
 
+
+// RANDOM
+	float rnd();
+	float rnd(float);
+	float rnd(float,float);
+	unsigned long getTime();
+
+
 // GEOMETRIC
 	float calcPtDis(float, float, float, float);
+
 
 // TRIG
 	float calcLenX(float, float);
 	float calcLenY(float, float);
 	float calcPtDir(float, float, float, float);
-
 	float modf(float, float);
 
-
-	float rnd();
-	unsigned long getTime();
 
 // MAGICAL!!
 	float calcTurnToDir(float, float);

@@ -18,6 +18,7 @@ Tree :: Tree(float x, float y, float newSize) : Environmental(x,y) {
 	isGrowing = true;
 	hasShadow = true;
 
+	root = NULL;
 	//root = new Branch(0,5, 15., 0, 90);
 	size = .05;
 	toSize = newSize;
