@@ -11,10 +11,10 @@
 using namespace std;
 
 
-TextureController :: TextureController() {
-	numTextures = 0;
+int TextureController :: numTextures = 0;
+map<string,Texture*> TextureController :: textureMap;
 
-	initialize();
+TextureController :: TextureController() {
 }
 	
 Texture* TextureController :: getTexture(string name) {

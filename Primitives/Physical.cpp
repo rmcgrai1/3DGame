@@ -1,12 +1,14 @@
 // Physical.cpp
 
 
+#include <iostream>
 #include <deque>
 #include "../Graphics/GraphicsOGL.h"
 #include "Instantiable.h"
 #include "Physical.h"
 #include "../Functions/Math2D.h"
 #include "../Environment/Heightmap.h"
+using namespace std;
 
 
 
@@ -48,6 +50,25 @@ void Physical :: draw(GraphicsOGL* gl, float deltaTime) {
 
 void Physical :: destroy() {
 	Instantiable :: destroy();
+}
+
+bool Physical :: checkOnScreen(GraphicsOGL* gl) {
+
+	float camPos[3], camX, camY, camFOV, camDir;
+	gl->getCamera()->getPosition(camPos);
+	camX = camPos[0];
+	camY = camPos[1];
+	camDir = gl->getCamera()->getCamDir();
+
+	camFOV = 45;
+
+	float curX, curY, curZ, curRad;
+
+	curX = x;
+	curY = y;
+
+	isOnScreen = (abs(calcAngleDiff(calcPtDir(camX,camY,curX,curY),camDir)) <= camFOV);
+	return isOnScreen;
 }
 
 

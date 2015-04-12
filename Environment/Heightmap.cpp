@@ -39,7 +39,7 @@ Heightmap :: Heightmap(float xS, float yS, float resolution) {
 	generateNormals();
 }
 
-Heightmap :: Heightmap(TextureController* tc, float xS, float yS, float zS, string fileName) {
+Heightmap :: Heightmap(float xS, float yS, float zS, string fileName) {
 	xSize = xS;
 	ySize = yS;
 
@@ -67,9 +67,9 @@ Heightmap :: Heightmap(TextureController* tc, float xS, float yS, float zS, stri
 			setHeight(i,j,hmImg->getValue(j,i)/255.*zS);
 	}
 
-	texGrass = tc->getTexture("Grass");
-	texSand = tc->getTexture("Sand");
-
+	texGrass = TextureController::getTexture("Grass");
+	texSand = TextureController::getTexture("Sand");
+	texDirt = TextureController::getTexture("Dirt");
 
 	generateNormals();
 }
@@ -291,7 +291,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	
 		texGrass->bind(GL_TEXTURE0);
 		texSand->bind(GL_TEXTURE1);
-		gl->getTextureController()->getTexture("Dirt")->bind(GL_TEXTURE3);
+		texDirt->bind(GL_TEXTURE3);
 	}
 
 	Drawable2 :: draw(gl, deltaTime);
@@ -338,7 +338,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	if(texSand != NULL) {
 		texSand->unbind();
 	}
-	gl->getTextureController()->getTexture("Dirt")->unbind();
+	texDirt->unbind();
 	// Added to make 2d images render correctly
 }
 

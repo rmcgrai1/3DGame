@@ -141,6 +141,7 @@ class GraphicsOGL {
 		//SHADERS
 			void setShaderVariable(string, float);
 			void setShaderInt(string, int);
+			void setShaderVec3(string, float[3]);
 			void passModelMatrix();
 			void passShaderUpdate();
 			void passShaderShadows();
@@ -184,7 +185,6 @@ class GraphicsOGL {
 		//Heightmap Variables
 			Terrain* terrain;
 			InputController* inputController;
-			TextureController* textureController;
 			ShaderController* shaderController;
 			FontController* fontController;
 			SoundController* sc;

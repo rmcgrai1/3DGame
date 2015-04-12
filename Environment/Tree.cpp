@@ -2,6 +2,7 @@
 
 
 #include "../Sound/SoundController.h"
+#include "../Graphics/TextureController.h"
 #include "Tree.h"
 #include "Branch.h"
 #include <stdlib.h>
@@ -30,6 +31,9 @@ Tree :: Tree(float x, float y, float newSize) : Environmental(x,y) {
 
 	damageShakeTimer = -1;
 	growWobble = .25;
+
+	branchTex = TextureController::getTexture("pineBranch");
+	barkTex = TextureController::getTexture("bark");
 
 	treeList.add(this);
 }

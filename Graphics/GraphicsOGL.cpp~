@@ -107,12 +107,6 @@ Menu* GraphicsOGL :: getMenu() {
 void GraphicsOGL :: logMessage(string str) {
 	//cout << str << endl;
 }
-void GraphicsOGL :: playSound(string snd) {
-	sc->playSound(snd);
-}
-void GraphicsOGL :: playSound(string snd, float x, float y, float z, float vX, float vY, float vZ) {
-	sc->playSound(snd, x, y, z, vX, vY, vZ);
-}
 
 
 void GraphicsOGL :: setCulling(bool val) {
@@ -153,7 +147,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 		inputController = new InputController();
 		fontController = new FontController();
-		textureController = new TextureController();
+		TextureController::initialize();
 		shaderController = new ShaderController();
 
 
@@ -225,7 +219,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		
 		myPlayer = new Player(1028,1028,0);
 		
-		terrain = new Terrain(textureController,2048*5,2048*5, 500, "Resources/Images/test.png",150);
+		terrain = new Terrain(2048*5,2048*5, 500, "Resources/Images/test.png",150);
 		
 		tc = new TextController();
 		tc->setText("Welcome to `Color:#FF0000`GAME TITLE``!\n\nExplore the land, kill monsters, and try to find the town.");
@@ -259,9 +253,6 @@ Heightmap* GraphicsOGL :: getHeightmap() {
 }
 TextController* GraphicsOGL :: getTextController() {
 	return tc;
-}
-TextureController* GraphicsOGL :: getTextureController() {
-	return textureController;
 }
 SoundController* GraphicsOGL :: getSoundController() {
 	return sc;
@@ -821,18 +812,18 @@ void GraphicsOGL :: display() {
 			draw3DPrism(x,y,z,rad,0,sideNum,tex);
 		}
 
-void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, int sideNum) {
+
+		void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, int sideNum) {
 			draw3DCone(x,y,z,rad,h,sideNum,NULL);
 		}
-
-void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, int sideNum, Texture* tex) {
+		void GraphicsOGL :: draw3DCone(float x, float y, float z, float rad, float h, int sideNum, Texture* tex) {
 			draw3DFrustem(x,y,z,rad,0,h,sideNum,tex);
 		}
+
 
 		void GraphicsOGL :: draw3DFrustem(float x, float y, float z, float radBot, float radTop, float h, int sideNum) {
 			draw3DFrustem(x,y,z,radBot,radTop,h,sideNum,NULL);
 		}
-
 		void GraphicsOGL :: draw3DFrustem(float x, float y, float z, float radBot, float radTop, float h, int sideNum, Texture* tex) {
 			float ang = 45, dir, xN, yN;
 
@@ -1003,11 +994,11 @@ maxAmt) {
 			amt = 0;
 
 		Texture *h0, *h1, *h2, *h3, *h4, *cur;
-		h0 = textureController->getTexture("Heart0");
-		h1 = textureController->getTexture("Heart1");
-		h2 = textureController->getTexture("Heart2");
-		h3 = textureController->getTexture("Heart3");
-		h4 = textureController->getTexture("Heart4");
+		h0 = TextureController::getTexture("Heart0");
+		h1 = TextureController::getTexture("Heart1");
+		h2 = TextureController::getTexture("Heart2");
+		h3 = TextureController::getTexture("Heart3");
+		h4 = TextureController::getTexture("Heart4");
 		
 		float startX = dX;
 		float s = 16;
@@ -1083,7 +1074,7 @@ maxAmt) {
 				curX = c->getX();
 				curY = c->getY();
 
-				if(abs(calcAngleDiff(calcPtDir(camX,camY,curX,curY),camDir)) > camFOV)
+				if(!c->getOnScreen(this))
 					continue;
 
 				shadowLocations[numShadows*3+0] = curX;
@@ -1110,7 +1101,7 @@ maxAmt) {
 			for(int i = 0; i < Tree::treeList.size(); i++) {
 				Tree* t = Tree::treeList[i];
 
-				if(!t->getHasShadow())
+				if(!t->getHasShadow() || !t->getOnScreen())
 					continue;
 
 				curX = t->getX();
@@ -1124,9 +1115,7 @@ maxAmt) {
 				aY = calcLenY(curRad,camDir+90);
 				toDir = min(abs(calcAngleDiff(calcPtDir(camX,camY,curX+aX,curY+aY),camDir)),abs(calcAngleDiff(calcPtDir(camX,camY,curX-aX,curY-aY),camDir)));
 
-				//if(toDir > camFOV)
-				//	continue;
-
+				
 				shadowLocations[numShadows*3+0] = curX;
 				shadowLocations[numShadows*3+1] = curY;
 				shadowLocations[numShadows*3+2] = curRad;				
@@ -1185,7 +1174,7 @@ maxAmt) {
 	void GraphicsOGL :: enableShader(string name) {
 		curShader = shaderController->getShader(name);
 
-		Texture* noiseTex = textureController->getTexture("Noise");
+		Texture* noiseTex = TextureController::getTexture("Noise");
 
 		// Set Current Shader Program
 		curProgram = curShader->getProgram();

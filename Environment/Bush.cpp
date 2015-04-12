@@ -68,9 +68,6 @@ void Bush :: draw(GraphicsOGL* gl, float deltaT) {
 		gl->transformRotationZ(-fallXYDir);
 	gl->transformScale(size*5,size*5,size*7);
 
-	Texture* branchTex = gl->getTextureController()->getTexture("pineBranch");
-	Texture* barkTex = gl->getTextureController()->getTexture("bark");
-
 	
 	/*float bR, bG, bB;
 		bR = 255*(colGreen);

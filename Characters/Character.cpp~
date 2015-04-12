@@ -90,6 +90,9 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	wZRot = 0;
 
 
+	
+	swordHiltTex = TextureController::getTexture("bark");
+
 	characterList.add(this);
 }
 
@@ -441,8 +444,6 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->glSet();
 	*/
 
-		Texture* texWood = gl->getTextureController()->getTexture("bark");
-
 		float destShrSc;
 		float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
 		float upZ = 10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
@@ -523,8 +524,6 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	float charPos[3] = {x,y,z};
 	gl->setShaderVec3("charPos", charPos);
-
-	shape = SH_DIAMOND;
 
 	if(shape == SH_PRISM_6)
 		gl->draw3DPrism(0,0,0,s,h,6);

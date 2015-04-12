@@ -15,7 +15,7 @@ using namespace std;
 
 class Terrain : public Drawable2 {
 	public:
-		Terrain(TextureController*, int,int, float, string, float);
+		Terrain(int,int, float, string, float);
 
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);

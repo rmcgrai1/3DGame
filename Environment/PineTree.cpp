@@ -64,9 +64,6 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 		gl->transformRotationZ(-fallXYDir);
 	gl->transformScale(size);
 
-	Texture* branchTex = gl->getTextureController()->getTexture("pineBranch");
-	Texture* barkTex = gl->getTextureController()->getTexture("bark");
-
 	
 	/*float bR, bG, bB;
 		bR = 255*(colGreen);

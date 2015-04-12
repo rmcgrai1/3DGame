@@ -15,15 +15,14 @@ using namespace std;
 
 class TextureController {
 	public:
-		TextureController();
-		Texture* getTexture(string);
+		static void initialize();
+		static Texture* getTexture(string);
 
 	private:
-		void initialize();
-		void addTexture(string,string);
-		map<string, Texture*> textureMap;
-
-		int numTextures;
+		TextureController();
+		static void addTexture(string,string);
+		static map<string, Texture*> textureMap;
+		static int numTextures;
 };
 
 #endif

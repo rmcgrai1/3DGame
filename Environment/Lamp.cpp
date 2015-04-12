@@ -3,6 +3,7 @@
 
 #include "../Graphics/Texture.h"
 #include "../Functions/Math2D.h"
+#include "../Graphics/TextureController.h"
 #include <iostream>
 #include <vector>
 #include "Lamp.h"
@@ -108,8 +109,9 @@ void Lamp :: draw(GraphicsOGL* gl, float deltaTime) {
 	float lantR = 4;
 	float lantH = 6;
 
-	Texture* texWood = gl->getTextureController()->getTexture("bark");
+	gl->enableShader("Character");
 
+	Texture* texWood = TextureController::getTexture("bark");
 	gl->transformClear();
 		gl->transformTranslation(x,y,z-5);
 		gl->transformRotationZ(xydir);
@@ -129,5 +131,7 @@ void Lamp :: draw(GraphicsOGL* gl, float deltaTime) {
 			gl->draw3DBlock(-2,-w,h+2,2,w*.125,h-2,texWood);
 			gl->draw3DFrustem(0,0,0,2.3,2,h*1.1,3,texWood);
 	gl->transformClear();
+
+	gl->disableShaders();
 }
 

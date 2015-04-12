@@ -13,13 +13,13 @@
 using namespace std;
 
 
-Terrain :: Terrain(TextureController* tc, int w, int h, float zH, string hmFileName, float newSeaLevel)  {
+Terrain :: Terrain(int w, int h, float zH, string hmFileName, float newSeaLevel)  {
 
 	width = w;
 	height = h;
 	seaLevel = newSeaLevel;
 	
-	heightmap = new Heightmap(tc, w, h, zH, hmFileName);
+	heightmap = new Heightmap(w, h, zH, hmFileName);
 		heightmap->setVisible(false);
 	water = new Water(w,h,newSeaLevel);
 		water->setVisible(false);
@@ -36,7 +36,7 @@ void Terrain :: drawFirst(GraphicsOGL* gl, float deltaTime) {
 	Player* p;
 	p = gl->getPlayer();
 
-	Texture* cloudTex = gl->getTextureController()->getTexture("Noise");
+	Texture* cloudTex = TextureController::getTexture("Noise");
 
 	if(!gl->isPCSlow())
 		gl->enableShader("Sky");

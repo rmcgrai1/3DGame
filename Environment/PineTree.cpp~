@@ -64,8 +64,8 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 		gl->transformRotationZ(-fallXYDir);
 	gl->transformScale(size);
 
-	Texture* branchTex = gl->getTextureController()->getTexture("pineBranch");
-	Texture* barkTex = gl->getTextureController()->getTexture("bark");
+	Texture* branchTex = TextureController::getTexture("pineBranch");
+	Texture* barkTex = TextureController::getTexture("bark");
 
 	
 	/*float bR, bG, bB;
@@ -107,7 +107,7 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 			gl->setShaderVariable("iDark", pow((3.-i)/3.,2.));
 
 
-			float fR = sin((fallZDir/90.)*3.14159)*(-fallZVel*15);
+			float fR = sin((fallZDir/90.)*3.14159)*(-fallZVel*10);
 			gl->transformTranslation(0,0,uDZ);
 			gl->transformRotationZ(fallXYDir);
 			gl->transformRotationY(fR);

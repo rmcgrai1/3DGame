@@ -10,10 +10,11 @@ class Environmental : public Instantiable {
 
 	public:
 		Environmental(float,float);
-		Environmental(float,float,floats);
+		Environmental(float,float,float);
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 		virtual void damage(float) = 0;
+		virtual void checkOnScreen(GraphicsOGL*);
 
 		float getX();
 		float getY();

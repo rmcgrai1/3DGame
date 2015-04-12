@@ -48,7 +48,6 @@ class GraphicsOGL {
 
 		Camera* getCamera();
 		InputController* getInputController();
-		TextureController* getTextureController();
 		TextController* getTextController();
 		SoundController* getSoundController();
 
@@ -185,7 +184,6 @@ class GraphicsOGL {
 		//Heightmap Variables
 			Terrain* terrain;
 			InputController* inputController;
-			TextureController* textureController;
 			ShaderController* shaderController;
 			FontController* fontController;
 			SoundController* sc;

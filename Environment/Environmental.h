@@ -14,6 +14,7 @@ class Environmental : public Instantiable {
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 		virtual void damage(float) = 0;
+		virtual bool checkOnScreen(GraphicsOGL*);
 
 		float getX();
 		float getY();

@@ -3,6 +3,7 @@
 
 #include "../Graphics/Texture.h"
 #include "../Functions/Math2D.h"
+#include "../Graphics/TextureController.h"
 #include <iostream>
 #include <vector>
 #include "Lamp.h"
@@ -70,6 +71,19 @@ float Lamp :: getLightY() {
 float Lamp :: getLightZ() {
 	return lightZ;
 }
+float Lamp :: getLightR() {
+	return R;
+}
+float Lamp :: getLightG() {
+	return G;
+}
+float Lamp :: getLightB() {
+	return B;
+}
+float Lamp :: getLightA() {
+	return A;
+}
+
 float Lamp :: getLightRadius() {
 	return rad + 5*(rnd()-.5);
 }
@@ -95,7 +109,7 @@ void Lamp :: draw(GraphicsOGL* gl, float deltaTime) {
 	float lantR = 4;
 	float lantH = 6;
 
-	Texture* texWood = gl->getTextureController()->getTexture("bark");
+	Texture* texWood = TextureController::getTexture("bark");
 
 	gl->transformClear();
 		gl->transformTranslation(x,y,z-5);

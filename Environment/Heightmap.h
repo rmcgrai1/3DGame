@@ -16,7 +16,7 @@ class Heightmap : public Drawable2 {
 
 	public:
 		Heightmap(float, float, float);
-		Heightmap(TextureController*, float, float, float, string);
+		Heightmap(float, float, float, string);
 		Heightmap(float, float, int**);
 		Heightmap(float, float, float**);
 
@@ -34,6 +34,7 @@ class Heightmap : public Drawable2 {
 
 		Texture* texGrass;
 		Texture* texSand;
+		Texture* texDirt;
 		Image* hmImg;
 		void load(string);
 		float** heightGrid;

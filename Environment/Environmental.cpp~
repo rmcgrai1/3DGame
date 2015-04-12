@@ -2,6 +2,7 @@
 
 #include "Environmental.h"
 #include "../Graphics/GraphicsOGL.h"
+#include "../Functions/Math2D.h"
 #include "../Primitives/Instantiable.h"
 
 Environmental :: Environmental(float nX, float nY) {
@@ -25,6 +26,25 @@ void Environmental :: update(GraphicsOGL* gl, float deltaT) {
 }
 
 void Environmental :: draw(GraphicsOGL* gl, float deltaT) {
+}
+
+bool Environmental :: checkOnScreen(GraphicsOGL* gl) {
+
+	float camPos[3], camX, camY, camFOV, camDir;
+	gl->getCamera()->getPosition(camPos);
+	camX = camPos[0];
+	camY = camPos[1];
+	camDir = gl->getCamera()->getCamDir();
+
+	camFOV = 10;
+
+	float curX, curY, curZ, curRad;
+
+	curX = x;
+	curY = y;
+
+	isOnScreen = (abs(calcAngleDiff(calcPtDir(camX,camY,curX,curY),camDir)) <= camFOV);
+	return isOnScreen;
 }
 
 float Environmental :: getX() {

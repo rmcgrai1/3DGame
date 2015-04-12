@@ -8,6 +8,7 @@
 #include "Environmental.h"
 #include "../Graphics/GraphicsOGL.h"
 #include "../Data/SortedList.h"
+#include "../Graphics/Texture.h"
 
 class Tree : public Environmental {
 	public:
@@ -35,6 +36,9 @@ class Tree : public Environmental {
 		float fallXYDir;
 		float fallZDir;
 		float fallZVel;
+
+		Texture* branchTex;
+		Texture* barkTex;
 
 		float damageShakeTimer;
 };

@@ -9,7 +9,6 @@
 #include "../Primitives/Physical.h"
 #include "../Graphics/Texture.h"
 
-
 class GraphicsOGL;
 class Character : public Physical {
 	public:
@@ -96,7 +95,7 @@ class Character : public Physical {
 		float hopSc;
 		float hopDir;
 		
-		static Texture* shTex;
+		Texture* swordHiltTex;
 };
 
 #endif

@@ -15,14 +15,25 @@ SortedList<Drawable2*> Drawable2 :: drawableList;
 
 Drawable2 :: Drawable2() : Updateable() {
 
+	isOnScreen = true;
 	visible = true;
 	drawableList.add(this);
 }
 
 Drawable2 :: Drawable2(int type) : Updateable(type) {
 
+	isOnScreen = true;
 	visible = true;
 	drawableList.add(this);
+}
+
+bool Drawable2 :: checkOnScreen(GraphicsOGL* gl) {
+	isOnScreen = true;
+	return true;
+}
+
+bool Drawable2 :: getOnScreen() {
+	return isOnScreen;
 }
 
 void Drawable2 :: drawAll(GraphicsOGL* gl, float deltaTime) {
@@ -37,7 +48,8 @@ void Drawable2 :: drawAll(GraphicsOGL* gl, float deltaTime) {
 			continue;
 
 		if(cur->visible)
-			cur->draw(gl, deltaTime);
+			if(cur->checkOnScreen(gl))
+				cur->draw(gl, deltaTime);
 	}
 }
 
