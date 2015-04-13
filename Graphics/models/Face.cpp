@@ -19,40 +19,97 @@ Face::Face(int newV1,int newVT1,int newVN1, int newV2,int newVT2,int newVN2, int
 	Material = MaterialToUse;
 }
 
+Face::Face(string CornersList, Mtl *MaterialToUse) {
+	int i;
+	string Remaining = CornersList;
+	string ThisSubStr;
+	for(i=0;i<3;i++) {
+		int pos = Remaining.find(" ");
+		if(pos<0) {
+			ThisSubStr = Remaining;
+			Remaining = "";
+		} else {
+			ThisSubStr = Remaining.substr(0,pos);
+			Remaining = Remaining.substr(pos+1,256);
+		}
+		setPointStr(ThisSubStr,i);
+	}
+	
+	Material = MaterialToUse;
+}
+
+void Face::setPointStr(string PointStr, int PointNo) {
+	if(PointNo<0 || PointNo>=3) {
+		cout << "WARNING: Tried setting point " << PointNo << " of face out of bounds! - Moving in bounds!\n";
+		PointNo = PointNo%3;
+	}
+	int i;
+	string Remaining = PointStr;
+	string ThisSubStr;
+	for(i=0;i<3;i++) {
+		int pos = Remaining.find("/");
+		if(pos<0) {
+			ThisSubStr = Remaining;
+			Remaining = "";
+		} else {
+			ThisSubStr = Remaining.substr(0,pos);
+			Remaining = Remaining.substr(pos+1,256);
+		}
+		int j, Total=0;
+		for(j=0;j<ThisSubStr.size();j++) {
+			char ThisChar = ThisSubStr.at(j);
+			if(isdigit(ThisChar)) {
+				Total*=10;
+				Total+=(ThisChar - '0');
+			} else {
+				cout << "Unrecognized character \"" << ThisChar << "\" in number!!! Ignoring character!!!\n";
+			}
+		}
+		switch(i) {
+			case 0:
+				V[PointNo] = Total;
+			case 1:
+				VT[PointNo] = Total;
+			case 2:
+				VN[PointNo] = Total;
+		}
+	}
+}
+
 void Face::setPoint1(int newV,int newVT,int newVN) {
-	V[0] = newV;
-	VT[0] = newVT;
-	VN[0] = newVN;
+	V[0] = newV - 1;
+	VT[0] = newVT - 1;
+	VN[0] = newVN - 1;
 }
 
 void Face::setPoint2(int newV,int newVT,int newVN) {
-	V[1] = newV;
-	VT[1] = newVT;
-	VN[1] = newVN;
+	V[1] = newV - 1;
+	VT[1] = newVT - 1;
+	VN[1] = newVN - 1;
 }
 
 void Face::setPoint3(int newV,int newVT,int newVN) {
-	V[2] = newV;
-	VT[2] = newVT;
-	VN[2] = newVN;
+	V[2] = newV - 1;
+	VT[2] = newVT - 1;
+	VN[2] = newVN - 1;
 }
 
 void Face::setVertex(int value1,int value2,int value3) {
-	V[0] = value1;
-	V[1] = value2;
-	V[2] = value3;
+	V[0] = value1 - 1;
+	V[1] = value2 - 1;
+	V[2] = value3 - 1;
 }
 
 void Face::setTexCoord(int value1,int value2,int value3) {
-	VT[0] = value1;
-	VT[1] = value2;
-	VT[2] = value3;
+	VT[0] = value1 - 1;
+	VT[1] = value2 - 1;
+	VT[2] = value3 - 1;
 }
 
 void Face::setVNormal(int value1,int value2,int value3) {
-	VN[0] = value1;
-	VN[1] = value2;
-	VN[2] = value3;
+	VN[0] = value1 - 1;
+	VN[1] = value2 - 1;
+	VN[2] = value3 - 1;
 }
 
 Pos3D *Face::getVertex(Pos3D ** Vertices, int VertexCount, int PointNo) {

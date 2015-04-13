@@ -17,10 +17,12 @@ class Mtl {
 		double *getNumProperty(string Property);
 		int getPropertyLength(string Property);
 	private:
-		/*static */map<string, string> Properties;
-		/*static */map<string, Texture *> TextureProperties;
-		/*static */map<string, double *> numProperties;
-		/*static */map<string, int> PropertyLength;
+		map<string, string> Properties;
+		map<string, Texture *> TextureProperties;
+		map<string, double *> numProperties;
+		map<string, int> PropertyLength;
+		map<string, int> Set_TextureProperties;
+		map<string, int> Set_numProperties;
 		TexturePack *Textures;
 		string WorkingDir;
 };

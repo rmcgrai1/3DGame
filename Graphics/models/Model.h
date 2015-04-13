@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include<iostream>
+#include <fstream>
 #include <iomanip>
 #include <string>
 #include <vector>
@@ -35,17 +36,17 @@ class Model {
 		string directory;
 		string subfile;
 		vector<Pos3D *> *AllVertices;
-		/*static */Pos3D ** Vertices;
-		/*static */int VertexCount;
+		Pos3D ** Vertices;
+		int VertexCount;
 		vector<Pos3D *> *AllTexCoords;
-		/*static */Pos3D ** TexCoords;
-		/*static */int TexCoordCount;
+		Pos3D ** TexCoords;
+		int TexCoordCount;
 		vector<Pos3D *> *AllVNormals;
-		/*static */Pos3D ** VNormals;
-		/*static */int VNormalCount;
+		Pos3D ** VNormals;
+		int VNormalCount;
 		vector<Face *> *AllFaces;
-		/*static */Face ** Faces;
-		/*static */int FaceCount;
+		Face ** Faces;
+		int FaceCount;
 		
 		map<string, Mtl *> Materials;
 };

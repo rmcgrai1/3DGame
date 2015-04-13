@@ -11,6 +11,8 @@ class Face {
 	friend ostream& operator<<(ostream&, const Face);
 	public:
 		Face(int newV1=1,int newVT1=1,int newVN1=1, int newV2=1,int newVT2=1,int newVN2=1, int newV3=1,int newVT3=1,int newVN3=1, Mtl *MaterialToUse=new Mtl);
+		Face(string CornersList, Mtl *MaterialToUse);
+		void setPointStr(string PointStr, int PointNo);
 		void setPoint1(int newV,int newVT,int newVN);
 		void setPoint2(int newV,int newVT,int newVN);
 		void setPoint3(int newV,int newVT,int newVN);
