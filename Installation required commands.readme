@@ -1,9 +1,9 @@
 ####set up git
 sudo apt-get update
 sudo apt-get install git
-git config --global user.name "jhuseman"
-git config --global user.email "jhuseman@nd.edu"
-ssh-keygen -t rsa -C "jhuseman@nd.edu"
+git config --global user.name "Username"
+git config --global user.email "UserEmail"
+ssh-keygen -t rsa -C "UserEmail"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
@@ -25,4 +25,11 @@ cd 3DGame
 sudo apt-get install libX11-dev##Not needed in first 2 tries, but needed last time
 sudo apt-get install libpng-dev##Not needed in first 2 tries, but needed last time
 sudo apt-get install freeglut3-dev
+
+#OPENAL
+sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
+sudo apt-get update
+sudo apt-get install libopenal-dev
+sudo apt-get install libalut-dev
+
 
