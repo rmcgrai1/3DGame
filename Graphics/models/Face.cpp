@@ -67,11 +67,11 @@ void Face::setPointStr(string PointStr, int PointNo) {
 		}
 		switch(i) {
 			case 0:
-				V[PointNo] = Total;
+				V[PointNo] = Total - 1;
 			case 1:
-				VT[PointNo] = Total;
+				VT[PointNo] = Total - 1;
 			case 2:
-				VN[PointNo] = Total;
+				VN[PointNo] = Total - 1;
 		}
 	}
 }

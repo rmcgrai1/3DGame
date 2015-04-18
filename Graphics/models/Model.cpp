@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <map>
 #include "../../Graphics/GraphicsOGL.h"
@@ -55,50 +56,55 @@ void Model::Initialize(string Location, string filename, TexturePack *TP) {
 			ModelFile.get(ThisLineCstr, 256, '\r'); // only works with windows EOLs - probably will read in 256 chars as 1 line if unix EOLs used
 			string ThisLine(ThisLineCstr);
 			ModelFile.ignore(1,'\n');
-			if(ThisLine.at(0)!='#') {
-				int pos = ThisLine.find(" ");
-				string Command = ThisLine.substr(0,pos);
-				string Params = ThisLine.substr(pos+1,256);
-				if(Command=="v") {
-					AllVertices->push_back(new Pos3D(Params));
-				} else if(Command=="vt") {
-					AllTexCoords->push_back(new Pos3D(Params));
-				} else if(Command=="vn") {
-					AllVNormals->push_back(new Pos3D(Params));
-				} else if(Command=="f") {
-					AllFaces->push_back(new Face(Params, CurrentMaterial));
-				} else if(Command=="usemtl") {
-					CurrentMaterial = Materials[Params];
-				} else if(Command=="mtllib") {
-					Mtl *ThisMaterial = NULL;
-					ifstream MtlFile;
-					MtlFile.open(Params.c_str());
-					if(MtlFile.is_open()) {
-						while(!MtlFile.eof()) {
-							char ThisMtlLineCstr[256];
-							MtlFile.get(ThisMtlLineCstr, 256, '\r'); // only works with windows EOLs - probably will read in 256 chars as 1 line if unix EOLs used
-							string ThisMtlLine(ThisMtlLineCstr);
-							MtlFile.ignore(1,'\n');
-							if(ThisMtlLine.at(0)!='#') {
-								if(ThisMtlLine.substr(0,6)=="newmtl") {
-									string ThisMtlName = ThisLine.substr(7,256);
-									ThisMaterial = new Mtl(directory,Textures);
-									Materials[ThisMtlName] = ThisMaterial;
-								} else if(ThisMaterial) {
-									ThisMaterial->InterpretLine(ThisMtlLine);
-								} else {
-									cout << "Unrecognized command in mtl file!!!\n";
+			if(ThisLine.size()) {
+				if(ThisLine.at(0)!='#') {
+					int pos = ThisLine.find(" ");
+					string Command = ThisLine.substr(0,pos);
+					string Params = ThisLine.substr(pos+1,256);
+					if(Command=="v") {
+						AllVertices->push_back(new Pos3D(Params));
+					} else if(Command=="vt") {
+						AllTexCoords->push_back(new Pos3D(Params));
+					} else if(Command=="vn") {
+						AllVNormals->push_back(new Pos3D(Params));
+					} else if(Command=="f") {
+						AllFaces->push_back(new Face(Params, CurrentMaterial));
+					} else if(Command=="usemtl") {
+						CurrentMaterial = Materials[Params];
+					} else if(Command=="mtllib") {
+						Mtl *ThisMaterial = NULL;
+						ifstream MtlFile;
+						string MtlLoc = TexturePackFolder + "/" + directory + "/" + Params;
+						MtlFile.open(MtlLoc.c_str());
+						if(MtlFile.is_open()) {
+							while(!MtlFile.eof()) {
+								char ThisMtlLineCstr[256];
+								MtlFile.getline(ThisMtlLineCstr, 256, '\n'); // only works with windows EOLs - probably will read in 256 chars as 1 line if unix EOLs used
+								ThisMtlLineCstr[strlen(ThisMtlLineCstr)-1] = '\0'; // remove last character - should be '\r' from windows line endings
+								string ThisMtlLine(ThisMtlLineCstr);
+								if(ThisMtlLine.size()) {
+									if(ThisMtlLine.at(0)!='#') {
+										if(ThisMtlLine.substr(0,6)=="newmtl") {
+											string ThisMtlName = ThisMtlLine.substr(7,256);
+											ThisMaterial = new Mtl(directory,Textures);
+											Materials[ThisMtlName] = ThisMaterial;
+										} else if(ThisMaterial) {
+											ThisMaterial->InterpretLine(ThisMtlLine);
+										} else {
+											cout << "Unrecognized command in mtl file!!!\n";
+										}
+									}
 								}
 							}
+						} else {
+							cout << "Could not open mtl file! switching to default texture!\n";
+							ThisMaterial = new Mtl(directory,Textures);
+							Materials["__Metal_Brass_Ceiling__Metal_Brass_Ceiling_jpg"] = ThisMaterial;
+							ThisMaterial->InterpretLine("map_Kd Metal_Brass_Ceiling.jpg");
 						}
 					} else {
-						cout << "Could not open mtl file! switching to default texture!\n";
-						ThisMaterial = new Mtl(directory,Textures);
-						Materials["__Metal_Brass_Ceiling__Metal_Brass_Ceiling_jpg"] = ThisMaterial;
-						ThisMaterial->InterpretLine("map_Kd Metal_Brass_Ceiling.jpg");
+						cout << "Unrecognized command \"" << Command << "\" in obj file!!! Ignoring line!!!\n";
 					}
-				} else {
-					cout << "Unrecognized command \"" << Command << "\" in obj file!!! Ignoring line!!!\n";
 				}
 			}
 		}
@@ -139,8 +145,6 @@ void Model::Initialize(string Location, string filename, TexturePack *TP) {
 		AllFaces->push_back(new Face(2,1,2, 5,3,5, 3,2,3, ThisMaterial));
 		AllFaces->push_back(new Face(3,2,3, 5,3,5, 6,4,6, ThisMaterial));
 	}
-	
-	
 	
 	UpdateLists();
 }
