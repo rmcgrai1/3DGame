@@ -18,6 +18,7 @@ class Item {
 		void DisplayAt(GraphicsOGL* gl, PosSpec *Dim, double rot);
 		void SetName(string newType);
 		string GetName();
+		Model *GetModel();
 	private:
 		string Name;
 		string Description;

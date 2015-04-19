@@ -1,27 +1,24 @@
-// Player.h
+// NPC.h
 
 
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef ANIMAL_H
+#define ANIMAL_H
 
 #include <deque>
 #include "../Characters/Character.h"
 #include "../Graphics/Texture.h"
+#include "../Graphics/GraphicsOGL.h"
 
-class Player : public Character {
+class Animal : public Character {
 	public:
-		Player(float, float, float);
+		Animal(float, float, float);
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);
 
-	protected:
-		void land(GraphicsOGL*);
 
 	private:
 		void updateControl(GraphicsOGL*, float);
-
-		float camDis;
-		//int flight;
+		void land();
 };
 
 #endif
