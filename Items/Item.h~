@@ -1,4 +1,4 @@
-// Item.h
+// Item3D.h
 
 
 #ifndef ITEM_H
@@ -9,15 +9,19 @@
 #include "../Primitives/Physical.h"
 using namespace std;
 
-class Item : public Physical {
+class Item3D : public Physical {
 	public:
-		~Item();
+		~Item3D();
+		Item3D(int, string, string);
 		
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
+		virtual void instantiate();
+
+		static int TYPE_POTION;
 		
 	protected:
-		Item();
+		Item3D(float, float, float);
 
 		int type;
 		string* name;

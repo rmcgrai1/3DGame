@@ -43,7 +43,7 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 	
 	//Update Listener Source
 	float n, nX, nY, nZ;
-	n = (float) (sqrt(Math2D.sqr(toX-cX) + Math2D.sqr(toY-cY) + Math2D.sqr(focusZ-camZ)));
+	n = (float) (sqrt(sqr(toX-cX) + sqr(toY-cY) + sqr(focusZ-camZ)));
 	nX = (toX-cX)/n;
 	nY = (toY-cY)/n;
 	nZ = (focusZ-camZ)/n;
@@ -57,7 +57,7 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 
 	// Perspective.
 	float widthHeightRatio = (float) gl->getScreenWidth() / (float) gl->getScreenHeight();
-	gluPerspective(45, widthHeightRatio, 1, 10000);
+	gluPerspective(45, widthHeightRatio, 1, 5000);
 	gluLookAt(cX, cY, camZ, toX, toY, focusZ, 0, 0, 1);
 
 	// Move Background!
@@ -88,6 +88,8 @@ void Camera :: getNormal(float vec[3]) {
 	vec[1] /= len;
 	vec[2] /= len;
 }
+
+
 
 void Camera :: getPosition(float vec[3]) {
 	vec[0] = camX;

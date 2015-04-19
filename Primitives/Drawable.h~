@@ -18,7 +18,7 @@ class Drawable2 : public Updateable {
 		virtual void update(GraphicsOGL*, float);
 		virtual void draw(GraphicsOGL*, float);
 		virtual bool checkOnScreen(GraphicsOGL*);
-		bool getOnScreen(GraphicsOGL*);
+		bool getOnScreen();
 
 		void setVisible(int);
 		void destroy();

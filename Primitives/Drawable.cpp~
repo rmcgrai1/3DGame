@@ -28,11 +28,12 @@ Drawable2 :: Drawable2(int type) : Updateable(type) {
 }
 
 bool Drawable2 :: checkOnScreen(GraphicsOGL* gl) {
+	fidelity = 1;
 	isOnScreen = true;
 	return true;
 }
 
-bool Drawable2 :: getOnScreen(GraphicsOGL* gl) {
+bool Drawable2 :: getOnScreen() {
 	return isOnScreen;
 }
 

@@ -1,6 +1,7 @@
 // Heightmap.cpp
 
 
+#include "../Graphics/Camera.h"
 #include <iostream>
 #include <GL/freeglut.h>
 #include <GL/glut.h>
@@ -271,6 +272,10 @@ void Heightmap :: generateNormals() {
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
+	float camX, camY;
+	
+	float leftX, rightX, topY, botY;
+
 	gl->logMessage("Heightmap.cpp, draw()");
 
 	glEnable(GL_LIGHTING);
@@ -338,7 +343,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	if(texSand != NULL) {
 		texSand->unbind();
 	}
-	gl->getTextureController()->getTexture("Dirt")->unbind();
+	texDirt->unbind();
 	// Added to make 2d images render correctly
 }
 

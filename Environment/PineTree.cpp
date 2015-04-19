@@ -23,7 +23,7 @@ void PineTree :: update(GraphicsOGL* gl, float deltaT) {
 
 void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 
-	int fidelity = 6;
+	int fid = 3 + fidelity*4;
 	float R = 20, G = 255, B = 50;
 	float r = 15, dZ, h = 30, uR, uDZ, uH;
 
@@ -74,8 +74,8 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 
 	if(!gl->isPCSlow())
 		gl->enableShader("pineBark");
-	gl->draw3DPrism(0,0,0,4,30, fidelity, barkTex);
-	gl->draw3DCone(0,0,0,5,30, fidelity, barkTex);
+	gl->draw3DPrism(0,0,0,4,30, fid, barkTex);
+	gl->draw3DCone(0,0,0,5,30, fid, barkTex);
 
 	if(!gl->isPCSlow())
 		gl->enableShader("pineBranch");
@@ -109,9 +109,9 @@ void PineTree :: draw(GraphicsOGL* gl, float deltaT) {
 			gl->transformRotationZ(fallXYDir);
 			gl->transformRotationY(fR);
 			gl->transformRotationZ(-fallXYDir);
-				gl->draw3DCone(0,0,0,uR,uH, fidelity, branchTex);
+				gl->draw3DCone(0,0,0,uR,uH, fid, branchTex);
 			gl->transformTranslation(0,0,-uDZ);
-			//gl->draw3DCone(0,0,uDZ,uR*1.1,uH*.8, fidelity, branchTex);
+			//gl->draw3DCone(0,0,uDZ,uR*1.1,uH*.8, fid, branchTex);
 		}
 	}
 

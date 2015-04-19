@@ -29,6 +29,7 @@ Physical :: Physical(float myX, float myY, float myZ) : Instantiable() {
 	direction = 0;
 
 	onGround = true;
+	physical = true;
 }
 
 void Physical :: update(GraphicsOGL* gl, float deltaTime) {
@@ -68,6 +69,9 @@ bool Physical :: checkOnScreen(GraphicsOGL* gl) {
 	curY = y;
 
 	isOnScreen = (abs(calcAngleDiff(calcPtDir(camX,camY,curX,curY),camDir)) <= camFOV);
+
+	if(isOnScreen)
+		fidelity = 1- calcPtDis(curX,curY,camX,camY)/2000;
 
 	return isOnScreen;
 }

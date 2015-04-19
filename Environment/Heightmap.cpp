@@ -1,6 +1,7 @@
 // Heightmap.cpp
 
 
+#include "../Graphics/Camera.h"
 #include <iostream>
 #include <GL/freeglut.h>
 #include <GL/glut.h>
@@ -270,6 +271,12 @@ void Heightmap :: generateNormals() {
 //bool isWall(float, float);
 		
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
+
+	Camera* cam = gl->getCamera();
+	float camX, camY;
+	camX = cam->getX();
+	
+	float leftX, rightX, topY, botY;
 
 	gl->logMessage("Heightmap.cpp, draw()");
 

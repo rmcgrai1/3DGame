@@ -42,6 +42,11 @@ InputController :: InputController() {
 	for(int i = 0; i < 26; i++)
 		letterArray[i] = false;
 
+	keyArray = new bool[255];
+	for(int i = 0; i < 255; i++)
+		keyArray[i] = false;
+
+
 	mouseArray = new bool[3];
 	for(int i = 0; i < 3; i++)
 		mouseArray[i] = false;
@@ -99,6 +104,8 @@ void InputController :: updateKeyboard(unsigned char key, int x, int y) {
 		case 'd':	setWASD(lKey, true);
 			break;
 	}
+
+	keyArray[key] = true;
 }
 void InputController :: updateKeyboardUp(unsigned char key, int x, int y) {
 	char lKey = tolower(key);
@@ -111,9 +118,11 @@ void InputController :: updateKeyboardUp(unsigned char key, int x, int y) {
 		case 'd':	setWASD(lKey, false);
 			break;
 	}
+
+	keyArray[key] = false;
 }
 void InputController :: updateKeyboardSpecial(int key, int x, int y) {
-	isShiftDown = (glutGetModifiers() == GLUT_ACTIVE_SHIFT);
+	isShiftDown = true;
 }
 void InputController :: updateKeyboardSpecialUp(int key, int x, int y) {
 	isShiftDown = false;
@@ -186,6 +195,10 @@ void InputController :: setWASD(char key, bool down) {
 		case 'd':	wasdArray[3] = down;
 			break;
 	}
+}
+
+bool InputController :: checkKey(unsigned char key) {
+	return keyArray[key];
 }
 
 bool InputController :: checkLetter(char key) {

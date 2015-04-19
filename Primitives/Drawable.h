@@ -30,6 +30,7 @@ class Drawable2 : public Updateable {
 
 		int visible;
 		bool isOnScreen;
+		float fidelity;
 
 		static int TYPE_NONE;
 		static int TYPE_ENVIRONMENT;

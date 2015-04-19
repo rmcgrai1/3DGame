@@ -27,6 +27,7 @@ class Character : public Physical {
 
 		static SortedList<Character*> characterList;
 
+		float getSize();
 		float getHP();
 		float getMaxHP();
 		float getDestroyFraction();
@@ -43,6 +44,7 @@ class Character : public Physical {
 		virtual void land(GraphicsOGL*);
 		void hop();
 
+		float size;
 		bool isHurt;
 		float knockbackDir;
 		float knockbackTimer;

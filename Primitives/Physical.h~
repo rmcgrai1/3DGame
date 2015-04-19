@@ -68,7 +68,7 @@ class Physical : public Instantiable {
 		float floorZ;
 
 		bool onGround;
-		bool isOnScreen;
+		bool physical;
 };
 
 #endif

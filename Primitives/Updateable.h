@@ -27,6 +27,8 @@ class Updateable {
 
 		static const int TYPE_NONE = -1;
 		static const int TYPE_MENU = 0;
+
+		bool doUpdates;
 };
 
 #endif

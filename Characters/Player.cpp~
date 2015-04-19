@@ -65,7 +65,7 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 			toY = tS*(target->getY()) + (1-tS)*(y);
 			toZ = floorZ+8;
 
-			ncDir = calcPtDir(x,y,target->getX(),target->getY());
+			//direction = calcPtDir(x,y,target->getX(),target->getY());
 
 			gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,toX,toY,toZ);
 		}
@@ -100,7 +100,7 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	aDir = dir-90;
 
 	// If Jump Button Pressed...
-	if(i->checkLetter('u')) {
+	if(i->checkAscii(' ')) {
 		if(onGround) {
 			zVel = jumpSpeed;
 			onGround = false;
@@ -113,7 +113,7 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 	// If a Button is Held...
 	if(dir != -1) {
 		isMoving = true;
-		vel = 1 + i->getShift()*2;
+		vel += ((1 + i->getShift()*2) - vel)/(3 + (vel > 1)*10);
 
 		if(dir == 90 || dir == -90) {
 			nCDir = cDir;
@@ -132,16 +132,19 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 			nCDir = cDir - .2*calcTurnToDir(cDir,180+cDir-90+dir);
 		}
 
-		
-		hop();
-
 		direction = d;
 		faceDirection(d);
 	}
 	else {
-		vel = 0;
+		vel += (0 - vel)/(4 + vel*2);
 		isMoving = false;
 	}
+
+	if(vel > .01) {
+		hop();
+	}
+	else
+		vel = 0;
 
 	
 	float mouseDir = calcPtDir(320,240, i->getMouseX(), i->getMouseY());

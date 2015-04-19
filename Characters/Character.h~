@@ -43,6 +43,7 @@ class Character : public Physical {
 		virtual void land(GraphicsOGL*);
 		void hop();
 
+		float size;
 		bool isHurt;
 		float knockbackDir;
 		float knockbackTimer;
@@ -95,7 +96,7 @@ class Character : public Physical {
 		float hopSc;
 		float hopDir;
 		
-		Texture* swordHiltTex*;
+		Texture* swordHiltTex;
 };
 
 #endif
