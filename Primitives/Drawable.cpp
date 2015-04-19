@@ -15,6 +15,7 @@ SortedList<Drawable2*> Drawable2 :: drawableList;
 
 Drawable2 :: Drawable2() : Updateable() {
 
+	fidelity = 1;
 	isOnScreen = true;
 	visible = true;
 	drawableList.add(this);
@@ -22,12 +23,14 @@ Drawable2 :: Drawable2() : Updateable() {
 
 Drawable2 :: Drawable2(int type) : Updateable(type) {
 
+	fidelity = 1;
 	isOnScreen = true;
 	visible = true;
 	drawableList.add(this);
 }
 
 bool Drawable2 :: checkOnScreen(GraphicsOGL* gl) {
+	fidelity = 1;
 	isOnScreen = true;
 	return true;
 }

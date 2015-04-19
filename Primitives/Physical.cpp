@@ -68,6 +68,10 @@ bool Physical :: checkOnScreen(GraphicsOGL* gl) {
 	curY = y;
 
 	isOnScreen = (abs(calcAngleDiff(calcPtDir(camX,camY,curX,curY),camDir)) <= camFOV);
+
+	if(isOnScreen)
+		fidelity = 1- calcPtDis(curX,curY,camX,camY)/2000;
+
 	return isOnScreen;
 }
 

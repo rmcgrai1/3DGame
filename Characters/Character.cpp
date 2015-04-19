@@ -39,7 +39,7 @@ SortedList<Character*> Character :: characterList;
 float Character::GRAVITY_HOP_ACCELERATION = -.125*.75; //GRAVITY_ACCELERATION*.75;
 float hopHeight = 3;
 float hopSpeed = sqrt(abs(2*Character::GRAVITY_HOP_ACCELERATION*hopHeight));
-float s = 6, h = 8;
+float h = 8;
 
 
 Character :: Character(float x, float y, float z) : Physical(x,y,z) {
@@ -47,9 +47,11 @@ Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 	appR = rnd();
 	appG = rnd();
 	appB = rnd();
-	appXS = rnd(.8,1.2);
-	appYS = rnd(.8,1.2);
-	appZS = rnd(.8,1.2);
+	appXS = rnd(.9,1.1);
+	appYS = rnd(.9,1.1);
+	appZS = rnd(.9,1.1);
+
+	size = 6;
 
 	float baseHP = rnd()*100;
 	float baseAtk = rnd()*100;
@@ -101,6 +103,10 @@ float Character :: calcDamage(float attackPower, Character* attacker, Character*
 	float modifier = 1.*1*1*1*(.85 + .15*rnd());
 
 	return ((2.*attacker->level + 10)/250*(attacker->atk/defender->def)*attackPower + 2)*modifier;
+}
+
+float Character :: getSize() {
+	return size;
 }
 
 float Character :: getHP() {
@@ -259,7 +265,7 @@ void Character :: attack() {
 	float atkX, atkY, atkR;
 	atkX = x;
 	atkY = y;
-	atkR = s + 10*1.3;
+	atkR = size + 10*1.3;
 
 	// Attack Trees
 	for(int i = 0; i < Tree::treeList.size(); i++) {
@@ -287,9 +293,9 @@ void Character :: attack() {
 
 			float cX = c->getX(), cY = c->getY();
 			float dis = calcPtDis(atkX,atkY,cX,cY);
-			float cS = s;//t->getSize()*5;
+			float cS = 6;
 
-			if(dis < (s*2 + cS)) {
+			if(dis < (size + c->size + cS)) {
 				float dir = calcPtDir(atkX,atkY,cX,cY);
 				if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
 					SoundController::playSound("swordHitFlesh",this);
@@ -313,7 +319,7 @@ void Character :: collideTree() {
 		float dis = calcPtDis(x,y,tX,tY);
 		float tS = t->getSize()*5;
 
-		if(dis < (s + tS)) {
+		if(dis < (size + tS)) {
 			float dir = calcPtDir(x,y,tX,tY);
 
 			float cNX, cNY, vNX, vNY;
@@ -321,8 +327,8 @@ void Character :: collideTree() {
 			cNY = calcLenY(1, dir);
 
 			float aX, aY;
-			aX = calcLenX(tS+s, dir);
-			aY = calcLenY(tS+s, dir);
+			aX = calcLenX(tS+size, dir);
+			aY = calcLenY(tS+size, dir);
 
 			x = tX - aX;
 			y = tY - aY;
@@ -340,7 +346,7 @@ void Character :: collideCharacter() {
 		if(c != this) {
 			float dis = calcPtDis(x,y,c->x,c->y);
 
-			if(dis < 2*s) {
+			if(dis < (size + c->size)) {
 				float dir = calcPtDir(x,y,c->x,c->y);
 				float hX, hY;
 				hX = (x + c->x)/2;
@@ -363,14 +369,14 @@ void Character :: collideCharacter() {
 					p = 0;
 
 				float aX, aY;
-				aX = calcLenX(s, dir);
-				aY = calcLenY(s, dir);
+				aX = calcLenX(1, dir);
+				aY = calcLenY(1, dir);
 
 
-				x = hX - aX;
-				y = hY - aY;
-				c->x = hX + aX;
-				c->y = hY + aY;
+				x = hX - aX*size;
+				y = hY - aY*size;
+				c->x = hX + aX*c->size;
+				c->y = hY + aY*c->size;
 
 
 				/*if(vel > c->vel) {
@@ -382,9 +388,9 @@ void Character :: collideCharacter() {
 					y = c->y - aY;
 				}*/
 
-				float friction = .5;
-				vel *= friction;
-				c->vel *= friction;
+				//float friction = .5;
+				//vel *= friction;
+				//c->vel *= friction;
 			}
 		}
 	}
@@ -396,8 +402,6 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	Heightmap* hm = gl->getHeightmap();
 
-
-	float sideNum = 6;
 
 	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
 
@@ -478,7 +482,18 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		}
 
 		
+	float dHopZ = hopZ*min(1.f,vel), dHopSc, dHopZVel, dHopX;
 
+	if(vel >= 1) {
+		dHopSc = hopSc;
+		dHopZVel = hopZVel;
+		dHopX = hopX;
+	}
+	else {
+		dHopSc = (1-vel) + hopSc*vel;
+		dHopZVel = hopZVel*vel;
+		dHopX = hopX*vel;
+	}
 
 	if(!gl->isPCSlow()) {
 		gl->enableShader("Character");
@@ -488,7 +503,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->setColor(255*appR,255*appG,255*appB);
 
 	gl->transformTranslation(destShX,destShY,destShZ);
-	gl->transformTranslation(x,y,z+hopZ);
+	gl->transformTranslation(x,y,z+dHopZ);
 	
 	if(onGround/*&& hopZ <= 0*/) {
 		gl->transformRotationZ(setupRot);	
@@ -497,15 +512,15 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 
 		gl->transformRotationZ(faceDir);
-		gl->transformRotationX(-hopX*10);		
-		gl->transformRotationY(-hopZVel*10);		
-		gl->transformTranslation(-hopZVel,hopX,0);	
+		gl->transformRotationX(-dHopX*10);		
+		gl->transformRotationY(-dHopZVel*10);		
+		gl->transformTranslation(-dHopZVel,dHopX,0);	
 	}
 	else
 		gl->transformRotationZ(faceDir);
 
 	//gl->transformTranslation(-hopZVel,hopX,0);
-	gl->transformScale(hopSc,hopSc,1/hopSc + scZ);
+	gl->transformScale(dHopSc,dHopSc,1/dHopSc + scZ);
 	gl->transformScale(appXS,appYS,appZS);
 
 	gl->transformTranslation(0,0,1.*h/2);
@@ -526,24 +541,24 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->setShaderVec3("charPos", charPos);
 
 	if(shape == SH_PRISM_6)
-		gl->draw3DPrism(0,0,0,s,h,6);
+		gl->draw3DPrism(0,0,0,size,h,6);
 	else if(shape == SH_PRISM_5)
-		gl->draw3DPrism(0,0,0,s,h,5);
+		gl->draw3DPrism(0,0,0,size,h,5);
 	else if(shape == SH_PRISM_3)
-		gl->draw3DPrism(0,0,0,s,h,3);
+		gl->draw3DPrism(0,0,0,size,h,3);
 	else if(shape == SH_CUBE)
-		gl->draw3DPrism(0,0,0,s,h,4);
+		gl->draw3DPrism(0,0,0,size,h,4);
 	else if(shape == SH_SPHERE)
-		gl->draw3DSphere(0,0,s,s,13);
+		gl->draw3DSphere(0,0,size,size,13);
 	else if(shape == SH_CONE_DOWN)
-		gl->draw3DCone(0,0,h,s,-h,13);
+		gl->draw3DCone(0,0,h,size,-h,13);
 	else if(shape == SH_CONE_UP)
-		gl->draw3DCone(0,0,0,s,h,13);
+		gl->draw3DCone(0,0,0,size,h,13);
 	else if(shape == SH_CYLINDER)
-		gl->draw3DPrism(0,0,0,s,h,13);
+		gl->draw3DPrism(0,0,0,size,h,13);
 	else if(shape == SH_DIAMOND) {
-		gl->draw3DFrustem(0,0,0,0,s,h/2,4);
-		gl->draw3DFrustem(0,0,h/2,s,0,h/2,4);
+		gl->draw3DFrustem(0,0,0,0,size,h/2,4);
+		gl->draw3DFrustem(0,0,h/2,size,0,h/2,4);
 	}
 
 	gl->transformClear();
@@ -564,7 +579,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			gl->setShaderVariable("iHit",0);
 	}
 		// Draw Weapon
-		gl->transformTranslation(x,y,z+hopZ);
+		gl->transformTranslation(x,y,z+dHopZ);
 	
 		if(onGround/*&& hopZ <= 0*/) {
 			gl->transformRotationZ(setupRot);	
@@ -573,8 +588,8 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 
 			gl->transformRotationZ(faceDir);		
-			gl->transformTranslation(-hopZVel,hopX,0);	
-			gl->transformTranslation(-3*hopZVel,3*hopX,0);
+			gl->transformTranslation(-dHopZVel,dHopX,0);	
+			gl->transformTranslation(-3*dHopZVel,3*dHopX,0);
 			gl->transformRotationZ(-faceDir);		
 		}
 		
@@ -747,21 +762,21 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 void Character :: destroy() {
 
 	/*if(shape == SH_PRISM_6)
-		gl->draw3DPrism(0,0,0,s,h,6);
+		gl->draw3DPrism(0,0,0,size,h,6);
 	else if(shape == SH_PRISM_5)
-		gl->draw3DPrism(0,0,0,s,h,5);
+		gl->draw3DPrism(0,0,0,size,h,5);
 	else if(shape == SH_PRISM_3)
-		gl->draw3DPrism(0,0,0,s,h,3);
+		gl->draw3DPrism(0,0,0,size,h,3);
 	else if(shape == SH_CUBE)
-		gl->draw3DPrism(0,0,0,s,h,4);
+		gl->draw3DPrism(0,0,0,size,h,4);
 	else if(shape == SH_SPHERE)
-		gl->draw3DSphere(0,0,s,s,13);
+		gl->draw3DSphere(0,0,size,size,13);
 	else if(shape == SH_CONE_DOWN)
-		gl->draw3DCone(0,0,h,s,-h,13);
+		gl->draw3DCone(0,0,h,size,-h,13);
 	else if(shape == SH_CONE_UP)
-		gl->draw3DCone(0,0,0,s,h,13);
+		gl->draw3DCone(0,0,0,size,h,13);
 	else if(shape == SH_CYLINDER)
-		gl->draw3DPrism(0,0,0,s,h,13);*/
+		gl->draw3DPrism(0,0,0,size,h,13);*/
 
 	
 	float dX,dY,dZ, si, sm;
@@ -826,7 +841,7 @@ void Character :: updateHop(GraphicsOGL* gl, float deltaT) {
 		hopZ += hopZVel;
 		if(hopZ <= 0) {
 			if(hopZVel != GRAVITY_HOP_ACCELERATION) {
-				new SmokeRing(x,y,z,2,8,4,1.3);
+				new SmokeRing(x,y,z,2,8,4,1.3*min(1.f,vel));
 				SoundController::playSound("fsGrass",this);
 			}
 
@@ -853,7 +868,10 @@ void Character :: updateHop(GraphicsOGL* gl, float deltaT) {
 
 void Character :: hop() {
 	if(hopZ == 0) {
-		hopZVel = hopSpeed*(1. + .1*(rnd()-.5));
+		if(vel <= 1)
+			hopZVel = (.75 + .25*vel)*hopSpeed*(1. + .1*(rnd()-.5));
+		else
+			hopZVel = (1 - .25/3*vel)*hopSpeed*(1. + .1*(rnd()-.5));
 
 		hopDir *= -1;
 	}

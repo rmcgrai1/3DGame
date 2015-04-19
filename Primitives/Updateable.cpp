@@ -17,6 +17,8 @@ Updateable :: Updateable() {
 
 	oType = TYPE_NONE;
 	updateableList.push_back(this);
+
+	doUpdates = true;
 }
 
 Updateable :: Updateable(int newType) {
@@ -30,9 +32,14 @@ void Updateable :: updateAll(GraphicsOGL* gl, float deltaTime) {
 	bool isInvOpen = gl->getMenu()->getMenuShowStatus();
 	bool isTextBoxOpen = gl->getTextController()->isTextBoxOpen();
 
+	Updateable* u;
+
 	for(int i = 0; i < si; i++) {
-		if((!isInvOpen && !isTextBoxOpen) || updateableList[i]->oType == TYPE_MENU)
-			updateableList[i]->update(gl, deltaTime);
+		u = updateableList[i];
+
+		if(u->doUpdates)
+			if((!isInvOpen && !isTextBoxOpen) || u->oType == TYPE_MENU)
+				u->update(gl, deltaTime);
 	}
 }
 		

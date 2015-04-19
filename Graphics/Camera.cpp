@@ -57,7 +57,7 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 
 	// Perspective.
 	float widthHeightRatio = (float) gl->getScreenWidth() / (float) gl->getScreenHeight();
-	gluPerspective(45, widthHeightRatio, 1, 10000);
+	gluPerspective(45, widthHeightRatio, 1, 5000);
 	gluLookAt(cX, cY, camZ, toX, toY, focusZ, 0, 0, 1);
 
 	// Move Background!
@@ -87,6 +87,18 @@ void Camera :: getNormal(float vec[3]) {
 	vec[0] /= len;
 	vec[1] /= len;
 	vec[2] /= len;
+}
+
+float Camera :: getX() {
+	return camX;
+}
+
+float Camera :: getY() {
+	return camY;
+}
+
+float Camera :: getZ() {
+	return camZ;
 }
 
 void Camera :: getPosition(float vec[3]) {

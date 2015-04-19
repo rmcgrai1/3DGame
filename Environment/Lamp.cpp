@@ -109,7 +109,7 @@ void Lamp :: draw(GraphicsOGL* gl, float deltaTime) {
 	float lantR = 4;
 	float lantH = 6;
 
-	gl->enableShader("Character");
+	gl->enableShader("pineBark");
 
 	Texture* texWood = TextureController::getTexture("bark");
 	gl->transformClear();
@@ -119,7 +119,8 @@ void Lamp :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->transformTranslation(0,0,lantH);
 		gl->transformRotationY(sin(rotate/180*3.14159)*20);
 		gl->transformTranslation(0,0,-lantH);
-			gl->draw3DFrustem(0,0,0,lantR-1,lantR+1,lantH,3);
+			gl->draw3DFrustem(0,0,lantH-1,lantR+1,lantR-1,1,3);
+			gl->draw3DFrustem(0,0,-1,lantR-2,lantR-1,lantH-1,3);
 
 			lightX = x + calcLenX(-w*.8,xydir);
 			lightY = y + calcLenY(-w*.8,xydir);

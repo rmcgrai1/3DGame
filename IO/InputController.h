@@ -20,6 +20,7 @@ class InputController {
 		bool checkLeftMouse();
 		bool checkRightMouse();
 
+		bool checkKey(unsigned char);
 		bool checkLetter(char);
 		void setLetter(char, bool);
 		bool getShift();
@@ -34,6 +35,7 @@ class InputController {
 		static InputController* mainInp;
 
 		bool* wasdArray;
+		bool* keyArray;
 		bool* letterArray;
 		bool* mouseArray;
 
