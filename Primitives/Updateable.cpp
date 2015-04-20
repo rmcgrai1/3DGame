@@ -22,6 +22,7 @@ Updateable :: Updateable() {
 }
 
 Updateable :: Updateable(int newType) {
+	doUpdates = true;
 	oType = newType;
 	updateableList.push_back(this);
 }

@@ -32,6 +32,7 @@
 #include "../Environment/Tree.h"
 #include "../Environment/Terrain.h"
 #include "../menus/menu.h"
+#include "../Environment/Shapes/PieceController.h"
 #include "../Text/TextController.h"
 #include "../Environment/PineTree.h"
 #include "../Environment/Bush.h"
@@ -100,6 +101,10 @@ Player* GraphicsOGL :: getPlayer() {
 
 Menu* GraphicsOGL :: getMenu() {
 	return myMenu;
+}
+
+PieceController* GraphicsOGL :: getPieceController() {
+	return AllStructures;
 }
 
 
@@ -191,6 +196,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 
 		myMenu = new Menu();
+		AllStructures = new PieceController();
 		//pauseMenu = new Menu();
 
 		for(int i = 0; i < 15; i++) {
