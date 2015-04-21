@@ -6,6 +6,8 @@
 #include "../../Graphics/GraphicsOGL.h"
 #include "../../Graphics/TexturePack.h"
 #include "../Environmental.h"
+#include "../../JSON/JSON.h"
+#include "PieceExt.h"
 
 class PieceGroup : public Environmental {
 	
@@ -15,6 +17,8 @@ class PieceGroup : public Environmental {
 		PieceGroup(float new_x,float new_y,float new_z,float new_xRot,float new_yRot,float new_zRot,string location,TexturePack *TP);
 		PieceGroup(float new_x,float new_y,float new_z,string location,TexturePack *TP);
 		int collide();
+		void DrawHere(GraphicsOGL*, float);
+		void setDrawRoot(int isRoot);
 		float calcFloorZ();
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);
@@ -22,9 +26,14 @@ class PieceGroup : public Environmental {
 	private:
 		void loadfromJSON();
 		
+		int isDrawRoot;
+		
 		TexturePack *Textures;
 		string JSONdirectory;
 		string JSONfilename;
+		
+		vector<PieceGroup *> SubGroups;
+		vector<PieceExt *> Pieces;
 		
 		float x,y,z;
 		float xRot,yRot,zRot;

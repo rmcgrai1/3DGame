@@ -14,10 +14,13 @@ class PieceController : public Updateable {
 	
 	public:
 		PieceController();
-		int collide();
 		void update(GraphicsOGL*, float);
-		void damage(float);
-		void newPieceGroup(string FileName);
+		void newPieceGroup(float x,float y,float z,string location);
+		void newPieceGroup(float x,float y,float z,float xRot,float yRot,float zRot,string location);
+		void newPieceGroup(float x,float y,float z,float xRot,float yRot,float zRot,float xScale,float yScale,float zScale,string location);
+		void newPieceGroup(float x,float y,float z,string location,string filename);
+		void newPieceGroup(float x,float y,float z,float xRot,float yRot,float zRot,string location,string filename);
+		void newPieceGroup(float x,float y,float z,float xRot,float yRot,float zRot,float xScale,float yScale,float zScale,string location,string filename);
 	private:
 		vector<PieceGroup *> AllPieceGroups;
 		TexturePack *Textures;

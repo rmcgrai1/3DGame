@@ -5,23 +5,25 @@
 
 #include "../../Graphics/Models/Model.h"
 #include "../../Graphics/GraphicsOGL.h"
+#include "../../Graphics/TexturePack.h"
+#include "../../JSON/JSON.h"
 
-class PieceExt : public Environmental {
+class PieceExt {
 	
 	public:
-		PieceExt(float x,float y,float z,float xrot,float yrot,float zrot);
+		PieceExt(float new_x=0,float new_y=0,float new_z=0,float new_xRot=0,float new_yRot=0,float new_zRot=0,float new_xScale=1,float new_yScale=1,float new_zScale=1,string location="Resources/Structures/Default/PieceExt1",string filename="model.json",TexturePack *TP = new TexturePack);
 		void update(GraphicsOGL*, float);
 		void draw(GraphicsOGL*, float);
 	private:
-		float x;
-		float y;
-		float z;
-		float xScale;
-		float yScale;
-		float zScale;
-		float xRot;
-		float yRot;
-		float zRot;
+		void loadfromJSON();
+		
+		TexturePack *Textures;
+		string JSONdirectory;
+		string JSONfilename;
+		
+		float x,y,z;
+		float xRot,yRot,zRot;
+		float xScale,yScale,zScale;
 };
 
 #endif

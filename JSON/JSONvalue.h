@@ -13,12 +13,19 @@ class JSONvalue {
 	
 	public:
 		JSONvalue(ifstream *FilePtr);
+		~JSONvalue();
 		int istype(string typestr);
+		string getType();
 		string getString();
 		double getFloat();
 		vector<JSONvalue *> getArray();
 		JSON *getClass();
 		int getBoolean();
+		vector<string> getStringArray();
+		vector<double> getFloatArray();
+		vector<JSON *> getClassArray();
+		vector<int> getBooleanArray();
+		vector<vector<JSONvalue *> > getArrayArray();
 	private:
 		char nextnonspace(ifstream *FilePtr);
 		

@@ -16,6 +16,18 @@ class JSON {
 	public:
 		JSON(string filename);
 		JSON(ifstream *FilePtr);
+		~JSON();
+		string getDataType(string key);
+		string getString(string key);
+		double getFloat(string key);
+		JSON *getClass(string key);
+		int getBoolean(string key);
+		vector<JSONvalue *> getArray(string key);
+		vector<string> getStringArray(string key);
+		vector<double> getFloatArray(string key);
+		vector<JSON *> getClassArray(string key);
+		vector<int> getBooleanArray(string key);
+		vector<vector<JSONvalue *> > getArrayArray(string key);
 	private:
 		void load(ifstream *FilePtr);
 		
