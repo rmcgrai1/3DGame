@@ -20,6 +20,9 @@ class PieceExt {
 		TexturePack *Textures;
 		string JSONdirectory;
 		string JSONfilename;
+		string directory;
+		string TPfolder;
+		Model *shape;
 		
 		float x,y,z;
 		float xRot,yRot,zRot;

@@ -141,9 +141,22 @@ void JSON::load(ifstream *FilePtr) {
 		}
 		if(thischar!='}') {
 			JSONvalue *thisvalue = new JSONvalue(FilePtr);
+			names.push_back(thisnameVal->getString());
+			values[thisnameVal->getString()] = thisvalue;
 		}
 		while(thischar!=',' && thischar!='}' && !FilePtr->eof()) { // ignore all characters until ','
 			thischar = FilePtr->get();
 		}
 	}
+}
+
+
+ostream& operator<<(ostream& output, JSON json) {
+	output << "{";
+	vector<string>::iterator i;
+	for(i=json.names.begin();i!=json.names.end();i++) {
+		output << (*i) << ":" << *(json.values[(*i)]) << "|\n";
+	}
+	output << "}";
+	return output;
 }

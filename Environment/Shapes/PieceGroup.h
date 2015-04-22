@@ -31,6 +31,8 @@ class PieceGroup : public Environmental {
 		TexturePack *Textures;
 		string JSONdirectory;
 		string JSONfilename;
+		string directory;
+		string TPfolder;
 		
 		vector<PieceGroup *> SubGroups;
 		vector<PieceExt *> Pieces;

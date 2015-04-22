@@ -1,14 +1,14 @@
 {	"PieceGroups":[],
 	"PieceExts":[
-		{	"dimensions":{
+		{	"folder":"PieceExt1",
+			"dimensions":{
 				"x":0,"y":0,"z":0,
 				"xRot":0,"yRot":0,"zRot":0,
 				"xScale":1,"yScale":1,"zScale":1},
-			"folder":"PieceExt1",
 			"filename":"model.json"},
-		{	"dimensions":{
+		{	"folder":"PieceExt2",
+			"dimensions":{
 				"x":0,"y":0,"z":0,
 				"xRot":0,"yRot":0,"zRot":0,
 				"xScale":1,"yScale":1,"zScale":1},
-			"folder":"PieceExt2",
 			"filename":"model.json"}]}

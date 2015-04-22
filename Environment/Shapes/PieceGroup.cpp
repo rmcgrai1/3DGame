@@ -8,7 +8,9 @@
 
 PieceGroup::PieceGroup(float new_x,float new_y,float new_z,float new_xRot,float new_yRot,float new_zRot,float new_xScale,float new_yScale,float new_zScale,string location,TexturePack *TP):Environmental(new_x,new_y) {
 	Textures = TP;
-	JSONdirectory = location;
+	TPfolder = TP->GetFolder();
+	directory = location;
+	JSONdirectory = TPfolder + "/" + location;
 	JSONfilename = "model.json";
 	x=new_x;
 	y=new_y;
@@ -25,7 +27,9 @@ PieceGroup::PieceGroup(float new_x,float new_y,float new_z,float new_xRot,float 
 
 PieceGroup::PieceGroup(float new_x,float new_y,float new_z,float new_xRot,float new_yRot,float new_zRot,float new_xScale,float new_yScale,float new_zScale,string location,string filename,TexturePack *TP):Environmental(new_x,new_y) {
 	Textures = TP;
-	JSONdirectory = location;
+	TPfolder = TP->GetFolder();
+	directory = location;
+	JSONdirectory = TPfolder + "/" + location;
 	JSONfilename = filename;
 	x=new_x;
 	y=new_y;
@@ -42,7 +46,9 @@ PieceGroup::PieceGroup(float new_x,float new_y,float new_z,float new_xRot,float 
 
 PieceGroup::PieceGroup(float new_x,float new_y,float new_z,float new_xRot,float new_yRot,float new_zRot,string location,TexturePack *TP):Environmental(new_x,new_y) {
 	Textures = TP;
-	JSONdirectory = location;
+	TPfolder = TP->GetFolder();
+	directory = location;
+	JSONdirectory = TPfolder + "/" + location;
 	JSONfilename = "model.json";
 	x=new_x;
 	y=new_y;
@@ -59,7 +65,9 @@ PieceGroup::PieceGroup(float new_x,float new_y,float new_z,float new_xRot,float 
 
 PieceGroup::PieceGroup(float new_x,float new_y,float new_z,string location,TexturePack *TP):Environmental(new_x,new_y) {
 	Textures = TP;
-	JSONdirectory = location;
+	TPfolder = TP->GetFolder();
+	directory = location;
+	JSONdirectory = TPfolder + "/" + location;
 	JSONfilename = "model.json";
 	x=new_x;
 	y=new_y;
@@ -75,6 +83,12 @@ PieceGroup::PieceGroup(float new_x,float new_y,float new_z,string location,Textu
 }
 
 void PieceGroup::DrawHere(GraphicsOGL* gl, float deltaTime) {
+	gl->transformTranslation(x,y,z);
+	gl->transformRotationX(xRot);
+	gl->transformRotationY(yRot);
+	gl->transformRotationZ(zRot);
+	gl->transformScale(xScale,yScale,zScale);
+	
 	vector<PieceGroup *>::iterator i;
 	for(i=SubGroups.begin();i!=SubGroups.end();i++) {
 		(*i)->DrawHere(gl, deltaTime);
@@ -83,6 +97,12 @@ void PieceGroup::DrawHere(GraphicsOGL* gl, float deltaTime) {
 	for(j=Pieces.begin();j!=Pieces.end();j++) {
 		(*j)->draw(gl, deltaTime);
 	}
+	
+	gl->transformScale(1/xScale,1/yScale,1/zScale);
+	gl->transformRotationZ(-1*zRot);
+	gl->transformRotationY(-1*yRot);
+	gl->transformRotationX(-1*xRot);
+	gl->transformTranslation(-1*x,-1*y,-1*z);
 }
 
 void PieceGroup::setDrawRoot(int isRoot) {
@@ -102,7 +122,9 @@ void PieceGroup::update(GraphicsOGL* gl, float deltaTime) {
 
 void PieceGroup::draw(GraphicsOGL* gl, float deltaTime) {
 	if(isDrawRoot) { // only draw if isn't created by another PieceGroup
+		gl->transformClear();
 		DrawHere(gl, deltaTime);
+		gl->transformClear();
 	}
 }
 
@@ -124,7 +146,7 @@ void PieceGroup::loadfromJSON() {
 		JSON *Dimensions = (*i)->getClass("dimensions");
 		string Folder = (*i)->getString("folder");
 		string Filename = (*i)->getString("filename");
-		string fullfolder = JSONdirectory + "/" + Folder;
+		string fullfolder = directory + "/" + Folder;
 		SubGroups.push_back(new PieceGroup(Dimensions->getFloat("x"),Dimensions->getFloat("y"),Dimensions->getFloat("z"),Dimensions->getFloat("xRot"),Dimensions->getFloat("yRot"),Dimensions->getFloat("zRot"),Dimensions->getFloat("xScale"),Dimensions->getFloat("yScale"),Dimensions->getFloat("zScale"),fullfolder,Filename,Textures));
 		SubGroups.back()->setDrawRoot(0);
 	}
@@ -133,7 +155,7 @@ void PieceGroup::loadfromJSON() {
 		JSON *Dimensions = (*i)->getClass("dimensions");
 		string Folder = (*i)->getString("folder");
 		string Filename = (*i)->getString("filename");
-		string fullfolder = JSONdirectory + "/" + Folder;
+		string fullfolder = directory + "/" + Folder;
 		Pieces.push_back(new PieceExt(Dimensions->getFloat("x"),Dimensions->getFloat("y"),Dimensions->getFloat("z"),Dimensions->getFloat("xRot"),Dimensions->getFloat("yRot"),Dimensions->getFloat("zRot"),Dimensions->getFloat("xScale"),Dimensions->getFloat("yScale"),Dimensions->getFloat("zScale"),fullfolder,Filename,Textures));
 	}
 	

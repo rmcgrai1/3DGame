@@ -10,7 +10,7 @@
 
 using namespace std;
 class JSONvalue {
-	
+	friend ostream& operator<<(ostream&, JSONvalue);
 	public:
 		JSONvalue(ifstream *FilePtr);
 		~JSONvalue();

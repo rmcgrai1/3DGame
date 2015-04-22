@@ -117,6 +117,7 @@ JSONvalue::JSONvalue(ifstream *FilePtr) {
 			if(negate) {
 				Flt*=-1;
 			}
+			FilePtr->unget();
 			break;
 		case '{':
 			type = "class";
@@ -126,7 +127,7 @@ JSONvalue::JSONvalue(ifstream *FilePtr) {
 			FilePtr->get(); // remove this character from buffer
 			type = "array";
 			thischar = FilePtr->get();
-			while(!thischar==']' && !FilePtr->eof()) {
+			while(thischar!=']' && !FilePtr->eof()) {
 				Array.push_back(new JSONvalue(FilePtr));
 				thischar = FilePtr->get();
 			}
@@ -287,4 +288,29 @@ char JSONvalue::nextnonspace(ifstream *FilePtr) {
 		thischar = FilePtr->peek();
 	}
 	return thischar;
+}
+
+
+ostream& operator<<(ostream& output, JSONvalue value) {
+	output << "[" << value.type << ";";
+	if(value.type=="string") {
+		output << value.Str;
+	} else if(value.type=="float") {
+		output << value.Flt;
+	} else if(value.type=="array") {
+		output << "(";
+		vector<JSONvalue *>::iterator i;
+		for(i=value.Array.begin();i!=value.Array.end();i++) {
+			output << (*i) << ",";
+		}
+		output << ")";
+	} else if(value.type=="class") {
+		output << *(value.Cls);
+	} else if(value.type=="boolean") {
+		output << value.Boolean;
+	} else {
+		output << "(unknown type)";
+	}
+	output << "]";
+	return output;
 }

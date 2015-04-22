@@ -13,6 +13,7 @@ class JSONvalue;//#include "JSONvalue.h"
 
 using namespace std;
 class JSON {
+	friend ostream& operator<<(ostream&, JSON);
 	public:
 		JSON(string filename);
 		JSON(ifstream *FilePtr);
