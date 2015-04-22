@@ -1,11 +1,25 @@
 all: main
 
+<<<<<<< HEAD
 main: main.o Math2D.o Math3D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o SoundController.o Sound.o Data/SortedList.h DirtPath.o Bush.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o Lamp.o mat4.o Item3D.o Piece.o vec4.o
 	g++ main.o Math2D.o Math3D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o Sound.o SoundController.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o Lamp.o mat4.o vec4.o Item3D.o Piece.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng -lalut -lopenal
+=======
+main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o SoundController.o Sound.o Data/SortedList.h DirtPath.o Bush.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o Lamp.o mat4.o Item3D.o PieceExt.o PieceGroup.o PieceController.o JSON.o JSONvalue.o
+	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o Sound.o SoundController.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o Lamp.o mat4.o Item3D.o PieceExt.o PieceGroup.o PieceController.o JSON.o JSONvalue.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng -lalut -lopenal
+>>>>>>> 496503ba6cfb1f2d67d07614aeefefdf148138bb
 
 main.o: main.cpp
 	g++ -c main.cpp
 
+
+
+# JSON
+###############################################################
+JSON.o: JSON/JSON.cpp JSON/JSON.h JSON/JSONvalue.h
+	g++ -c JSON/JSON.cpp -o JSON.o
+
+JSONvalue.o: JSON/JSONvalue.cpp JSON/JSONvalue.h JSON/JSON.h
+	g++ -c JSON/JSONvalue.cpp -o JSONvalue.o
 
 
 # MENUS
@@ -151,6 +165,15 @@ Piece.o: Environment/Shapes/Piece.cpp Environment/Shapes/Piece.h
 Item3D.o: Items/Item3D.cpp Items/Item3D.h
 	g++ -c Items/Item3D.cpp
 
+
+# SHAPES
+###############################################################
+PieceController.o: Environment/Shapes/PieceController.cpp Environment/Shapes/PieceController.h Environment/Shapes/PieceGroup.h
+	g++ -c Environment/Shapes/PieceController.cpp
+PieceGroup.o: Environment/Shapes/PieceGroup.cpp Environment/Shapes/PieceGroup.h Environment/Shapes/PieceExt.h
+	g++ -c Environment/Shapes/PieceGroup.cpp
+PieceExt.o: Environment/Shapes/PieceExt.cpp Environment/Shapes/PieceExt.h
+	g++ -c Environment/Shapes/PieceExt.cpp
 
 # INPUT/OUTPUT
 ###############################################################

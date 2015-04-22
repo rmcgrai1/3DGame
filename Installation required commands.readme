@@ -17,9 +17,10 @@ cat ~/.ssh/id_rsa.pub
 #click "Add key" at the bottom of the "Key" box
 ssh -T git@github.com
 #type "yes" when the RSA fingerprint message appears
-####clone Ryan's github repository
+####clone github repository
 git clone https://github.com/rmcgrai1/3DGame.git
 cd 3DGame
+
 ####install dependencies
 #sudo apt-get install g++##Not needed in last 2 tries, but required in first installation
 sudo apt-get install libX11-dev##Not needed in first 2 tries, but needed last time

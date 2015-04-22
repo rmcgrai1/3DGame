@@ -17,6 +17,7 @@
 #include "../Environment/Terrain.h"
 #include "../Characters/Player.h"
 #include "../menus/menu.h"
+#include "../Environment/Shapes/PieceController.h"
 #include "../Text/TextController.h"
 #include "../Sound/SoundController.h"
 #include "models/Model.h"
@@ -46,6 +47,7 @@ class GraphicsOGL {
 		void setCulling(bool);
 		Player* getPlayer();
 		Menu* getMenu();
+		PieceController* getPieceController();
 
 		Camera* getCamera();
 		InputController* getInputController();
@@ -177,6 +179,7 @@ class GraphicsOGL {
 
 			Player* myPlayer;
 			Menu* myMenu;
+			PieceController* AllStructures;
 
 		//FPS Variables
 			unsigned long fpsStart, fpsEnd;

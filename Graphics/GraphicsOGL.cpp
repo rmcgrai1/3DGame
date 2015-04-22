@@ -32,6 +32,7 @@
 #include "../Environment/Tree.h"
 #include "../Environment/Terrain.h"
 #include "../menus/menu.h"
+#include "../Environment/Shapes/PieceController.h"
 #include "../Text/TextController.h"
 #include "../Environment/PineTree.h"
 #include "../Environment/Bush.h"
@@ -103,6 +104,10 @@ Player* GraphicsOGL :: getPlayer() {
 
 Menu* GraphicsOGL :: getMenu() {
 	return myMenu;
+}
+
+PieceController* GraphicsOGL :: getPieceController() {
+	return AllStructures;
 }
 
 
@@ -194,6 +199,8 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 
 		myMenu = new Menu();
+		AllStructures = new PieceController();
+		//pauseMenu = new Menu();
 
 		/*for(int i = 0; i < 15; i++) {
 			int s = 1000;
@@ -286,6 +293,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		
 		terrain = new Terrain(2048*5,2048*5, 500, "Resources/Images/test.png",150);
 		
+		//Enables the text in the main menu
 		tc = new TextController();
 		tc->setText("Welcome to `Color:#FF0000`GAME TITLE``!\n\nExplore the land, kill monsters, and try to find the town.");
 
