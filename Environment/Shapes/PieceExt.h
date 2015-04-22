@@ -3,7 +3,7 @@
 #ifndef PIECEEXT_H
 #define PIECEEXT_H
 
-#include "../../Graphics/Models/Model.h"
+#include "../../Graphics/models/Model.h"
 #include "../../Graphics/GraphicsOGL.h"
 #include "../../Graphics/TexturePack.h"
 #include "../../JSON/JSON.h"
@@ -27,6 +27,10 @@ class PieceExt {
 		float x,y,z;
 		float xRot,yRot,zRot;
 		float xScale,yScale,zScale;
+		
+		float xIns,yIns,zIns;
+		float xRotIns,yRotIns,zRotIns;
+		float xScaleIns,yScaleIns,zScaleIns;
 };
 
 #endif

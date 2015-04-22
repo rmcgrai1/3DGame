@@ -4,7 +4,7 @@
 #include <iomanip>
 #include "../../Graphics/GraphicsOGL.h"
 #include "../../Graphics/TexturePack.h"
-#include "../../Graphics/Models/Model.h"
+#include "../../Graphics/models/Model.h"
 #include "../../JSON/JSON.h"
 #include "PieceExt.h"
 
@@ -31,17 +31,29 @@ void PieceExt::update(GraphicsOGL* gl, float deltaTime) {
 }
 void PieceExt::draw(GraphicsOGL* gl, float deltaTime) {
 	gl->transformTranslation(x,y,z);
+	gl->transformScale(xScale,yScale,zScale);
 	gl->transformRotationX(xRot);
 	gl->transformRotationY(yRot);
 	gl->transformRotationZ(zRot);
-	gl->transformScale(xScale,yScale,zScale);
+	
+	gl->transformTranslation(xIns,yIns,zIns);
+	gl->transformScale(xScaleIns,yScaleIns,zScaleIns);
+	gl->transformRotationX(xRotIns);
+	gl->transformRotationY(yRotIns);
+	gl->transformRotationZ(zRotIns);
 	
 	gl->draw3DModel(shape);
 	
-	gl->transformScale(1/xScale,1/yScale,1/zScale);
+	gl->transformRotationZ(-1*zRotIns);
+	gl->transformRotationY(-1*yRotIns);
+	gl->transformRotationX(-1*xRotIns);
+	gl->transformScale(1/xScaleIns,1/yScaleIns,1/zScaleIns);
+	gl->transformTranslation(-1*xIns,-1*yIns,-1*zIns);
+	
 	gl->transformRotationZ(-1*zRot);
 	gl->transformRotationY(-1*yRot);
 	gl->transformRotationX(-1*xRot);
+	gl->transformScale(1/xScale,1/yScale,1/zScale);
 	gl->transformTranslation(-1*x,-1*y,-1*z);
 }
 
@@ -53,6 +65,16 @@ void PieceExt::loadfromJSON() {
 	string Folder = ModelJSON->getString("folder");
 	string Filename = ModelJSON->getString("filename");
 	string fullfolder = directory + "/" + Folder;
+	JSON *Dimensions = ModelJSON->getClass("dimensions");
+	xIns = Dimensions->getFloat("x");
+	yIns = Dimensions->getFloat("y");
+	zIns = Dimensions->getFloat("z");
+	xRotIns = Dimensions->getFloat("xRot");
+	yRotIns = Dimensions->getFloat("yRot");
+	zRotIns = Dimensions->getFloat("zRot");
+	xScaleIns = Dimensions->getFloat("xScale");
+	yScaleIns = Dimensions->getFloat("yScale");
+	zScaleIns = Dimensions->getFloat("zScale");
 	shape = new Model(fullfolder,Filename,Textures); // get model from file
 	vector<JSON *> PiecesJSON = GroupFile->getClassArray("Pieces");
 	vector<JSON *>::iterator i;

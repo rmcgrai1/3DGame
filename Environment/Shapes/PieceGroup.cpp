@@ -2,6 +2,7 @@
 
 #include "../../Graphics/GraphicsOGL.h"
 #include "../../Graphics/TexturePack.h"
+#include "../Environmental.h"
 #include "../../JSON/JSON.h"
 #include "PieceExt.h"
 #include "PieceGroup.h"
@@ -84,10 +85,10 @@ PieceGroup::PieceGroup(float new_x,float new_y,float new_z,string location,Textu
 
 void PieceGroup::DrawHere(GraphicsOGL* gl, float deltaTime) {
 	gl->transformTranslation(x,y,z);
+	gl->transformScale(xScale,yScale,zScale);
 	gl->transformRotationX(xRot);
 	gl->transformRotationY(yRot);
 	gl->transformRotationZ(zRot);
-	gl->transformScale(xScale,yScale,zScale);
 	
 	vector<PieceGroup *>::iterator i;
 	for(i=SubGroups.begin();i!=SubGroups.end();i++) {
@@ -98,10 +99,10 @@ void PieceGroup::DrawHere(GraphicsOGL* gl, float deltaTime) {
 		(*j)->draw(gl, deltaTime);
 	}
 	
-	gl->transformScale(1/xScale,1/yScale,1/zScale);
 	gl->transformRotationZ(-1*zRot);
 	gl->transformRotationY(-1*yRot);
 	gl->transformRotationX(-1*xRot);
+	gl->transformScale(1/xScale,1/yScale,1/zScale);
 	gl->transformTranslation(-1*x,-1*y,-1*z);
 }
 

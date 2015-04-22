@@ -9,7 +9,7 @@
 PieceController::PieceController() : Updateable() {
 	Textures = new TexturePack;
 	//Removed until fixed because of incorrect translations and rotations
-	//AllPieceGroups.push_back(new PieceGroup(1200,1000,270,"Structures/SmallHut",Textures));
+	AllPieceGroups.push_back(new PieceGroup(1200,1000,270,"Structures/SmallHut",Textures));
 }
 
 void PieceController::update(GraphicsOGL* gl, float deltaTime) {
