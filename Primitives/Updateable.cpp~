@@ -37,7 +37,7 @@ void Updateable :: updateAll(GraphicsOGL* gl, float deltaTime) {
 	for(int i = 0; i < si; i++) {
 		u = updateableList[i];
 
-		if(u->update)
+		if(u->doUpdates)
 			if((!isInvOpen && !isTextBoxOpen) || u->oType == TYPE_MENU)
 				u->update(gl, deltaTime);
 	}

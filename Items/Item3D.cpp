@@ -25,7 +25,7 @@ Item3D :: ~Item3D() {
 Item3D :: Item3D(float nX, float nY, float nZ) : Physical(nX, nY, nZ) {
 }
 
-void Item3D :: land(GraphicsOGL* gl) {
+void Item3D :: land() {
 }
 
 void Item3D :: update(GraphicsOGL* gl, float deltaTime) {

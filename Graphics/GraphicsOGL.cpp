@@ -25,7 +25,7 @@
 #include "FontController.h"
 #include <ctime>
 #include "../Functions/Math2D.h"
-#include "../Functions/linmath.h"
+//#include "../Functions/linmath.h"
 #include "../Environment/Heightmap.h"
 #include "../Characters/Player.h"
 #include "../Characters/NPC.h"
@@ -43,6 +43,7 @@
 #include "models/Pos3D.h"
 #include "models/Mtl.h"
 #include "../Functions/mat4.h"
+#include "../Environment/Shapes/Piece.h"
 
 
 using namespace std;
@@ -70,6 +71,8 @@ float lightRadii[100];
 float lightLocations[3*100];
 float lightColors[4*100];
 mat4 modelMat = mat4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+Piece* testP;
+Piece* pInst, *pRot;
 
 
 GraphicsOGL :: GraphicsOGL(int argc, char* argv[]) {
@@ -192,7 +195,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 		myMenu = new Menu();
 
-		for(int i = 0; i < 15; i++) {
+		/*for(int i = 0; i < 15; i++) {
 			int s = 1000;
 			float x, y, size;
 			x = 1028 + (rand() % s - s/2.);
@@ -205,7 +208,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 			cB = .3 + .5*rnd();
 
 			new NPC(x,y,0);
-		}
+		}*/
 
 		dp = new DirtPath();
 		for(int i = 0; i < 10; i++) {
@@ -216,6 +219,68 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 			dp->addPt(x, y, size);
 		}
+
+		Piece* pWall2x16 = new Piece(Piece::P_GROUP);
+			pWall2x16->add3DBlock(-8,-8,0,-6,8,16);
+		Piece* pWall2x32 = new Piece(Piece::P_GROUP);
+			//pWall2x32->add3DBlock(-8,-8,0,-6,8,32);
+			pWall2x32->add3DWall(-8,-8,0,-8,8,32);
+
+		Piece* pDoorFrame2x16 = new Piece(Piece::P_GROUP);
+			pDoorFrame2x16->add3DBlock(-8.5,-8,0,-5.5,-7,16);
+			pDoorFrame2x16->add3DBlock(-8.5,7,0,-5.5,8,16);
+			pDoorFrame2x16->add3DBlock(-8.5,-7,15,-5.5,7,16);
+
+		Piece* pStairs16x16 = new Piece(Piece::P_GROUP);
+		for(int i = 0; i < 8; i++) {
+			float v, nV;
+			v = 2*i;
+			nV = 2*(i+1);
+			//pStairs16x16->add3DBlock(v,-8,v,nV,8,nV);
+			pStairs16x16->add3DFloor(-8+v,-8,-8+nV,8,v);
+			pStairs16x16->add3DBlock(-8+v,-8,0,-8+nV,-6,nV+2);
+			pStairs16x16->add3DBlock(-8+v,6,0,-8+nV,8,nV+2);
+		}
+
+		Piece* pStairs32x32 = new Piece(Piece::P_GROUP);
+		float tS = 32, s = tS/2, n = tS/4, eH = tS/4;
+		for(int i = 0; i < n; i++) {
+			float v, nV;
+			v = (tS/n)*i;
+			nV = (tS/n)*(i+1);
+			//pStairs16x16->add3DBlock(v,-8,v,nV,8,nV);
+			pStairs32x32->add3DFloor(-s+v,-s,-s+nV,s,v);
+			pStairs32x32->add3DBlock(-s+v,-s,0,-s+nV,-(s*.75),nV+eH);
+			pStairs32x32->add3DBlock(-s+v,(s*.75),0,-s+nV,s,nV+eH);
+		}
+
+		Piece* pBlock16x2 = new Piece(Piece::P_GROUP);
+			pBlock16x2->add3DBlock(-8,-8,-2,8,8,0);
+		Piece* pBlock48x2 = new Piece(Piece::P_GROUP);
+			pBlock48x2->add3DBlock(-24,-24,-2,24,24,0);
+		Piece* pBlock48x16 = new Piece(Piece::P_GROUP);
+			pBlock48x16->add3DBlock(-24,-8,-8,24,8,8);
+
+
+		Piece* testP = new Piece(Piece::P_GROUP);
+		testP->addPiece(pStairs32x32,-16,-16,-16,0,0,90);
+		/*testP->addPiece(pStairs16x16,-16,16,-16,0,0,-90);*/
+		testP->addPiece(pBlock16x2,-16,0,0);
+		/*testP->addPiece(pStairs16x16,0,0,0);
+		testP->addPiece(pBlock48x2,32,0,16);
+		testP->addPiece(pBlock48x2,64,0,16);*/
+	
+		// Building
+			testP->addPiece(pWall2x32,32,-16,16);
+			testP->addPiece(pDoorFrame2x16,32,0,16);
+			testP->addPiece(pWall2x16,32,0,32);
+			testP->addPiece(pWall2x32,32,16,16);
+
+		pInst = testP->instantiate();
+			pInst->transformTranslation(1000,1000,270);
+		pRot = pBlock48x16->instantiate();
+			pRot->transformTranslation(1100,1000,270);
+
 		
 		myPlayer = new Player(1028,1028,0);
 		
@@ -267,6 +332,9 @@ void GraphicsOGL :: idle() {
 
 	// Get Start Time
 	fpsStart = getTime();
+
+		pRot->transformRotationX(1);
+
 
 		// Update All Updateable Objects
 		Updateable :: updateAll(this, 1);
@@ -1042,18 +1110,59 @@ maxAmt) {
 	void GraphicsOGL :: setShaderVec3(string varName, float array[3]) {
 		glUniform3fv(glGetUniformLocation(curProgram, varName.c_str()), 1, array);
 	}
-	void GraphicsOGL :: passModelMatrix() {
+	void GraphicsOGL :: setShaderMat4(string varName, mat4& matrix) {
 		float mmFloats[16];
-		modelMat.getArray(mmFloats);
+		matrix.getArray(mmFloats);
 
-		/*for(int i = 0; i < 16; i++) {
-			cout << mmFloats[i] << " ";
-			if(i % 4 == 3)
-				cout << endl;
-		}
-		cout << endl;*/
+		glUniformMatrix4fv(glGetUniformLocation(curProgram, varName.c_str()), 1, GL_FALSE, mmFloats);
+	}
+	void GraphicsOGL :: passViewMatrix() {
+		float camPos[3], camNorm[3];
+		glCamera->getPosition(camPos);
+		glCamera->getNormal(camNorm);
 
-		glUniformMatrix4fv(glGetUniformLocation(curProgram, "modelMatrix"), 1, GL_FALSE, mmFloats);
+		float eyeX, eyeY, eyeZ, upX, upY, upZ, fX, fY, fZ;
+		eyeX = camPos[0];
+		eyeY = camPos[1];
+		eyeZ = camPos[2];
+		fX = camNorm[0];
+		fY = camNorm[1];
+		fZ = camNorm[2];
+		upX = 0;
+		upY = 0;
+		upZ = 1;
+		
+		float lX, lY, lZ;
+		lX = fX;
+		lY = fY;
+		lZ = fZ;
+
+		// S = L x U
+		float sX, sY, sZ, sN;
+		sX = lY*upZ - lZ*upY;
+		sY = lZ*upX - lX*upZ;
+		sZ = lX*upY - lY*upX;
+		sN = sqrt(sX*sX + sY*sY + sZ*sZ);
+		sX /= sN;
+		sY /= sN;
+		sZ /= sN;
+
+		// U' = S x L
+		float uX, uY, uZ;
+		uX = sY*lZ - sZ*lY;
+		uY = sZ*lX - sX*lZ;
+		uZ = sX*lY - sY*lX;
+
+		mat4 viewMat(sX,uX,-lX,-eyeX,sY,uY,-lY,-eyeY,sZ,uZ,-lZ,-eyeZ,0,0,0,1);
+		mat4 viewMat1(0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0);
+		mat4 viewMat2(1,0,0,-eyeX, 0,1,0,-eyeY, 0,0,1,-eyeZ, 0,0,0,1);
+
+		viewMat = viewMat.transpose();
+
+		setShaderMat4("viewMatrix", viewMat);
+	}
+	void GraphicsOGL :: passModelMatrix() {
+		setShaderMat4("modelMatrix", modelMat);
 	}
 	void GraphicsOGL :: passShaderUpdate() {
 		numShadows = 0;

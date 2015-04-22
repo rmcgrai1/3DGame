@@ -11,8 +11,22 @@ using namespace std::chrono;
 
 
 // BASIC
+	float min(float a, float b) {
+		return (a < b) ? a : b;
+	}
+	float max(float a, float b) {
+		return (a > b) ? a : b;
+	}
 	float sqr(float x) {
 		return x*x;
+	}
+	float sign(float x) {
+		if(x == 0)
+			return 0;
+		else return (x > 0) ? 1 : -1;
+	}
+	float contain(float mi, float x, float ma) {
+		return max(mi, min(x, ma));
 	}
 
 
@@ -40,6 +54,25 @@ using namespace std::chrono;
 	float calcPtDis(float x1, float y1, float x2, float y2) {
 		return sqrt(sqr(x2-x1) + sqr(y2-y1));
 	}
+	float calcLineDis(float x, float y, float x1, float y1, float x2, float y2) {
+		float x0, y0;
+		float dx, dy, t;
+
+		dx = x2 - x1;
+		dy = y2 - y1;
+		if ((dx == 0.) && (dy == 0.)) {
+			x0 = x1;
+			y0 = y1;
+		}
+		else {
+			t = (dx*(x-x1) + dy*(y-y1)) / (dx*dx+dy*dy);
+				t = contain(0,t,1);
+			x0 = x1 + t * dx; 
+			y0 = y1 + t * dy;
+		}
+	
+		return calcPtDis(x, y, x0, y0);
+	}
 
 // TRIG
 	float calcLenX(float len, float dir) {
@@ -52,6 +85,25 @@ using namespace std::chrono;
 
 	float calcPtDir(float x1, float y1, float x2, float y2) {
 		return atan2(y2-y1, x2-x1)/PI*180;
+	}
+	float calcLineDir(float x, float y, float x1, float y1, float x2, float y2) {
+		float x0, y0;
+		float dx, dy, t;
+
+		dx = x2 - x1;
+		dy = y2 - y1;
+		if ((dx == 0.) && (dy == 0.)) {
+			x0 = x1;
+			y0 = y1;
+		}
+		else {
+			t = (dx*(x-x1) + dy*(y-y1)) / (dx*dx+dy*dy);
+				t = contain(0,t,1);
+			x0 = x1 + t * dx; 
+			y0 = y1 + t * dy;
+		}
+	
+		return calcPtDir(x0, y0, x, y);
 	}
 
 	float modf(float x, float y) {

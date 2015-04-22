@@ -8,6 +8,7 @@
 #include "Physical.h"
 #include "../Functions/Math2D.h"
 #include "../Environment/Heightmap.h"
+#include "../Environment/Shapes/Piece.h"
 using namespace std;
 
 
@@ -40,6 +41,7 @@ void Physical :: update(GraphicsOGL* gl, float deltaTime) {
 	updateMotion(deltaTime);
 	// Update Collisions
 	collideHeightmap(gl, gl->getHeightmap());
+	collidePieces();
 }
 	
 void Physical :: draw(GraphicsOGL* gl, float deltaTime) {
@@ -78,13 +80,19 @@ bool Physical :: checkOnScreen(GraphicsOGL* gl) {
 
 // ACCESSOR/MUTATOR FUNCTIONS
 	void Physical :: setX(float newX) {
+		//xP = x;
 		x = newX;
 	}
 	void Physical :: setY(float newY) {
+		//yP = y;
 		y = newY;
 	}
 	void Physical :: setZ(float newZ) {
+		//zP = z;
 		z = newZ;
+	}
+	void Physical :: setZVelocity(float newZVel) {
+		zVel = newZVel;
 	}
 
 	float Physical :: getX() {
@@ -96,13 +104,51 @@ bool Physical :: checkOnScreen(GraphicsOGL* gl) {
 	float Physical :: getZ() {
 		return z;
 	}
+	float Physical :: getXPrev() {
+		return xP;
+	}
+	float Physical :: getYPrev() {
+		return yP;
+	}
+	float Physical :: getZPrev() {
+		return zP;
+	}
 	float Physical :: getVelocity() {
 		return vel;
 	}
 	float Physical :: getDirection() {
 		return direction;
 	}
+	float Physical :: getZVelocity() {
+		return zVel;
+	}
 
+
+void Physical :: placeOnGround() {
+
+	if(zVel <= 0) {
+		floorZ = z;
+
+		// Run Landing Function (Might Bounce, Play Sound?)
+		if(zVel != GRAVITY_ACCELERATION && zVel != -2*GRAVITY_ACCELERATION)
+			land();
+
+		// If Z Vel Not Bouncing after Land(), Make Sure it's Set to 0!
+		if(zVel < 0)
+			zVel = 0;
+
+		onGround = true;
+	}
+}
+
+bool Physical :: collidePieces() {
+
+	for(int i = 0; i < Piece::pieceList.size(); i++) {
+		Piece::pieceList[i]->collide(this);
+	}
+
+	return false;
+}
 
 bool Physical :: collideHeightmap(GraphicsOGL* gl, Heightmap* hm) {
 
@@ -120,18 +166,9 @@ bool Physical :: collideHeightmap(GraphicsOGL* gl, Heightmap* hm) {
 		if(z < h+4 && zVel < 0) {
 
 			// Move Object to Floor Height
-			floorZ = z = h;
-
-			// Run Landing Function (Might Bounce, Play Sound?)
-			if(zVel != GRAVITY_ACCELERATION) {
-				land(gl);
-			}
-
-			// If Z Vel Not Bouncing after Land(), Make Sure it's Set to 0!
-			if(zVel < 0)
-				zVel = 0;
-
-			onGround = true;
+			z = h;
+			
+			placeOnGround();
 		}
 
 		return true;

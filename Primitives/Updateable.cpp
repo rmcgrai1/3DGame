@@ -24,6 +24,7 @@ Updateable :: Updateable() {
 Updateable :: Updateable(int newType) {
 	oType = newType;
 	updateableList.push_back(this);
+	doUpdates = true;
 }
 
 void Updateable :: updateAll(GraphicsOGL* gl, float deltaTime) {

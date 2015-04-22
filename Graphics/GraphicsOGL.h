@@ -20,6 +20,7 @@
 #include "../Text/TextController.h"
 #include "../Sound/SoundController.h"
 #include "models/Model.h"
+#include "../Functions/mat4.h"
 
 
 class Camera;
@@ -140,7 +141,9 @@ class GraphicsOGL {
 		//SHADERS
 			void setShaderVariable(string, float);
 			void setShaderInt(string, int);
+			void setShaderMat4(string, mat4&);
 			void setShaderVec3(string, float[3]);
+			void passViewMatrix();
 			void passModelMatrix();
 			void passShaderUpdate();
 			void passShaderShadows();

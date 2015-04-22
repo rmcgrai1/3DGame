@@ -58,16 +58,18 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 		cY = y-calcLenY(camDis,nCDir);	
 
 		if(target == NULL || !gl->getInputController()->checkLetter('q'))
-			gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,x,y,floorZ+8);
+			gl->setProjectionPrep(cX,cY,floorZ+8+10,x,y,floorZ+8);
 		else {
 			float tS = targetShift*.1, toX, toY, toZ;
 			toX = tS*(target->getX()) + (1-tS)*(x);
 			toY = tS*(target->getY()) + (1-tS)*(y);
 			toZ = floorZ+8;
 
+			float cZ = h->getHeightXY(cX,cY)+8;
+
 			//direction = calcPtDir(x,y,target->getX(),target->getY());
 
-			gl->setProjectionPrep(cX,cY,h->getHeightXY(cX,cY)+8+10,toX,toY,toZ);
+			gl->setProjectionPrep(cX,cY,toZ+10,toX,toY,toZ);
 		}
 }
 
@@ -154,6 +156,6 @@ void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
 		attack();
 }
 
-void Player :: land(GraphicsOGL* gl) {
-	Character :: land(gl);
+void Player :: land() {
+	Character :: land();
 }

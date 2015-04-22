@@ -41,7 +41,7 @@ class Character : public Physical {
 
 	protected:
 		virtual void attack();
-		virtual void land(GraphicsOGL*);
+		virtual void land();
 		void hop();
 
 		float size;

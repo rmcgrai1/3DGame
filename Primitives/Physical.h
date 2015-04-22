@@ -24,15 +24,22 @@ class Physical : public Instantiable {
 		virtual void draw(GraphicsOGL*, float);			// Draw Function
 		virtual void destroy();
 		virtual bool checkOnScreen(GraphicsOGL*);
+
+		void placeOnGround();
 								// ACCESSOR/MUTATOR FUNCTIONS
 		void setX(float);					// Set X
 		void setY(float);					// Set Y
 		void setZ(float);					// Set Z
+		void setZVelocity(float);
 		float getX();						// Get X
 		float getY();						// Get Y
 		float getZ();						// Get Z
+		float getXPrev();
+		float getYPrev();
+		float getZPrev();
 		float getVelocity();
 		float getDirection();
+		float getZVelocity();
 								// CONSTANTS
 		static const float GRAVITY_ACCELERATION;		// Acceleration due to Gravity
 
@@ -42,9 +49,10 @@ class Physical : public Instantiable {
 
 								// COLLISION FUNCTIONS
 		bool collideHeightmap(GraphicsOGL*, Heightmap*);			// Collide with Heightmap
+		bool collidePieces();
 
 								// VIRTUAL FUNCTIONS
-		virtual void land(GraphicsOGL*) = 0;				// What Happens when Landing
+		virtual void land() = 0;				// What Happens when Landing
 
 
 	protected:

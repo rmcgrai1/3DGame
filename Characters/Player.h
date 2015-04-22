@@ -15,7 +15,7 @@ class Player : public Character {
 		void draw(GraphicsOGL*, float);
 
 	protected:
-		void land(GraphicsOGL*);
+		void land();
 
 	private:
 		void updateControl(GraphicsOGL*, float);

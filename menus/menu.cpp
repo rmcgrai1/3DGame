@@ -29,7 +29,7 @@ Menu::Menu() : Drawable2(TYPE_MENU) {
 void Menu::draw(GraphicsOGL* gl, float deltaTime) {
 	if(ShowMenu) { // only show anything if ShowMenu is true
 		gl->setOrtho(); // switch to 2D mode
-		//gl->disableShaders(); // disable any shaders (removed because of bug with cursor showing as white box)
+		gl->disableShaders(); // disable any shaders (removed because of bug with cursor showing as white box)
 		
 		gl->drawTexture(mouseX, mouseY, Cursor);
 		playerInventory->draw(gl, deltaTime);

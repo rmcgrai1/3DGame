@@ -292,18 +292,21 @@ void Character :: attack() {
 		if(c != this) {
 
 			float cX = c->getX(), cY = c->getY();
-			float dis = calcPtDis(atkX,atkY,cX,cY);
-			float cS = 6;
+			float cS = 6, safety = 3;
 
-			if(dis < (size + c->size + cS)) {
-				float dir = calcPtDir(atkX,atkY,cX,cY);
-				if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
-					SoundController::playSound("swordHitFlesh",this);
-					SoundController::playSound("attackCollision",this);
-					c->damage(this,dir);
+			if(z+h >= c->z+safety && z <= c->z+h-safety) {
+				float dis = calcPtDis(atkX,atkY,cX,cY);
 
-					target = c;
-					targetTimer = TARGET_TIMER_MAX;
+				if(dis < (size + c->size + cS)) {
+					float dir = calcPtDir(atkX,atkY,cX,cY);
+					if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
+						SoundController::playSound("swordHitFlesh",this);
+						SoundController::playSound("attackCollision",this);
+						c->damage(this,dir);
+
+						target = c;
+						targetTimer = TARGET_TIMER_MAX;
+					}
 				}
 			}
 		}
@@ -347,37 +350,51 @@ void Character :: collideCharacter() {
 			float dis = calcPtDis(x,y,c->x,c->y);
 
 			if(dis < (size + c->size)) {
-				float dir = calcPtDir(x,y,c->x,c->y);
-				float hX, hY;
-				hX = (x + c->x)/2;
-				hY = (y + c->y)/2;
+
+				float safety = 2;
+				if(z <= c->z+h+safety && zP >= c->z+h-safety) {
+					x += c->x-c->xP;
+					y += c->y-c->yP;
+					z += c->z-c->zP;
+					zP = c->z+h;
+					placeOnGround();
+
+					c->direction = toolDir;
+					c->faceDir = toolDir;
+					c->toolDir = toolDir;
+				}
+				else if(z+h >= c->z && z <= c->z+h) {
+					float dir = calcPtDir(x,y,c->x,c->y);
+					float hX, hY;
+					hX = (x + c->x)/2;
+					hY = (y + c->y)/2;
 
 
-				float cNX, cNY, vNX, vNY;
-				cNX = calcLenX(1, dir);
-				cNY = calcLenY(1, dir);
+					float cNX, cNY, vNX, vNY;
+					cNX = calcLenX(1, dir);
+					cNY = calcLenY(1, dir);
 
-				vNX = calcLenX(1, direction);
-				vNY = calcLenY(1, direction);
+					vNX = calcLenX(1, direction);
+					vNY = calcLenY(1, direction);
 
-				float pref, p;
-				pref = abs(cNX*vNX + cNY*vNY);
-	
-				if(pref > .5)
-					p = 1;
-				else
-					p = 0;
+					float pref, p;
+					pref = abs(cNX*vNX + cNY*vNY);
 
-				float aX, aY;
-				aX = calcLenX(1, dir);
-				aY = calcLenY(1, dir);
+					if(pref > .5)
+						p = 1;
+					else
+						p = 0;
+
+					float aX, aY;
+					aX = calcLenX(1, dir);
+					aY = calcLenY(1, dir);
 
 
-				x = hX - aX*size;
-				y = hY - aY*size;
-				c->x = hX + aX*c->size;
-				c->y = hY + aY*c->size;
-
+					x = hX - aX*size;
+					y = hY - aY*size;
+					c->x = hX + aX*c->size;
+					c->y = hY + aY*c->size;
+				}
 
 				/*if(vel > c->vel) {
 					c->x = x + aX;
@@ -506,11 +523,13 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->transformTranslation(x,y,z+dHopZ);
 	
 	if(onGround/*&& hopZ <= 0*/) {
-		gl->transformRotationZ(setupRot);	
-		gl->transformRotationX(xyRot);
-		gl->transformRotationZ(-setupRot);
 
-
+		#ifdef GROUND_ROTATE
+			gl->transformRotationZ(setupRot);	
+			gl->transformRotationX(xyRot);
+			gl->transformRotationZ(-setupRot);
+		#endif
+		
 		gl->transformRotationZ(faceDir);
 		gl->transformRotationX(-dHopX*10);		
 		gl->transformRotationY(-dHopZVel*10);		
@@ -582,9 +601,12 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->transformTranslation(x,y,z+dHopZ);
 	
 		if(onGround/*&& hopZ <= 0*/) {
-			gl->transformRotationZ(setupRot);	
-			gl->transformRotationX(xyRot);
-			gl->transformRotationZ(-setupRot);
+			#ifdef GROUND_ROTATE
+				gl->transformRotationZ(setupRot);	
+				gl->transformRotationX(xyRot);
+				gl->transformRotationZ(-setupRot);
+			#endif
+
 
 
 			gl->transformRotationZ(faceDir);		
@@ -878,7 +900,7 @@ void Character :: hop() {
 }
 
 
-void Character :: land(GraphicsOGL* gl) {
+void Character :: land() {
 
 	hopSc *= 2;
 	new SmokeRing(x,y,z,4,13,7,2);

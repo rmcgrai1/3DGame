@@ -1,7 +1,7 @@
 all: main
 
-main: main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o SoundController.o Sound.o Data/SortedList.h DirtPath.o Bush.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o Lamp.o mat4.o Item3D.o
-	g++ main.o Math2D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o Sound.o SoundController.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o Lamp.o mat4.o Item3D.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng -lalut -lopenal
+main: main.o Math2D.o Math3D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o SoundController.o Sound.o Data/SortedList.h DirtPath.o Bush.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o Lamp.o mat4.o Item3D.o Piece.o vec4.o
+	g++ main.o Math2D.o Math3D.o Particle.o SmokeRing.o GraphicsOGL.o Camera.o Image.o Texture.o TextureExt.o TexturePack.o TextureController.o FontController.o Font.o ShaderController.o Shader.o Updateable.o Drawable.o Instantiable.o Physical.o Character.o Player.o NPC.o Environmental.o Terrain.o Heightmap.o Water.o Tree.o PineTree.o Branch.o FileIO.o InputController.o playerInv.o menu.o inventory.o invslot.o item.o FrameTexture.o PosSpec.o TextController.o TextInterpreter.o Data/SortedList.h DirtPath.o Bush.o Sound.o SoundController.o Model.o Pos3D.o Face.o Mtl.o DeathPuff.o Lamp.o mat4.o vec4.o Item3D.o Piece.o -o main -lglut -lGLU -lGL -lX11 -lpthread -lpng -lalut -lopenal
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -36,8 +36,12 @@ PosSpec.o: menus/PosSpec.cpp menus/PosSpec.h
 ###############################################################
 Math2D.o: Functions/Math2D.cpp Functions/Math2D.h
 	g++ -c Functions/Math2D.cpp -std=c++11
+Math3D.o: Functions/Math3D.cpp Functions/Math3D.h
+	g++ -c Functions/Math3D.cpp -std=c++11
 mat4.o: Functions/mat4.cpp Functions/mat4.h
 	g++ -c Functions/mat4.cpp
+vec4.o: Functions/vec4.cpp Functions/vec4.h
+	g++ -c Functions/vec4.cpp
 
 
 # PARTICLES
@@ -138,6 +142,8 @@ DirtPath.o: Environment/DirtPath.cpp Environment/DirtPath.h
 	g++ -c Environment/DirtPath.cpp
 Lamp.o: Environment/Lamp.cpp Environment/Lamp.h
 	g++ -c Environment/Lamp.cpp
+Piece.o: Environment/Shapes/Piece.cpp Environment/Shapes/Piece.h
+	g++ -c Environment/Shapes/Piece.cpp
 
 
 # ITEMS

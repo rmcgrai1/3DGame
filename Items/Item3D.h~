@@ -27,6 +27,6 @@ class Item3D : public Physical {
 		int type;
 		string* name;
 		string* description;
-}
+};
 
 #endif

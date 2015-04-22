@@ -1,0 +1,14 @@
+// Math3D.h
+
+
+#ifndef MATH3D_H
+#define MATH3D_H
+
+#define PI 3.14159265
+
+
+
+// GEOMETRIC
+	float calcPtDis(float, float, float, float, float, float);
+
+#endif

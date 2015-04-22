@@ -1,0 +1,20 @@
+// vec4.h
+
+#ifndef VEC4_H
+#define VEC4_H
+
+#include "mat4.h"
+
+class mat4;
+class vec4 {
+	public:
+		vec4(float,float,float,float);
+		void getArray(float[4]);
+		
+		const vec4& operator=(const vec4&);
+		vec4& operator*=(const mat4&);
+		float& operator[](const int index);	
+		float array[4];
+};
+
+#endif

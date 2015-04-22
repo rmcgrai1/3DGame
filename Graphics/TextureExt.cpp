@@ -10,7 +10,6 @@
 #include "Texture.h"
 #include "GraphicsOGL.h"
 #include "../Functions/Math2D.h"
-//#include "../IO/dirent.h"
 using namespace std;
 
 

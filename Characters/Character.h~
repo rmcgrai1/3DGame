@@ -27,6 +27,7 @@ class Character : public Physical {
 
 		static SortedList<Character*> characterList;
 
+		float getSize();
 		float getHP();
 		float getMaxHP();
 		float getDestroyFraction();

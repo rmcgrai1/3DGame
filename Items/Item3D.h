@@ -22,7 +22,7 @@ class Item3D : public Physical {
 		
 	protected:
 		Item3D(float, float, float);
-		void land(GraphicsOGL*);
+		void land();
 
 		int type;
 		string* name;

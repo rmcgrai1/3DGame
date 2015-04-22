@@ -38,6 +38,7 @@ void ShaderController :: initialize() {
 	addShader("Character");
 	addShader("pineBranch");
 	addShader("pineBark");
+	addShader("Piece");
 }
 void ShaderController :: addShader(string name) {
 	shaderMap[name] = new Shader(name);

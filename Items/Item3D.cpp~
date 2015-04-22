@@ -16,7 +16,7 @@ Item3D :: Item3D(int newType, string newName, string newDesc) : Physical(0,0,0) 
 
 	type = newType;
 	name = &newName;
-	description = &newDescription;
+	description = &newDesc;
 }
 
 Item3D :: ~Item3D() {
