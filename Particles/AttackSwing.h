@@ -1,4 +1,7 @@
 // AttackSwing.h
+// Ryan McGrail
+
+// NEVER COMPLETED
 
 #ifndef ATTACKSWING_H
 #define ATTACKSWING_H

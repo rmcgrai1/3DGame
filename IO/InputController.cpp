@@ -1,4 +1,5 @@
 // InputController.cpp
+// Ryan McGrail
 
 #include <iostream>
 #include "InputController.h"
@@ -8,6 +9,7 @@
 #include "../Functions/Math2D.h"
 using namespace std;
 
+// GLUT Callbacks
 InputController* inp;
 void mouseCallback(int button, int state, int x, int y) {
 	inp->updateMouse(button, state, x, y);
@@ -29,33 +31,38 @@ void keyboardSpecialUpCallback(int key, int x, int y) {
 }
 
 
+// Constructor
 InputController :: InputController() {
 	inp = this;
 
+	// Initialize WASD Array
 	wasdArray = new bool[4];
 	wasdArray[0] = false;
 	wasdArray[1] = false;
 	wasdArray[2] = false;
 	wasdArray[3] = false;
 
+	// Initialize Letter Array
 	letterArray = new bool[26];
 	for(int i = 0; i < 26; i++)
 		letterArray[i] = false;
 
+	// Initialize ASCII Key Array
 	keyArray = new bool[255];
 	for(int i = 0; i < 255; i++)
 		keyArray[i] = false;
 
-
+	// Initialize Mouse Array
 	mouseArray = new bool[3];
 	for(int i = 0; i < 3; i++)
 		mouseArray[i] = false;
 
-
 	isShiftDown = false;
 
+	// Disable Keypresses Repeating When Held
 	glutSetKeyRepeat(0);
 
+	// Initialize GLUT Connections to Callbacks
 	glutMouseFunc(mouseCallback);
 	glutPassiveMotionFunc(passiveMouseCallback);
 	glutKeyboardFunc(keyboardCallback);
@@ -64,20 +71,22 @@ InputController :: InputController() {
 	glutSpecialUpFunc(keyboardSpecialUpCallback);
 }
 
+// Get Mouse X
 int InputController :: getMouseX() {
 	return mouseX;
 }
 
+// Get Mouse Y
 int InputController :: getMouseY() {
 	return mouseY;
 }
 
-		
+// Set State of Mouse Buttons
 void InputController :: updateMouse(int button, int state, int x, int y) {
-	//GLUT_LEFT_BUTTON, GLUT_MIDDLE_BUTTON, or GLUT_RIGHT_BUTTON.  GLUT_UP or GLUT_DOWN
 
 	bool isPressed = (state == GLUT_DOWN);
 
+	// Set State of Current Mouse Button
 	switch(button) {
 		case GLUT_LEFT_BUTTON:		mouseArray[0] = isPressed;
 						break;
@@ -87,10 +96,14 @@ void InputController :: updateMouse(int button, int state, int x, int y) {
 						break;
 	}
 }
+
+// Set State of Mouse Position
 void InputController :: updatePassiveMouse(int x, int y) {
 	mouseX = x;
 	mouseY = y;
 }
+
+// Set State of Key Presses
 void InputController :: updateKeyboard(unsigned char key, int x, int y) {
 	char lKey = tolower(key);
 
@@ -107,6 +120,8 @@ void InputController :: updateKeyboard(unsigned char key, int x, int y) {
 
 	keyArray[key] = true;
 }
+
+// Set State of Key Releases
 void InputController :: updateKeyboardUp(unsigned char key, int x, int y) {
 	char lKey = tolower(key);
 
@@ -128,6 +143,50 @@ void InputController :: updateKeyboardSpecialUp(int key, int x, int y) {
 	isShiftDown = false;
 }
 
+
+// Check Left Mouse Button State
+bool InputController :: checkLeftMouse() {
+	return mouseArray[0];
+}
+
+// Check Right Mouse Button State
+bool InputController :: checkRightMouse() {
+	return mouseArray[1];
+}
+
+// Check ASCII Key State
+bool InputController :: checkKey(unsigned char key) {
+	return keyArray[key];
+}
+
+// Check Letter State
+bool InputController :: checkLetter(char key) {
+
+	// If Non-Letter, Return False!
+	if(!isalpha(key))
+		return false;
+	// Otherwise, Return State
+	else
+		return letterArray[tolower(key)-'a'];
+}
+
+// Set Letter State
+void InputController :: setLetter(char key, bool down) {
+
+	// If Nonletter, Ignore
+	if(!isalpha(key))
+		return;
+	// Otherwise, Set State
+	else
+		letterArray[tolower(key)-'a'] = down;
+}
+
+// Check Shift State
+bool InputController :: getShift() {
+	return isShiftDown;
+}
+
+// Get Current Held WASD Direction
 float InputController :: getWASDDir() {
 	int hDir, vDir;
 
@@ -155,21 +214,10 @@ float InputController :: getWASDDir() {
 		return calcPtDir(0,0,hDir,vDir);
 }
 
-bool InputController :: getShift() {
-	return isShiftDown;
-}
-
-bool InputController :: checkLeftMouse() {
-
-	return mouseArray[0];
-}
-
-bool InputController :: checkRightMouse() {
-
-	return mouseArray[1];
-}
-
+// Check WASD State
 bool InputController :: checkWASD(char key) {
+
+	// Return WASD State
 	switch(key) {
 		case 'w':	return wasdArray[0];
 			break;
@@ -181,10 +229,14 @@ bool InputController :: checkWASD(char key) {
 			break;
 	}
 
+	// Return False Otherwise
 	return false;
 }
 
+// Set WASD State
 void InputController :: setWASD(char key, bool down) {
+
+	// Set WASD
 	switch(key) {
 		case 'w':	wasdArray[0] = down;
 			break;
@@ -196,24 +248,3 @@ void InputController :: setWASD(char key, bool down) {
 			break;
 	}
 }
-
-bool InputController :: checkKey(unsigned char key) {
-	return keyArray[key];
-}
-
-bool InputController :: checkLetter(char key) {
-
-	if(!isalpha(key))
-		return false;
-	else
-		return letterArray[tolower(key)-'a'];
-}
-
-void InputController :: setLetter(char key, bool down) {
-	if(!isalpha(key))
-		return;
-	else
-		letterArray[tolower(key)-'a'] = down;
-}
-
-

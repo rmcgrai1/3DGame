@@ -1,5 +1,5 @@
 // Texture.h
-
+// Ryan McGrail
 
 #ifndef TEXTURE_H
 #define TEXTURE_H
@@ -13,31 +13,29 @@ using namespace std;
 
 class Texture {
 	public:
-		Texture(string);
-		Texture(string, bool);
-		Texture(string, const string&);
-		Texture(string, const string&, bool);
+		Texture(string);							// Constructor: FileName
+		Texture(string, bool);						// Constructor: FileName, isFont?
+		Texture(string, const string&);				// Constructor: Name, FileName
+		Texture(string, const string&, bool);		// Constructor: Name, FileName, isFont?
 
+		string getName();							// Get Name of Texture
+		int getWidth();								// Get Width of Texture
+		int getHeight();							// Get Height of Texture
 
-		string getName();
-		int getWidth();
-		int getHeight();
+		void bind();								// Bind Texture
+		void bind(GLenum);							// Bind Texture to Specific TextureUnit
 
-		void bind();
-		void bind(GLenum);
-
-		void unbind();
-		void unbind(GLenum);
+		void unbind();								// Unbind Texture
+		void unbind(GLenum);						// Unbind Texture from Specific TextureUnit
 		
 	private:
+		load(string, bool);							// Load Texture
 
-		static int texNum;
+		string name;								// Name of Texture
+		string fileName;							// Name of File
 
-		string name;
-		string fileName;
-
-		GLuint m_textureObj;
-		Image* image;
+		GLuint m_textureObj;						// OpenGL index of Font
+		Image* image;								// Image Object
 };
 
 #endif

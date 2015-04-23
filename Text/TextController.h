@@ -1,9 +1,16 @@
 // TextController.h
+// Ryan McGrail
 
 
 #ifndef TEXTCONTROLLER_H
 #define TEXTCONTROLLER_H
 
+#include <vector>
+#include <string>
+#include "../Graphics/GraphicsOGL.h"
+#include "TextInterpreter.h"
+#include "../Primitives/Drawable.h"
+using namespace std;
 
 	// Initialize Format Struct
 	typedef struct Format {
@@ -15,45 +22,39 @@
 		int underline;		// Underline
 	} Format;
 
-#include <vector>
-#include <string>
-#include "../Graphics/GraphicsOGL.h"
-#include "TextInterpreter.h"
-#include "../Primitives/Drawable.h"
-using namespace std;
 
 class TextInterpreter;
 class TextController : public Drawable2 {
 
 	public:					// PUBLIC
-		TextController();			// Contructor
-		void update(GraphicsOGL*, float);	//
+		TextController();					// Contructor
+		void update(GraphicsOGL*, float);	// Updating Text
 		void draw(GraphicsOGL*, float);		// Drawing Text
-		void setText(string);			// Setting Text
-		void clearScreen();			// Clearing Screen
-		void clearTextBox();			// Clearing Text Box
-		void clearFormat();			// Resetting Format
-		void setFormat(Format);			// Setting Format
-		void setColor(int,int,int);		// Setting Color
+		void setText(string);				// Setting Text
+		void clearScreen();					// Clearing Screen
+		void clearTextBox();				// Clearing Text Box
+		void clearFormat();					// Resetting Format
+		void setFormat(Format);				// Setting Format
+		void setColor(int,int,int);			// Setting Color
 		bool isTextBoxOpen();
 
 
 	private:				// PRIVATE
 	
-		bool shouldRedraw;			// Should Keep Drawing?
-		int formatNum;				// Number of Formats
-		bool isAdvancing;			// Is Text Marching?
-		int allPos;				// "Real" Position
-		int curPos;				// "Display" Position
+		bool shouldRedraw;					// Should Keep Drawing?
+		int formatNum;						// Number of Formats
+		bool isAdvancing;					// Is Text Marching?
+		int allPos;							// "Real" Position
+		int curPos;							// "Display" Position
 
-		float waitTimer;
-		TextInterpreter* teInt;			// Text Interpreter
-		string allText;				// "Real" Text
-		string curText;				// "Display" Text
-		vector<Format> formatVec;		// Format Vector
-		float curScale;
+		float waitTimer;					// Wait Timer
+		TextInterpreter* teInt;				// Text Interpreter
+		string allText;						// "Real" Text
+		string curText;						// "Display" Text
+		vector<Format> formatVec;			// Format Vector
+		float curScale;						// Current Font Scale
 
-		GraphicsOGL* GL;
+		GraphicsOGL* GL;					// GraphicsOGL Object
 };
 
 #endif

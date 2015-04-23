@@ -1,4 +1,5 @@
 // vec4.h
+// Ryan McGrail
 
 #ifndef VEC4_H
 #define VEC4_H
@@ -8,13 +9,12 @@
 class mat4;
 class vec4 {
 	public:
-		vec4(float,float,float,float);
-		void getArray(float[4]);
+		vec4(float,float,float,float);				// Constructor
 		
-		const vec4& operator=(const vec4&);
-		vec4& operator*=(const mat4&);
-		float& operator[](const int index);	
-		float array[4];
+		const vec4& operator=(const vec4&);			// Operator =, Setting Equal to Another Vector
+		vec4& operator*=(const mat4&);				// Operator *=, Multiplying by Matrix
+		float& operator[](const int index);			// Operator[], Random Access
+		float array[4];								// Array of Values
 };
 
 #endif

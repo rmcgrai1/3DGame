@@ -7,19 +7,19 @@
 			"filename":"model.json"},
 		{	"folder":"wall1",
 			"dimensions":{
-				"x":-9,"y":0,"z":0,
+				"x":0,"y":-9,"z":0,
 				"xRot":0,"yRot":0,"zRot":0,
 				"xScale":1,"yScale":1,"zScale":1},
 			"filename":"model.json"},
 		{	"folder":"wall2",
 			"dimensions":{
-				"x":9,"y":0,"z":0,
+				"x":0,"y":9,"z":0,
 				"xRot":0,"yRot":0,"zRot":0,
 				"xScale":1,"yScale":1,"zScale":1},
 			"filename":"model.json"},
 		{	"folder":"wall3",
 			"dimensions":{
-				"x":0,"y":48,"z":0,
+				"x":48,"y":0,"z":0,
 				"xRot":0,"yRot":0,"zRot":0,
 				"xScale":1,"yScale":1,"zScale":1},
 			"filename":"model.json"},
@@ -31,7 +31,7 @@
 			"filename":"model.json"},
 		{	"folder":"roof",
 			"dimensions":{
-				"x":0,"y":0,"z":9,
+				"x":0,"y":0,"z":18,
 				"xRot":0,"yRot":0,"zRot":0,
 				"xScale":1,"yScale":1,"zScale":1},
 			"filename":"model.json"}],

@@ -59,6 +59,7 @@ JSONvalue::JSONvalue(ifstream *FilePtr) {
 			break;
 		case '-':
 			negate = 1;
+			FilePtr->get(); // discard this character
 		case '0':
 		case '1':
 		case '2':

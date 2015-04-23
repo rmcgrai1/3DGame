@@ -1,4 +1,6 @@
 // Particle.h
+// Ryan McGrail
+
 
 #ifndef PARTICLE_H
 #define PARTICLE_H
@@ -8,14 +10,15 @@
 
 class Particle : public Instantiable {
 	public:
-		Particle(float,float,float);
-		void update(GraphicsOGL*, float);
-		void draw(GraphicsOGL*, float);
+		virtual void update(GraphicsOGL*, float);	// Updating
+		virtual void draw(GraphicsOGL*, float);		// Drawing
 
 	protected:
-		float x;
-		float y;
-		float z;
+		Particle(float,float,float);				// Protected Constructor
+		
+		float x;									// X
+		float y;									// Y
+		float z;									// Z
 };
 
 #endif

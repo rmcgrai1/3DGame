@@ -1,4 +1,5 @@
 // FileIO.h
+// Ryan McGrail
 
 #ifndef FILEIO_H
 #define FILEIO_H
@@ -9,10 +10,10 @@ using namespace std;
 class FileIO {
 
 	public:
-		static bool readFileIntoString(string, string&);
+		static bool readFileIntoString(string, string&);	// Load File into String
 
 	private:
-		FileIO();
+		FileIO();											// Constructor
 };
 
 #endif
