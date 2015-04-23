@@ -1,5 +1,5 @@
 // SmokeRing.cpp
-
+// Ryan McGrail
 
 #include <iostream>
 #include "../Graphics/GraphicsOGL.h"
@@ -7,49 +7,67 @@
 #include "Particle.h"
 using namespace std;
 
+
+// Constructor
 SmokeRing :: SmokeRing(float nX,float nY,float nZ,float startS,float endS,int nTotSteps, float myAlpha) : Particle(nX,nY,nZ) {
+
+	// Initalize Size Variables
 	startSize = curSize = startS;
 	endSize = endS;
 
-	totSteps = nTotSteps;
-
-	addAmt = nTotSteps;
+	// Initialize Animation Variables
+	percDiv = nTotSteps;
 	percSmoke = 1;
 
+	// Relative Transparency (Small Hops = Small Alpha, Landing = Large Alpha)
 	alpha = myAlpha;
 }
 
+// Update Function
 void SmokeRing :: update(GraphicsOGL* gl, float deltaTime) {
 
-	gl->logMessage("SmokeRing.cpp, update()");
+	// Increase Size for Animation
+	curSize += (endSize - curSize)/percDiv;
 
-	curSize += (endSize - curSize)/addAmt;
+	// Decrease Alpha/Animate
+	percSmoke += (0 - percSmoke)/percDiv;
 
-	percSmoke += (0 - percSmoke)/addAmt;
-
+	// If Done Animating, Destroy
 	if(abs(curSize - endSize) < .01)
 		destroy();
 }
-		
+
+// Draw Function
 void SmokeRing :: draw(GraphicsOGL* gl, float deltaTime) {
 
-	gl->logMessage("SmokeRing.cpp, draw()");
-
+	// Get Floor Rotation from Heightmap
 	float xyRot, setupRot;
 	gl->getHeightmap()->getFloorRotations(x,y,setupRot,xyRot);
 
+	// Clear Transformations
 	gl->transformClear();
+		// Translate to Position
 		gl->transformTranslation(x,y,z);
 	
+		// Rotate to Ground
 		gl->transformRotationZ(setupRot);	
 		gl->transformRotationX(xyRot);
 		gl->transformRotationZ(-setupRot);
 
-		if(!gl->isPCSlow())
-			gl->enableShader("SmokeRing");	
-		gl->setShaderVariable("iSmoke", percSmoke*alpha);
+		// If PC Not Slow, Enable Smoke Ring Shader
+		if(!gl->isPCSlow()) {
+			gl->enableShader("SmokeRing");
+			
+			// Pass Value Along to Animate Smoke
+			gl->setShaderVariable("iSmoke", percSmoke*alpha);
+		}
+		
+		// Draw as 3D Circle on Ground
 		gl->draw3DCircle(0,0,.5,curSize,10);
+		
+		// Disable Shaders
 		gl->disableShaders();
 
+	// Clear Transformations
 	gl->transformClear();
 }

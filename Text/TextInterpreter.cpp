@@ -1,4 +1,5 @@
 // TextInterpreter.cpp
+// Ryan McGrail
 
 #include <cstdlib>
 #include <iostream>
@@ -7,6 +8,7 @@
 #include <string>
 using namespace std;
 
+// Constructor
 TextInterpreter :: TextInterpreter() {
 }
 

@@ -1,4 +1,5 @@
 // SoundController.h
+// Ryan McGrail
 
 #ifndef SOUNDCONTROLLER_H
 #define SOUNDCONTROLLER_H

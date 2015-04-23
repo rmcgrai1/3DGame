@@ -9,6 +9,7 @@
 
 
 class Useable : public Usable {
+
 	public:
 		~Usable();
 		

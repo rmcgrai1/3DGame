@@ -1,5 +1,5 @@
 // TextController.cpp
-
+// Ryan McGrail
 
 #include <cctype>
 #include <stdlib.h>
@@ -12,6 +12,7 @@
 #include "../Sound/SoundController.h"
 using namespace std;
 
+// Define Wait Timer Maximum (To Slow Down Text; Otherwise, Appears Too Quickly)
 #define WAIT_TIMER_MAX 2
 
 // Create Null Format
@@ -39,6 +40,7 @@ void TextController :: update(GraphicsOGL* gl, float deltaT) {
 
 		waitTimer -= deltaT;
 		
+		// Only Add if WaitTimer == -1
 		if(waitTimer < -1)
 			waitTimer += WAIT_TIMER_MAX;
 		else
@@ -133,6 +135,7 @@ void TextController :: draw(GraphicsOGL* gl, float deltaT) {
 
 		c = curText.at(i);
 
+		// If Character is `, Get Formatting
 		if(c == '`') {
 
 			i += 2;
@@ -171,31 +174,37 @@ void TextController :: draw(GraphicsOGL* gl, float deltaT) {
 		else {
 			xS = yS = 1.2*curScale;
 
+			// Newline, Jump Down to Next Line
 			if(c == '\n') { 
 				dY += (8 + e)*yS;
 				dX = startX;
 			}
+			// Space, Move Drawing X Over
 			else if(c == ' ')
 				dX += (8 + e)*xS;
+			// Drawing Lowercase, Shrink Vertically
 			else if(islower(c))
 				dX += gl->drawCharScaled(dX,dY + (8*yS*.25), xS,yS*.75, c) + e*xS;
+			// Drawing Uppercase, Draw Normally
 			else
 				dX += gl->drawCharScaled(dX,dY, xS, yS, c) + e*xS;
 		}
 	}
 
+	// Draw Background Box
+	
+	// Outline
 	gl->setColor(20,20,20);
 	gl->drawRect(20,20,620,150);
-
 	gl->setColor(180,180,180);
 	gl->drawRect(20+1,20+1,620-1,150-1);
 
-
+	// Fill
 	gl->setColor(40,40,40,240);
 	gl->fillRect(20,20,620,150);
 
 
-
+	// Return OpenGL to Perspective Mode (3D)
 	gl->setPerspective();
 }
 
