@@ -270,12 +270,12 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 
 
 		Piece* testP = new Piece(Piece::P_GROUP);
-		testP->addPiece(pStairs32x32,-16,-16,-16,0,0,90);
-		/*testP->addPiece(pStairs16x16,-16,16,-16,0,0,-90);*/
+		testP->addPiece(pStairs16x16,-16,-16,-16,0,0,90);
+		testP->addPiece(pStairs16x16,-16,16,-16,0,0,-90);
 		testP->addPiece(pBlock16x2,-16,0,0);
-		/*testP->addPiece(pStairs16x16,0,0,0);
+		testP->addPiece(pStairs16x16,0,0,0);
 		testP->addPiece(pBlock48x2,32,0,16);
-		testP->addPiece(pBlock48x2,64,0,16);*/
+		testP->addPiece(pBlock48x2,64,0,16);
 	
 		// Building
 			testP->addPiece(pWall2x32,32,-16,16);

@@ -13,7 +13,7 @@ PieceController::PieceController() : Updateable() {
 }
 
 void PieceController::update(GraphicsOGL* gl, float deltaTime) {
-	
+
 }
 
 void PieceController::newPieceGroup(float x,float y,float z,string location,string filename) {
