@@ -25,7 +25,6 @@
 #include "FontController.h"
 #include <ctime>
 #include "../Functions/Math2D.h"
-//#include "../Functions/linmath.h"
 #include "../Environment/Heightmap.h"
 #include "../Characters/Player.h"
 #include "../Characters/NPC.h"
@@ -45,14 +44,11 @@
 #include "models/Mtl.h"
 #include "../Functions/mat4.h"
 #include "../Environment/Shapes/Piece.h"
-
-
 using namespace std;
 using namespace std::chrono;
 
 
 TextController* tc;
-	
 DirtPath* dp;
 GraphicsOGL* ogl;
 void idleCallback() {

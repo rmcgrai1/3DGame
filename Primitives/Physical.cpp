@@ -1,5 +1,5 @@
 // Physical.cpp
-
+// Ryan McGrail
 
 #include <iostream>
 #include <deque>
@@ -32,6 +32,7 @@ Physical :: Physical(float myX, float myY, float myZ) : Instantiable() {
 	onGround = true;
 }
 
+// Update Function
 void Physical :: update(GraphicsOGL* gl, float deltaTime) {
 
 	// Run Parent Class's Function
@@ -44,33 +45,37 @@ void Physical :: update(GraphicsOGL* gl, float deltaTime) {
 	collidePieces();
 }
 	
+// Draw Function
 void Physical :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	// Run Parent Class's Function
 	Instantiable :: draw(gl, deltaTime);	
 }
 
+// Destroy Function
 void Physical :: destroy() {
 	Instantiable :: destroy();
 }
 
+// Function for Checking if Onscreen
 bool Physical :: checkOnScreen(GraphicsOGL* gl) {
 
+	// Get Camera Variables
 	float camPos[3], camX, camY, camFOV, camDir;
 	gl->getCamera()->getPosition(camPos);
 	camX = camPos[0];
 	camY = camPos[1];
 	camDir = gl->getCamera()->getCamDir();
-
 	camFOV = 45;
 
-	float curX, curY, curZ, curRad;
-
+	float curX, curY;
 	curX = x;
 	curY = y;
 
+	// If Direction from Camera to Player is Within its Field of View (FOV), Assume Player is Onscreen
 	isOnScreen = (abs(calcAngleDiff(calcPtDir(camX,camY,curX,curY),camDir)) <= camFOV);
 
+	// If Onscreen, Set Fidelity
 	if(isOnScreen)
 		fidelity = 1- calcPtDis(curX,curY,camX,camY)/2000;
 
@@ -124,6 +129,7 @@ bool Physical :: checkOnScreen(GraphicsOGL* gl) {
 	}
 
 
+// Placing on Ground (Assume the Player is on the Ground!!)
 void Physical :: placeOnGround() {
 
 	if(zVel <= 0) {
@@ -141,15 +147,19 @@ void Physical :: placeOnGround() {
 	}
 }
 
+// Colliding with Pieces
 bool Physical :: collidePieces() {
 
-	for(int i = 0; i < Piece::pieceList.size(); i++) {
-		Piece::pieceList[i]->collide(this);
-	}
+	bool didCollide = false;
 
-	return false;
+	// Loop Through Each Piece, Run Collision Script
+	for(int i = 0; i < Piece::pieceList.size(); i++)
+		didCollide = (didCollide || Piece::pieceList[i]->collide(this));
+
+	return didCollide;
 }
 
+// Colliding w/ Heightmap
 bool Physical :: collideHeightmap(GraphicsOGL* gl, Heightmap* hm) {
 
 	// Get Height from Heightmap at Position
@@ -168,6 +178,7 @@ bool Physical :: collideHeightmap(GraphicsOGL* gl, Heightmap* hm) {
 			// Move Object to Floor Height
 			z = h;
 			
+			// Assume Player is On Ground
 			placeOnGround();
 		}
 

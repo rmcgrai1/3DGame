@@ -1,5 +1,5 @@
 // FileIO.cpp
-
+// Ryan McGrail
 
 #include <cstring>
 #include <fstream>
@@ -8,19 +8,23 @@
 #include "FileIO.h"
 using namespace std;
 
-bool FileIO :: readFileIntoString(string pFileName, string& outFile)
-{
+// Loading File into String
+bool FileIO :: readFileIntoString(string pFileName, string& str) {
+	// Load File
     ifstream f(pFileName.c_str());
     
     bool ret = false;
     
     if (f.is_open()) {
+	
+		// Read All Lines into String
         string line;
         while (getline(f, line)) {
-            outFile.append(line);
-            outFile.append("\n");
+            str.append(line);
+            str.append("\n");
         }
         
+		// Close File
         f.close();
         
         ret = true;
