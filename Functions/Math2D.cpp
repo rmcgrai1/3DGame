@@ -15,29 +15,29 @@ using namespace std::chrono;
 	float min(float a, float b) {
 		return (a < b) ? a : b;
 	}
-	
+
 	// Maximum of 2 Floats
 	float max(float a, float b) {
 		return (a > b) ? a : b;
 	}
-	
+
 	// Square of a Number
 	float sqr(float x) {
 		return x*x;
 	}
-	
+
 	// Sign of Number
 	float sign(float x) {
 		if(x == 0)
 			return 0;
 		else return (x > 0) ? 1 : -1;
 	}
-	
+
 	// Keep Number in Range
 	float contain(float mi, float x, float ma) {
 		return max(mi, min(x, ma));
 	}
-	
+
 	// Calculate Speed with Acceleration and deltaX
 	// v^2 = 2*a*deltaX
 	float calcSpeed(float acceleration, float deltaX) {
@@ -58,7 +58,7 @@ using namespace std::chrono;
 	float rnd(float mi, float ma) {
 		return mi + rnd(ma-mi);
 	}
-	
+
 	// Get Unix Epoch in Nanoseconds
 	unsigned long getTime() {
 
@@ -78,7 +78,7 @@ using namespace std::chrono;
 	}
 	
 	// Determine Nearest Point on Line Segment from Given Point 
-	void calcLinePt(float x, float y, float x1, float y1, float x2, float y2, float &x0, float &y0) {
+	void calcLinePt(float x, float y, float x1, float y1, float x2, float y2, float& x0, float& y0) {
 		
 		float dx, dy, t;
 
@@ -167,5 +167,5 @@ using namespace std::chrono;
 	// Find Absolute Angle Difference Between 2 Angles
 	// Ex: 720-360 = 0
 	float calcAngleDiff(float dir1, float dir2) {
-		return modf(modf(dir1 - dir2, 360) + 540, 360) - 180;
+		return mod(mod(dir1 - dir2, 360) + 540, 360) - 180;
 	}

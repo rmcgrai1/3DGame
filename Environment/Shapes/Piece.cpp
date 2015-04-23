@@ -279,7 +279,8 @@ bool Piece :: collide(Physical* ch, mat4 modMat) {
 	float chX, chY, chZ, chXP, chYP, chZP;
 	float r = 7;
 
-	vec4 fNorm(0,1,0,0);
+	float nY = 1;
+	vec4 fNorm(0,nY,0,0);
 	vec4 chVec(ch->getX(), ch->getY(), ch->getZ()+r, 1);
 	vec4 chVecP(ch->getXPrev(), ch->getYPrev(), ch->getZPrev()+r, 1);
 
@@ -298,14 +299,14 @@ bool Piece :: collide(Physical* ch, mat4 modMat) {
 		chZP = chVecP[2];
 
 	// Collide
-		float safety = 1;
+		float safety = 3;
 
 		if(type == P_WALL) {
 		
 			float x0, y0, z0;
-			x0 = contain(-w/2, x, w/2);
+			x0 = contain(-w/2, chX, w/2);
 			y0 = 0;
-			z0 = contain(-h/2, z, h/2);
+			z0 = contain(-h/2, chZ, h/2);
 
 			float dis;
 			dis = calcPtDis(x0,y0,z0,chX,chY,chZ);
@@ -326,19 +327,45 @@ bool Piece :: collide(Physical* ch, mat4 modMat) {
 			normX = abs(coYZ)*coXY;
 			normY = abs(coYZ)*siXY;
 			normZ = siYZ;
+				
+			isGround = (abs(fNorm[2]) > .5);
+
+			float eDis = 0;
+			eDis = calcPtDis(x0,z0,chX,chZ);
+			if(isGround) {
+				/*normX = 0;
+				normY = nY;
+				normZ = 0;
+
+				dis = abs(chY);*/
+			}
+			else
+				safety = 1;
+
 
 			float diff;
 			diff = r-dis;
 
-
-			if(dis <= r) { // && (chZ+r >= -h/2 && chZ-r <= h/2)) {
-				isGround = (fNorm[2] > .5);
-				
-				chX += normX*diff;
-				chY += normY*diff;
-				chZ += normZ*diff;
-
-				didCollide = true;
+			if(!isGround) {
+				if(dis <= r) { // && (chZ+r >= -h/2 && chZ-r <= h/2)) {
+					chX += normX*diff;
+					chY += normY*diff;
+					chZ += normZ*diff;
+					
+					didCollide = true;
+				}
+			} else {
+				if(dis <= r && eDis <= r) {
+					cout << "FLOOR COLLISION" << endl;
+					if(eDis == 0)
+						chY = r;
+					else {
+						chX += normX*diff;
+						chY += normY*diff;
+						chZ += normZ*diff;
+					}
+					didCollide = true;
+				}
 			}
 		}
 		else if(type == P_GROUP) {
@@ -358,8 +385,10 @@ bool Piece :: collide(Physical* ch, mat4 modMat) {
 		ch->setY(chVec[1]);
 		ch->setZ(chVec[2]-r);
 
-		if(didCollide && isGround)
+		if(didCollide && isGround) {
 			ch->placeOnGround();
+			ch->setZVelocity(0);
+		}
 	}
 
 	return didCollide;

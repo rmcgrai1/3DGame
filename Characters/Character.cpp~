@@ -4,19 +4,20 @@
 #include <deque>
 #include <string>
 #include <iostream>
+#include <cmath>
 #include "../Environment/Tree.h"
 #include "../Graphics/Texture.h"
 #include "../Graphics/GraphicsOGL.h"
 #include "../Primitives/Physical.h"
 #include "Character.h"
-#include <cmath>
 #include "../Functions/Math2D.h"
-//#include "../Particles/AttackSwing.h"
 #include "../Environment/Heightmap.h"
 #include "../Particles/SmokeRing.h"
 #include "../Particles/DeathPuff.h"
 using namespace std;
 
+
+// Define All Possible Character Shapes
 #define SH_SPHERE 0
 #define SH_CONE_UP 1
 #define SH_CONE_DOWN 2
@@ -27,16 +28,23 @@ using namespace std;
 #define SH_CYLINDER 7
 #define SH_DIAMOND 8
 
-#define ATTACK_TIMER_MAX 11 //12
+// Define Timer Maxes
+#define ATTACK_TIMER_MAX 11
 #define KNOCKBACK_TIMER_MAX 15
 #define TARGET_TIMER_MAX 50
-#define TARGET_DISTANCE_MAX 200
 #define DESTROY_TIMER_MAX 60
 #define DESTSHR_TIMER_MAX 25
 
+// Define Max Target Distance
+#define TARGET_DISTANCE_MAX 200
+
+
 SortedList<Character*> Character :: characterList;
 
+// Gravity for Hopping
 float Character::GRAVITY_HOP_ACCELERATION = -.125*.75; //GRAVITY_ACCELERATION*.75;
+
+// Calculate Jumping Speed for Hopping
 float hopHeight = 3;
 float hopSpeed = sqrt(abs(2*Character::GRAVITY_HOP_ACCELERATION*hopHeight));
 float h = 8;
@@ -44,12 +52,12 @@ float h = 8;
 
 Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 
-	appR = rnd();
-	appG = rnd();
-	appB = rnd();
-	appXS = rnd(.9,1.1);
-	appYS = rnd(.9,1.1);
-	appZS = rnd(.9,1.1);
+	appearanceR = rnd();
+	appearanceG = rnd();
+	appearanceB = rnd();
+	appearanceXScale = rnd(.9,1.1);
+	appearanceYScale = rnd(.9,1.1);
+	appearanceZScale = rnd(.9,1.1);
 
 	size = 6;
 
@@ -142,115 +150,145 @@ void Character :: damage(Character* attacker, float dDir) {
 	}
 }
 
-void Character :: update(GraphicsOGL* gl, float deltaTime) {
+// INHERITED FUNCTIONS
+	void Character :: update(GraphicsOGL* gl, float deltaTime) {
 
 
-	if(destroyTimer > -1) {
-		x += (destroyToX - x)/10;
-		y += (destroyToY - y)/10;
-		z += (destroyToZ - z)/10;
+		if(destroyTimer > -1) {
+			x += (destroyToX - x)/10;
+			y += (destroyToY - y)/10;
+			z += (destroyToZ - z)/10;
 
-		destroyTimer -= deltaTime;
+			destroyTimer -= deltaTime;
 
-		if(destroyTimer <= -1) {
-			SoundController::playSound("death",this);
-			destroyTimer = -2;
-			destroyShrTimer = 1;
-		}
-		return;
-	}
-	else if(destroyTimer == -2) {
-
-		destroyShrTimer += (0 - destroyShrTimer)/1.5;
-
-		if(destroyShrTimer < .01)
-			destroy();
-
-		return;
-	}
-
-
-	// Update Physics/Collisions
-	Physical :: update(gl, deltaTime);
-
-	collideTree();
-	collideCharacter();
-
-	updateHop(gl, deltaTime);
-
-	if(attackTimer > -1) {
-		attackTimer -= deltaTime;
-		if(attackTimer <= -1)
-			attackTimer = -1;
-	}
-
-	float camPos[3], camX, camY, camFOV, camDir;
-		gl->getCamera()->getPosition(camPos);
-		camX = camPos[0];
-		camY = camPos[1];
-		camDir = gl->getCamera()->getCamDir();
-
-		camFOV = 45/2;
-
-
-	// FIND TARGET
-	if(targetTimer > -1) {
-
-		targetShift += (1 - targetShift)/10;
-
-		if(target != NULL)
-			if(target->getHP() > 0) {
-				if(calcPtDis(x,y,target->getX(),target->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,target->getX(),target->getY()),camDir)) < camFOV)
-					targetTimer = TARGET_TIMER_MAX;	
+			if(destroyTimer <= -1) {
+				SoundController::playSound("death",this);
+				destroyTimer = -2;
+				destroyShrTimer = 1;
 			}
-			else
-				targetTimer = -1;
+			return;
+		}
+		else if(destroyTimer == -2) {
 
-		targetTimer -= deltaTime;
-		if(targetTimer <= -1)
-			targetTimer = -1;
-	}
-	else {
-		if(target != NULL) {
-			targetShift += (0 - targetShift)/10;
-		
-			if(targetShift < .05)
-				target = NULL;
+			destroyShrTimer += (0 - destroyShrTimer)/1.5;
+
+			if(destroyShrTimer < .01)
+				destroy();
+
+			return;
+		}
+
+
+		// Update Physics/Collisions
+		Physical :: update(gl, deltaTime);
+
+		collideTree();
+		collideCharacter();
+
+		updateHop(gl, deltaTime);
+
+		if(attackTimer > -1) {
+			attackTimer -= deltaTime;
+			if(attackTimer <= -1)
+				attackTimer = -1;
+		}
+
+		float camPos[3], camX, camY, camFOV, camDir;
+			gl->getCamera()->getPosition(camPos);
+			camX = camPos[0];
+			camY = camPos[1];
+			camDir = gl->getCamera()->getCamDir();
+
+			camFOV = 45/2;
+
+
+		// FIND TARGET
+		if(targetTimer > -1) {
+
+			targetShift += (1 - targetShift)/10;
+
+			if(target != NULL)
+				if(target->getHP() > 0) {
+					if(calcPtDis(x,y,target->getX(),target->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,target->getX(),target->getY()),camDir)) < camFOV)
+						targetTimer = TARGET_TIMER_MAX;	
+				}
+				else
+					targetTimer = -1;
+
+			targetTimer -= deltaTime;
+			if(targetTimer <= -1)
+				targetTimer = -1;
 		}
 		else {
+			if(target != NULL) {
+				targetShift += (0 - targetShift)/10;
 			
+				if(targetShift < .05)
+					target = NULL;
+			}
+			else {
+				
 
-			for(int i = 0; i < characterList.size(); i++) {
-				Character* c = characterList[i];
+				for(int i = 0; i < characterList.size(); i++) {
+					Character* c = characterList[i];
 
-				if(c == this)
-					continue;
+					if(c == this)
+						continue;
 
-				if(calcPtDis(x,y,c->getX(),c->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,c->getX(),c->getY()),camDir)) < camFOV) {
-					targetTimer = TARGET_TIMER_MAX;
-					target = c;
-					break;
+					if(calcPtDis(x,y,c->getX(),c->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,c->getX(),c->getY()),camDir)) < camFOV) {
+						targetTimer = TARGET_TIMER_MAX;
+						target = c;
+						break;
+					}
 				}
 			}
 		}
-	}
 
-	if(knockbackTimer > -1) {
-		faceDirection(knockbackDir+180);
-		toolDirection(knockbackDir+180);
+		if(knockbackTimer > -1) {
+			faceDirection(knockbackDir+180);
+			toolDirection(knockbackDir+180);
 
-		direction = knockbackDir;
-		vel = 1.5;
+			direction = knockbackDir;
+			vel = 1.5;
 
-		knockbackTimer -= deltaTime;
+			knockbackTimer -= deltaTime;
 
-		if(knockbackTimer <= -1) {
-			vel = 0;
-			isHurt = false;
-			knockbackTimer = -1;
+			if(knockbackTimer <= -1) {
+				vel = 0;
+				isHurt = false;
+				knockbackTimer = -1;
+			}
 		}
 	}
-}
+	
+	
+	void Character :: destroy() {
+		
+		float dX,dY,dZ, si, sm;
+		float xD, yD;
+		si = .2;
+		sm = 20;
+			
+		// Create Explosion of Particles
+			xD = calcLenX(1,faceDir);
+			yD = calcLenY(1,faceDir);
+
+			for(float xi = 0; xi < 1; xi += si)
+				for(float yi = 0; yi < 1; yi += si) 
+					for(float zi = 0; zi < 1; zi += si) {
+						dX = x;
+						dY = y;
+						dZ = z;
+
+						// Create New Particle at X, to Some Direction Out (Sphere-Shape)
+						new DeathPuff(dX,dY,dZ, 2*(xi-.5), 2*(yi-.5),2*(zi-.5),.5, 20);
+					}
+
+
+		// Destroy Self in Physical List, and in Character List
+		Physical :: destroy();
+		characterList.destroy(this);
+	}
 
 void Character :: attack() {
 	if(attackTimer > -1)
@@ -415,73 +453,40 @@ void Character :: collideCharacter() {
 
 void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
-	//Physical :: draw(gl, deltaTime);
-
 	Heightmap* hm = gl->getHeightmap();
-
 
 	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
 
+	// Get Ground Rotation
+	if((hm->getHeightXY(x,y)-z < .2))
 		hm->getFloorRotations(x,y,setupRot,xyRot);
-
-	//DRAW SHADOW
-	float grndZ = hm->getHeightXY(x,y);
-
-
-	/*gl->setDepthTest(false);
-		gl->transformTranslation(x,y,grndZ);
-		gl->transformRotationZ(setupRot);
-		gl->transformRotationX(xyRot);	
-
-		gl->transformScale(1 - (z-grndZ)/70);	
-
-		gl->draw3DFloor(-8,-8,8,8,0,gl->getTextureController()->getTexture("Shadow"));
-
-		gl->transformClear();
-	gl->setDepthTest(true);*/
-
-
-	/*
-	// Draw Several Shadows
-	for(int i = 0; i < 4; i++) {
-		float shNorm[3];
-		float l = s, d = i*90., shadowX = x + calcLenX(l,d), shadowY = y + calcLenY(l,d), shadowZ = hm->getHeightXY(shadowX,shadowY);
-		float shadowSetupRot, shadowXYRot;
-
-			hm->getNormal(shadowX, shadowY, shNorm);
-
-		shadowSetupRot = 90+calcPtDir(0,0,shNorm[0],shNorm[1]);
-		shadowXYRot = 90-calcPtDir(0,0,calcPtDis(0,0,shNorm[0],shNorm[1]),shNorm[2]);
-
-		//DRAW SHADOW
-			glTranslatef(x,y,z+.3);
-			glRotated(shadowSetupRot, 0, 0, 1);	
-			glRotated(shadowXYRot, 1, 0, 0);
-	
-			gl->draw3DFloor(-8,-8,8,8,0,shTex);
-
-			glLoadIdentity();
+	else {
+		setupRot = 0;
+		xyRot = 0;
 	}
-	gl->glSet();
-	*/
 
-		float destShrSc;
-		float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
-		float upZ = 10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
-		float scZ = .5*sin(upF*6*3.14159);
 
-		if(!isHurt) {
-			upZ = 0;
-			scZ = 0;
-		}
+	float destShrSc;
+	float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
+	float upZ = 10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
+	float scZ = .5*sin(upF*6*3.14159);
 
-		if(destroyTimer > -1)
-			destShrSc = 1+.3*pow(getDestroyFraction(),3.);
-		else if(destroyShrTimer == -1)
-			destShrSc = 1;
-		else
-			destShrSc = 1.3*destroyShrTimer;
+	if(!isHurt) {
+		upZ = 0;
+		scZ = 0;
+	}
 
+	// Expanding Before Dying
+	if(destroyTimer > -1)
+		destShrSc = 1+.3*pow(getDestroyFraction(),3.);
+	// Not Dead, Normal Size
+	else if(destroyShrTimer == -1)
+		destShrSc = 1;
+	// Shrinking Before Exploding
+	else
+		destShrSc = 1.3*destroyShrTimer;
+
+	// Shake Character When Dying and Expanding
 		float destShPerc = 1 - destroyTimer/DESTROY_TIMER_MAX;
 		float destShX, destShY, destShZ;
 
@@ -498,9 +503,9 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			scZ = 0;
 		}
 
-		
 	float dHopZ = hopZ*min(1.f,vel), dHopSc, dHopZVel, dHopX;
 
+	// Calculate Rotation/Positioning Variables w/ Hopping
 	if(vel >= 1) {
 		dHopSc = hopSc;
 		dHopZVel = hopZVel;
@@ -512,23 +517,28 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		dHopX = hopX*vel;
 	}
 
+	
+	// If PC is Not Slow, Enable Character Shader
 	if(!gl->isPCSlow()) {
 		gl->enableShader("Character");
 		gl->passShaderShadows();
 		gl->passShaderLights();
 	}
-	gl->setColor(255*appR,255*appG,255*appB);
+	
+	// Set Drawing Color to Character Color
+	gl->setColor(255*appearanceR,255*appearanceG,255*appearanceB);
 
+	
 	gl->transformTranslation(destShX,destShY,destShZ);
 	gl->transformTranslation(x,y,z+dHopZ);
 	
 	if(onGround/*&& hopZ <= 0*/) {
 
-		#ifdef GROUND_ROTATE
+		if(onHeightmap) {
 			gl->transformRotationZ(setupRot);	
 			gl->transformRotationX(xyRot);
 			gl->transformRotationZ(-setupRot);
-		#endif
+		}
 		
 		gl->transformRotationZ(faceDir);
 		gl->transformRotationX(-dHopX*10);		
@@ -540,7 +550,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	//gl->transformTranslation(-hopZVel,hopX,0);
 	gl->transformScale(dHopSc,dHopSc,1/dHopSc + scZ);
-	gl->transformScale(appXS,appYS,appZS);
+	gl->transformScale(appearanceXScale,appearanceYScale,appearanceZScale);
 
 	gl->transformTranslation(0,0,1.*h/2);
 	gl->transformScale(destShrSc);
@@ -583,114 +593,124 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->transformClear();
 
 
-	if(!gl->isPCSlow()) {
-		gl->enableShader("Blade");
-		gl->passShaderShadows();
-		gl->passShaderLights();
-
-		gl->setColor(200,200,200);
-		gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
-		if(destroyTimer > -1)
-			gl->setShaderVariable("iHit", destShPerc);
-		else if(isHurt)
-			gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
-		else
-			gl->setShaderVariable("iHit",0);
-	}
-		// Draw Weapon
-		gl->transformTranslation(x,y,z+dHopZ);
 	
-		if(onGround/*&& hopZ <= 0*/) {
-			#ifdef GROUND_ROTATE
-				gl->transformRotationZ(setupRot);	
-				gl->transformRotationX(xyRot);
-				gl->transformRotationZ(-setupRot);
-			#endif
+	// DRAW HELD WEAPON
+	
+		if(!gl->isPCSlow()) {
+			gl->enableShader("Blade");
+			gl->passShaderShadows();
+			gl->passShaderLights();
 
-
-
-			gl->transformRotationZ(faceDir);		
-			gl->transformTranslation(-dHopZVel,dHopX,0);	
-			gl->transformTranslation(-3*dHopZVel,3*dHopX,0);
-			gl->transformRotationZ(-faceDir);		
+			gl->setColor(200,200,200);
+			gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
+			if(destroyTimer > -1)
+				gl->setShaderVariable("iHit", destShPerc);
+			else if(isHurt)
+				gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
+			else
+				gl->setShaderVariable("iHit",0);
 		}
+			// Draw Weapon
+			gl->transformTranslation(x,y,z+dHopZ);
 		
-		if(attackTimer == -1)
-			gl->transformRotationZ(toolDir);
-		else {
-			//Animation #1
-			// Stab
-			/*gl->transformRotationZ(toolDir);
-
-			float timerPerc = pow(attackTimer/ATTACK_TIMER_MAX,2.);
-
-
-			gl->transformTranslation(7,-6,3);
-			gl->transformRotationY(90*timerPerc);
-			gl->transformTranslation(-7,6,-3);
-
-			gl->transformRotationZ(90*timerPerc);*/
-
-			//Animation #2
-			gl->transformRotationZ(toolDir);
-
-
-			float timerPerc = attackTimer/ATTACK_TIMER_MAX;			
-				float mTimerPerc = pow(abs(sin(3.14159*(1-timerPerc))),.3);
-
-			//timerPerc = min(1.,1-2*timerPerc);
-
-			float tTimerPerc = min(1.,attackTimer/(ATTACK_TIMER_MAX*.75));
-			tTimerPerc = 1.-tTimerPerc;
-
-			float nXRot, nYRot, nZRot;
-			nXRot = mTimerPerc*(20*cos(3.14159*tTimerPerc));
-			nYRot = mTimerPerc*(90 + 5*cos(3.14159*tTimerPerc));
-
-			//tTimerPerc += (1 - tTimerPerc)/pow(1+timerPerc,.5);
-			nZRot = mTimerPerc*(180*(-.5 + tTimerPerc));
-
-			float f = 1+2*(1.-mTimerPerc);
-
-			wXRot += (nXRot - wXRot)/f;
-			wYRot += (nYRot - wYRot)/f;
-			wZRot += (nZRot - wZRot)/f;
-
-			gl->transformRotationZ(wZRot);
-
-			gl->transformTranslation(7,-6,3);
-			gl->transformRotationY(wYRot);
-			gl->transformRotationX(wXRot);
-			gl->transformTranslation(-7,6,-3);
-
-		}
+			if(onGround/*&& hopZ <= 0*/) {
+				#ifdef GROUND_ROTATE
+					gl->transformRotationZ(setupRot);	
+					gl->transformRotationX(xyRot);
+					gl->transformRotationZ(-setupRot);
+				#endif
 
 
 
-		gl->transformTranslation(7,-6,3 + upZ);
+				gl->transformRotationZ(faceDir);		
+				gl->transformTranslation(-dHopZVel,dHopX,0);	
+				gl->transformTranslation(-3*dHopZVel,3*dHopX,0);
+				gl->transformRotationZ(-faceDir);		
+			}
+			
+			if(attackTimer == -1)
+				gl->transformRotationZ(toolDir);
+			else {
+				//Animation #1
+				// Stab
+				/*gl->transformRotationZ(toolDir);
 
-		gl->transformScale(1,1,1.3+scZ);
-		gl->transformScale(destShrSc);
-
-		gl->setShaderVariable("cDirection", toolDir/180.*3.14159);
-		if(isHurt)
-			gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
-		else
-			gl->setShaderVariable("iHit",0);
-
-
-		gl->passModelMatrix();
-		// Hilt
-		gl->draw3DPrism(0,0,.5,.5,2,3,swordHiltTex);
-		gl->draw3DBlock(-.8,-2,2,.8,2,3,swordHiltTex);
-
-		// Blade
-		gl->draw3DCone(0,0,7,1,3,3);
-		gl->draw3DFrustem(0,0,2,.8,1,5,3);
+				float timerPerc = pow(attackTimer/ATTACK_TIMER_MAX,2.);
 
 
+				gl->transformTranslation(7,-6,3);
+				gl->transformRotationY(90*timerPerc);
+				gl->transformTranslation(-7,6,-3);
+
+				gl->transformRotationZ(90*timerPerc);*/
+
+				//Animation #2
+				gl->transformRotationZ(toolDir);
 
 
+				float timerPerc = attackTimer/ATTACK_TIMER_MAX;			
+					float mTimerPerc = pow(abs(sin(3.14159*(1-timerPerc))),.3);
+
+				//timerPerc = min(1.,1-2*timerPerc);
+
+				float tTimerPerc = min(1.,attackTimer/(ATTACK_TIMER_MAX*.75));
+				tTimerPerc = 1.-tTimerPerc;
+
+				float nXRot, nYRot, nZRot;
+				nXRot = mTimerPerc*(20*cos(3.14159*tTimerPerc));
+				nYRot = mTimerPerc*(90 + 5*cos(3.14159*tTimerPerc));
+
+				//tTimerPerc += (1 - tTimerPerc)/pow(1+timerPerc,.5);
+				nZRot = mTimerPerc*(180*(-.5 + tTimerPerc));
+
+				float f = 1+2*(1.-mTimerPerc);
+
+				wXRot += (nXRot - wXRot)/f;
+				wYRot += (nYRot - wYRot)/f;
+				wZRot += (nZRot - wZRot)/f;
+
+				gl->transformRotationZ(wZRot);
+
+				gl->transformTranslation(7,-6,3);
+				gl->transformRotationY(wYRot);
+				gl->transformRotationX(wXRot);
+				gl->transformTranslation(-7,6,-3);
+
+			}
+
+
+			// Translate Weapon to Player's Hand
+			gl->transformTranslation(7,-6,3 + upZ);
+
+			// Scale Weapon to Make it Slightly Longer (and Stretch when Hurt!)
+			gl->transformScale(1,1,1.3+scZ);
+			// Shrink Weapon if Dying
+			gl->transformScale(destShrSc);
+
+			//Pass Direction of Weapon (Used for Calculating Lighting)
+			gl->setShaderVariable("cDirection", toolDir/180.*3.14159);
+			
+			// If Hurt, Change Color to Red
+			if(isHurt)
+				gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
+			else
+				gl->setShaderVariable("iHit",0);
+
+
+			// Pass Model Matrix to Shader
+			gl->passModelMatrix();
+			
+			// Draw Hilt
+			gl->draw3DPrism(0,0,.5,.5,2,3,swordHiltTex);
+			gl->draw3DBlock(-.8,-2,2,.8,2,3,swordHiltTex);
+
+			// Draw Blade
+			gl->draw3DCone(0,0,7,1,3,3);
+			gl->draw3DFrustem(0,0,2,.8,1,5,3);
+
+
+
+	// Return Transformation to Normal
 	gl->transformClear();
 
 
@@ -698,10 +718,6 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->disableShaders();
 	gl->setColor(255,255,255);
 }
-
-/*string to_string(float num) {
-	return to_string(static_cast<long float>(num));
-}*/
 
 void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 
@@ -781,49 +797,6 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 	gl->fillRect(oX,oY,oX+w,oY+h);
 }
 
-void Character :: destroy() {
-
-	/*if(shape == SH_PRISM_6)
-		gl->draw3DPrism(0,0,0,size,h,6);
-	else if(shape == SH_PRISM_5)
-		gl->draw3DPrism(0,0,0,size,h,5);
-	else if(shape == SH_PRISM_3)
-		gl->draw3DPrism(0,0,0,size,h,3);
-	else if(shape == SH_CUBE)
-		gl->draw3DPrism(0,0,0,size,h,4);
-	else if(shape == SH_SPHERE)
-		gl->draw3DSphere(0,0,size,size,13);
-	else if(shape == SH_CONE_DOWN)
-		gl->draw3DCone(0,0,h,size,-h,13);
-	else if(shape == SH_CONE_UP)
-		gl->draw3DCone(0,0,0,size,h,13);
-	else if(shape == SH_CYLINDER)
-		gl->draw3DPrism(0,0,0,size,h,13);*/
-
-	
-	float dX,dY,dZ, si, sm;
-	float xD, yD;
-	si = .2;
-	sm = 20;
-
-		
-		xD = calcLenX(1,faceDir);
-		yD = calcLenY(1,faceDir);
-
-		for(float xi = 0; xi < 1; xi += si)
-			for(float yi = 0; yi < 1; yi += si) 
-				for(float zi = 0; zi < 1; zi += si) {
-					dX = x;
-					dY = y;
-					dZ = z;
-
-					new DeathPuff(dX,dY,dZ, 2*(xi-.5), 2*(yi-.5),2*(zi-.5),.5, 20);
-				}
-
-
-	Physical :: destroy();
-	characterList.destroy(this);
-}
 
 void Character :: faceDirection(float dir) {
 	faceDir += calcTurnToDir(faceDir,dir);
@@ -905,4 +878,12 @@ void Character :: land() {
 	hopSc *= 2;
 	new SmokeRing(x,y,z,4,13,7,2);
 	SoundController::playSound("fsGrass");
+}
+
+Character* Character :: getTarget() {
+	return target;
+}
+
+float Character :: getTargetShift() {
+	return targetShift;
 }

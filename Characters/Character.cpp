@@ -46,7 +46,7 @@ float Character::GRAVITY_HOP_ACCELERATION = -.125*.75; //GRAVITY_ACCELERATION*.7
 
 // Calculate Jumping Speed for Hopping
 float hopHeight = 3;
-float hopSpeed = calcSpeed(Character::GRAVITY_HOP_ACCELERATION, hopHeight);
+float hopSpeed = sqrt(abs(2*Character::GRAVITY_HOP_ACCELERATION*hopHeight));
 float h = 8;
 
 
@@ -534,11 +534,11 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	
 	if(onGround/*&& hopZ <= 0*/) {
 
-		#ifdef GROUND_ROTATE
+		if(onHeightmap) {
 			gl->transformRotationZ(setupRot);	
 			gl->transformRotationX(xyRot);
 			gl->transformRotationZ(-setupRot);
-		#endif
+		}
 		
 		gl->transformRotationZ(faceDir);
 		gl->transformRotationX(-dHopX*10);		
@@ -550,7 +550,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	//gl->transformTranslation(-hopZVel,hopX,0);
 	gl->transformScale(dHopSc,dHopSc,1/dHopSc + scZ);
-	gl->transformScale(appXS,appYS,appZS);
+	gl->transformScale(appearanceXScale,appearanceYScale,appearanceZScale);
 
 	gl->transformTranslation(0,0,1.*h/2);
 	gl->transformScale(destShrSc);
@@ -614,11 +614,11 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			gl->transformTranslation(x,y,z+dHopZ);
 		
 			if(onGround/*&& hopZ <= 0*/) {
-				#ifdef GROUND_ROTATE
+				if(onHeightmap) {
 					gl->transformRotationZ(setupRot);	
 					gl->transformRotationX(xyRot);
 					gl->transformRotationZ(-setupRot);
-				#endif
+				}
 
 
 
@@ -878,4 +878,12 @@ void Character :: land() {
 	hopSc *= 2;
 	new SmokeRing(x,y,z,4,13,7,2);
 	SoundController::playSound("fsGrass");
+}
+
+Character* Character :: getTarget() {
+	return target;
+}
+
+float Character :: getTargetShift() {
+	return targetShift;
 }

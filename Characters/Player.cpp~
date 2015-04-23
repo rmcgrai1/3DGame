@@ -24,7 +24,6 @@ float jumpSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*24));
 
 
 Player :: Player(float x, float y, float z) : Character(x,y,z) {
-	
 	Player::camDis = 70;
 }
 
@@ -53,23 +52,26 @@ void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
 	// Place Camera on Heightmap
 		Heightmap* h = gl->getHeightmap();
-		float cX, cY;
+		float cX, cY, cZ;
 		cX = x-calcLenX(camDis,nCDir);
-		cY = y-calcLenY(camDis,nCDir);	
+		cY = y-calcLenY(camDis,nCDir);
+
+		if(onHeightmap)
+			cZ = h->getHeightXY(cX,cY);
+		else
+			cZ = z;
 
 		if(target == NULL || !gl->getInputController()->checkLetter('q'))
-			gl->setProjectionPrep(cX,cY,toZ+10,x,y,floorZ+8);
+			gl->setProjectionPrep(cX,cY,cZ+8+10,x,y,floorZ+8);
 		else {
 			float tS = targetShift*.1, toX, toY, toZ;
 			toX = tS*(target->getX()) + (1-tS)*(x);
 			toY = tS*(target->getY()) + (1-tS)*(y);
 			toZ = floorZ+8;
 
-			float cZ = h->getHeightXY(cX,cY)+8;
-
 			//direction = calcPtDir(x,y,target->getX(),target->getY());
 
-			gl->setProjectionPrep(cX,cY,toZ+10,toX,toY,toZ);
+			gl->setProjectionPrep(cX,cY,cZ+8+10,toX,toY,toZ);
 		}
 }
 

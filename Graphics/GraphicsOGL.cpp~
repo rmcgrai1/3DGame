@@ -1,5 +1,5 @@
 // GraphicsOGL.cpp
-
+// Ryan McGrail
 
 #define GL_GLEXT_PROTOTYPES
 
@@ -25,7 +25,6 @@
 #include "FontController.h"
 #include <ctime>
 #include "../Functions/Math2D.h"
-//#include "../Functions/linmath.h"
 #include "../Environment/Heightmap.h"
 #include "../Characters/Player.h"
 #include "../Characters/NPC.h"
@@ -45,14 +44,11 @@
 #include "models/Mtl.h"
 #include "../Functions/mat4.h"
 #include "../Environment/Shapes/Piece.h"
-
-
 using namespace std;
 using namespace std::chrono;
 
 
 TextController* tc;
-	
 DirtPath* dp;
 GraphicsOGL* ogl;
 void idleCallback() {
@@ -79,7 +75,7 @@ Piece* pInst, *pRot;
 GraphicsOGL :: GraphicsOGL(int argc, char* argv[]) {
 	ogl = this;
 
-	// Establish Screen Resolution Variables
+	// Initialize Screen Resolution Variables
 	resolution = new float[2];
 	SCREEN_WIDTH = resolution[0] = 640;
 	SCREEN_HEIGHT = resolution[1] = 480;
@@ -88,7 +84,6 @@ GraphicsOGL :: GraphicsOGL(int argc, char* argv[]) {
 	fps = 60;
 	curProgram = 0;
 	globalTime = 0;
-
 
 	// Intialize 3D Variables
 	initialize3D(argc, argv);
@@ -202,7 +197,8 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 		AllStructures = new PieceController();
 		//pauseMenu = new Menu();
 
-		/*for(int i = 0; i < 15; i++) {
+		// Randomly Place NPCs
+		for(int i = 0; i < 15; i++) {
 			int s = 1000;
 			float x, y, size;
 			x = 1028 + (rand() % s - s/2.);
@@ -215,7 +211,7 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 			cB = .3 + .5*rnd();
 
 			new NPC(x,y,0);
-		}*/
+		}
 
 		dp = new DirtPath();
 		for(int i = 0; i < 10; i++) {
@@ -227,66 +223,69 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 			dp->addPt(x, y, size);
 		}
 
-		Piece* pWall2x16 = new Piece(Piece::P_GROUP);
-			pWall2x16->add3DBlock(-8,-8,0,-6,8,16);
-		Piece* pWall2x32 = new Piece(Piece::P_GROUP);
-			//pWall2x32->add3DBlock(-8,-8,0,-6,8,32);
-			pWall2x32->add3DWall(-8,-8,0,-8,8,32);
+		// Initialize Basic Piece Blueprints
+			Piece* pWall2x16 = new Piece(Piece::P_GROUP);
+				pWall2x16->add3DBlock(-8,-8,0,-6,8,16);
+			Piece* pWall2x32 = new Piece(Piece::P_GROUP);
+				//pWall2x32->add3DBlock(-8,-8,0,-6,8,32);
+				pWall2x32->add3DWall(-8,-8,0,-8,8,32);
 
-		Piece* pDoorFrame2x16 = new Piece(Piece::P_GROUP);
-			pDoorFrame2x16->add3DBlock(-8.5,-8,0,-5.5,-7,16);
-			pDoorFrame2x16->add3DBlock(-8.5,7,0,-5.5,8,16);
-			pDoorFrame2x16->add3DBlock(-8.5,-7,15,-5.5,7,16);
+			Piece* pDoorFrame2x16 = new Piece(Piece::P_GROUP);
+				pDoorFrame2x16->add3DBlock(-8.5,-8,0,-5.5,-7,16);
+				pDoorFrame2x16->add3DBlock(-8.5,7,0,-5.5,8,16);
+				pDoorFrame2x16->add3DBlock(-8.5,-7,15,-5.5,7,16);
 
-		Piece* pStairs16x16 = new Piece(Piece::P_GROUP);
-		for(int i = 0; i < 8; i++) {
-			float v, nV;
-			v = 2*i;
-			nV = 2*(i+1);
-			//pStairs16x16->add3DBlock(v,-8,v,nV,8,nV);
-			pStairs16x16->add3DFloor(-8+v,-8,-8+nV,8,v);
-			pStairs16x16->add3DBlock(-8+v,-8,0,-8+nV,-6,nV+2);
-			pStairs16x16->add3DBlock(-8+v,6,0,-8+nV,8,nV+2);
-		}
+			Piece* pStairs16x16 = new Piece(Piece::P_GROUP);
+			for(int i = 0; i < 8; i++) {
+				float v, nV;
+				v = 2*i;
+				nV = 2*(i+1);
+				//pStairs16x16->add3DBlock(v,-8,v,nV,8,nV);
+				pStairs16x16->add3DFloor(-8+v,-8,-8+nV,8,v);
+				pStairs16x16->add3DBlock(-8+v,-8,0,-8+nV,-6,nV+2);
+				pStairs16x16->add3DBlock(-8+v,6,0,-8+nV,8,nV+2);
+			}
 
-		Piece* pStairs32x32 = new Piece(Piece::P_GROUP);
-		float tS = 32, s = tS/2, n = tS/4, eH = tS/4;
-		for(int i = 0; i < n; i++) {
-			float v, nV;
-			v = (tS/n)*i;
-			nV = (tS/n)*(i+1);
-			//pStairs16x16->add3DBlock(v,-8,v,nV,8,nV);
-			pStairs32x32->add3DFloor(-s+v,-s,-s+nV,s,v);
-			pStairs32x32->add3DBlock(-s+v,-s,0,-s+nV,-(s*.75),nV+eH);
-			pStairs32x32->add3DBlock(-s+v,(s*.75),0,-s+nV,s,nV+eH);
-		}
+			Piece* pStairs32x32 = new Piece(Piece::P_GROUP);
+			float tS = 32, s = tS/2, n = tS/4, eH = tS/4;
+			for(int i = 0; i < n; i++) {
+				float v, nV;
+				v = (tS/n)*i;
+				nV = (tS/n)*(i+1);
+				//pStairs16x16->add3DBlock(v,-8,v,nV,8,nV);
+				pStairs32x32->add3DFloor(-s+v,-s,-s+nV,s,v);
+				pStairs32x32->add3DBlock(-s+v,-s,0,-s+nV,-(s*.75),nV+eH);
+				pStairs32x32->add3DBlock(-s+v,(s*.75),0,-s+nV,s,nV+eH);
+			}
 
-		Piece* pBlock16x2 = new Piece(Piece::P_GROUP);
-			pBlock16x2->add3DBlock(-8,-8,-2,8,8,0);
-		Piece* pBlock48x2 = new Piece(Piece::P_GROUP);
-			pBlock48x2->add3DBlock(-24,-24,-2,24,24,0);
-		Piece* pBlock48x16 = new Piece(Piece::P_GROUP);
-			pBlock48x16->add3DBlock(-24,-8,-8,24,8,8);
+			Piece* pBlock16x2 = new Piece(Piece::P_GROUP);
+				pBlock16x2->add3DFloor(-8,-8,8,8,0);
+				//pBlock16x2->add3DBlock(-8,-8,-2,8,8,0);
+			Piece* pBlock48x2 = new Piece(Piece::P_GROUP);
+				pBlock48x2->add3DFloor(-24,-24,24,24,0);
+				//pBlock48x2->add3DBlock(-24,-24,-2,24,24,0);
+			Piece* pBlock48x16 = new Piece(Piece::P_GROUP);
+				pBlock48x16->add3DBlock(-24,-8,-8,24,8,8);
 
-
-		Piece* testP = new Piece(Piece::P_GROUP);
-		testP->addPiece(pStairs16x16,-16,-16,-16,0,0,90);
-		testP->addPiece(pStairs16x16,-16,16,-16,0,0,-90);
-		testP->addPiece(pBlock16x2,-16,0,0);
-		testP->addPiece(pStairs16x16,0,0,0);
-		testP->addPiece(pBlock48x2,32,0,16);
-		testP->addPiece(pBlock48x2,64,0,16);
+		// Create Test Piece
+			Piece* testP = new Piece(Piece::P_GROUP);
+			testP->addPiece(pStairs16x16,-16,-16,-16,0,0,90);
+			testP->addPiece(pStairs16x16,-16,16,-16,0,0,-90);
+			testP->addPiece(pBlock16x2,-16,0,0);
+			testP->addPiece(pStairs16x16,0,0,0);
+			testP->addPiece(pBlock48x2,32,0,16);
+			testP->addPiece(pBlock48x2,64,0,16);
 	
-		// Building
-			testP->addPiece(pWall2x32,32,-16,16);
-			testP->addPiece(pDoorFrame2x16,32,0,16);
-			testP->addPiece(pWall2x16,32,0,32);
-			testP->addPiece(pWall2x32,32,16,16);
+			// Building
+				testP->addPiece(pWall2x32,32,-16,16);
+				testP->addPiece(pDoorFrame2x16,32,0,16);
+				testP->addPiece(pWall2x16,32,0,32);
+				testP->addPiece(pWall2x32,32,16,16);
 
-		pInst = testP->instantiate();
-			pInst->transformTranslation(1000,1000,270);
-		pRot = pBlock48x16->instantiate();
-			pRot->transformTranslation(1100,1000,270);
+			pInst = testP->instantiate();
+				pInst->transformTranslation(1000,1000,270);
+			pRot = pBlock48x16->instantiate();
+				pRot->transformTranslation(1100,1000,270);
 
 		
 		myPlayer = new Player(1028,1028,0);
@@ -306,29 +305,6 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 	
 	//Start up Main Loop
 	glutMainLoop();	
-}
-
-//Get Screen Width
-int GraphicsOGL :: getScreenWidth() {
-	return SCREEN_WIDTH;
-}	
-
-//Get Screen Height
-int GraphicsOGL :: getScreenHeight() {
-	return SCREEN_HEIGHT;
-}
-
-InputController* GraphicsOGL :: getInputController() {
-	return inputController;
-}
-Heightmap* GraphicsOGL :: getHeightmap() {
-	return terrain->getHeightmap();
-}
-TextController* GraphicsOGL :: getTextController() {
-	return tc;
-}
-SoundController* GraphicsOGL :: getSoundController() {
-	return sc;
 }
 
 int GraphicsOGL :: isPCSlow() {
@@ -413,8 +389,8 @@ void GraphicsOGL :: display() {
 	setOrtho();
 		drawHealth(20,20, myPlayer->getHP(), myPlayer->getMaxHP());
 
-		if(myPlayer->target != NULL)
-			myPlayer->target->drawStatWindow(this,myPlayer->targetShift);
+		if(myPlayer->getTarget() != NULL)
+			myPlayer->getTarget()->drawStatWindow(this,myPlayer->getTargetShift());
 
 		setFont("8bit");
 		// TEMPORARY FIX
@@ -642,27 +618,35 @@ void GraphicsOGL :: display() {
 
 	// TRANSFORMATIONS
 		void GraphicsOGL :: transformTranslation(float x, float y, float z) {
+
+			// Translate in OpenGL
 			glTranslatef(x, y, z);
 
-			mat4 rot(1, 0, 0, x,
+			// Create Translation Matrix
+			mat4 trMat(1, 0, 0, x,
 				0, 1, 0, y,
 				0, 0, 1, z,
 				0, 0, 0, 1);
 
-			modelMat *= rot;
+			// Apply Translation Matrix to Model Matrix
+			modelMat *= trMat;
 		}
 		void GraphicsOGL :: transformScale(float s) {
 			transformScale(s, s, s);
 		}
 		void GraphicsOGL :: transformScale(float xS, float yS, float zS) {
+
+			// Translate in OpenGL
 			glScalef(xS, yS, zS);
 
-			mat4 rot(xS, 0, 0, 0,
+			// Create Scale Matrix
+			mat4 trMat(xS, 0, 0, 0,
 				0, yS, 0, 0,
 				0, 0, zS, 0,
 				0, 0, 0, 1);
 
-			modelMat *= rot;
+			// Apply Scale Matrix to Model Matrix
+			modelMat *= trMat;
 		}
 		void GraphicsOGL :: transformRotationX(float angle) {
 			glRotatef(angle, 1, 0, 0);
@@ -1064,7 +1048,6 @@ maxAmt) {
 			s = .5;
 		drawHealth(dX,dY,s,amt,maxAmt);
 	}
-
 	void GraphicsOGL :: drawHealth(float dX, float dY, float scale, float amt, float maxAmt) {
 		if(amt < 0)
 			amt = 0;
@@ -1253,6 +1236,7 @@ maxAmt) {
 			curA = l->getLightA();
 			curRad = l->getLightRadius();
 
+			// Light Coordinates
 			lightLocations[numLights*3+0] = curX;
 			lightLocations[numLights*3+1] = curY;
 			lightLocations[numLights*3+2] = curZ;
@@ -1264,15 +1248,15 @@ maxAmt) {
 			numLights++;
 		}
 	}
+	// Function for Passing Lights to Shader
 	void GraphicsOGL :: passShaderLights() {
-
 		glUniform3fv(glGetUniformLocation(curProgram, "lights"), 100, lightLocations);
 		glUniform4fv(glGetUniformLocation(curProgram, "lightColors"), 100, lightColors);
 		glUniform1fv(glGetUniformLocation(curProgram, "lightRads"), 100, lightRadii);
 		glUniform1i(glGetUniformLocation(curProgram, "lightNum"), numLights);
 	}
+	// Function for Passing Shadows to Shader
 	void GraphicsOGL :: passShaderShadows() {
-
 		glUniform3fv(glGetUniformLocation(curProgram, "shadows"), 100, shadowLocations);
 		glUniform1i(glGetUniformLocation(curProgram, "shadowNum"),numShadows);
 	}
@@ -1327,19 +1311,6 @@ maxAmt) {
     		glUniform1i(glGetUniformLocation(curProgram, "Texture2"), 3);
     		glUniform1i(glGetUniformLocation(curProgram, "noiseTex"), 2);
 			//noiseTex->bind(GL_TEXTURE2);
-
-
-
-		float r = 640, l = 0, t = 640, b = 0, f = 1000, n = 1; 
-		//mat4x4 uMMatrix(2*n/(r-l),0,(r+l)/(r-l),0,0,2*n/(t-b),(t+b)/(t-b),0,0,0,-(f+n)/(f-n),(-2*f*n)/(f-n),0,0,-1,0);
-
-		GLfloat uMMatrix[16], uMatrix[16] = {
-			2*n/(r-l),0,(r+l)/(r-l),0,0,2*n/(t-b),(t+b)/(t-b),0,0,0,-(f+n)/(f-n),(-2*f*n)/(f-n),0,0,-1,0
-		};
-
-		gluInvertMatrix(uMatrix, uMMatrix);
-
-		glUniformMatrix4fv(glGetUniformLocation(curProgram, "uMMatrix"), 1, GL_FALSE, uMMatrix);
 	}
 
 	void GraphicsOGL :: setCurrentTextureSize(int w, int h) {
@@ -1428,141 +1399,27 @@ void GraphicsOGL :: setPerspective() {
 }
 
 
-unsigned long GraphicsOGL :: getTime() {
+// ACCESSOR/MUTATOR
+	//Get Screen Width
+	int GraphicsOGL :: getScreenWidth() {
+		return SCREEN_WIDTH;
+	}	
 
-	nanoseconds ms = duration_cast< nanoseconds >(
- 		high_resolution_clock::now().time_since_epoch()
-	);
+	//Get Screen Height
+	int GraphicsOGL :: getScreenHeight() {
+		return SCREEN_HEIGHT;
+	}
 
-	return ms.count();
-}
+	InputController* GraphicsOGL :: getInputController() {
+		return inputController;
+	}
+	Heightmap* GraphicsOGL :: getHeightmap() {
+		return terrain->getHeightmap();
+	}
+	TextController* GraphicsOGL :: getTextController() {
+		return tc;
+	}
+	SoundController* GraphicsOGL :: getSoundController() {
+		return sc;
+	}
 
-
-bool GraphicsOGL :: gluInvertMatrix(const float m[16], float invOut[16]) {
-    float inv[16], det;
-    int i;
- 
-    inv[0] = m[5]  * m[10] * m[15] -
-    m[5]  * m[11] * m[14] -
-    m[9]  * m[6]  * m[15] +
-    m[9]  * m[7]  * m[14] +
-    m[13] * m[6]  * m[11] -
-    m[13] * m[7]  * m[10];
- 
-    inv[4] = -m[4]  * m[10] * m[15] +
-    m[4]  * m[11] * m[14] +
-    m[8]  * m[6]  * m[15] -
-    m[8]  * m[7]  * m[14] -
-    m[12] * m[6]  * m[11] +
-    m[12] * m[7]  * m[10];
- 
-    inv[8] = m[4]  * m[9] * m[15] -
-    m[4]  * m[11] * m[13] -
-    m[8]  * m[5] * m[15] +
-    m[8]  * m[7] * m[13] +
-    m[12] * m[5] * m[11] -
-    m[12] * m[7] * m[9];
- 
-    inv[12] = -m[4]  * m[9] * m[14] +
-    m[4]  * m[10] * m[13] +
-    m[8]  * m[5] * m[14] -
-    m[8]  * m[6] * m[13] -
-    m[12] * m[5] * m[10] +
-    m[12] * m[6] * m[9];
- 
-    inv[1] = -m[1]  * m[10] * m[15] +
-    m[1]  * m[11] * m[14] +
-    m[9]  * m[2] * m[15] -
-    m[9]  * m[3] * m[14] -
-    m[13] * m[2] * m[11] +
-    m[13] * m[3] * m[10];
- 
-    inv[5] = m[0]  * m[10] * m[15] -
-    m[0]  * m[11] * m[14] -
-    m[8]  * m[2] * m[15] +
-    m[8]  * m[3] * m[14] +
-    m[12] * m[2] * m[11] -
-    m[12] * m[3] * m[10];
- 
-    inv[9] = -m[0]  * m[9] * m[15] +
-    m[0]  * m[11] * m[13] +
-    m[8]  * m[1] * m[15] -
-    m[8]  * m[3] * m[13] -
-    m[12] * m[1] * m[11] +
-    m[12] * m[3] * m[9];
- 
-    inv[13] = m[0]  * m[9] * m[14] -
-    m[0]  * m[10] * m[13] -
-    m[8]  * m[1] * m[14] +
-    m[8]  * m[2] * m[13] +
-    m[12] * m[1] * m[10] -
-    m[12] * m[2] * m[9];
- 
-    inv[2] = m[1]  * m[6] * m[15] -
-    m[1]  * m[7] * m[14] -
-    m[5]  * m[2] * m[15] +
-    m[5]  * m[3] * m[14] +
-    m[13] * m[2] * m[7] -
-    m[13] * m[3] * m[6];
- 
-    inv[6] = -m[0]  * m[6] * m[15] +
-    m[0]  * m[7] * m[14] +
-    m[4]  * m[2] * m[15] -
-    m[4]  * m[3] * m[14] -
-    m[12] * m[2] * m[7] +
-    m[12] * m[3] * m[6];
- 
-    inv[10] = m[0]  * m[5] * m[15] -
-    m[0]  * m[7] * m[13] -
-    m[4]  * m[1] * m[15] +
-    m[4]  * m[3] * m[13] +
-    m[12] * m[1] * m[7] -
-    m[12] * m[3] * m[5];
- 
-    inv[14] = -m[0]  * m[5] * m[14] +
-    m[0]  * m[6] * m[13] +
-    m[4]  * m[1] * m[14] -
-    m[4]  * m[2] * m[13] -
-    m[12] * m[1] * m[6] +
-    m[12] * m[2] * m[5];
- 
-    inv[3] = -m[1] * m[6] * m[11] +
-    m[1] * m[7] * m[10] +
-    m[5] * m[2] * m[11] -
-    m[5] * m[3] * m[10] -
-    m[9] * m[2] * m[7] +
-    m[9] * m[3] * m[6];
- 
-    inv[7] = m[0] * m[6] * m[11] -
-    m[0] * m[7] * m[10] -
-    m[4] * m[2] * m[11] +
-    m[4] * m[3] * m[10] +
-    m[8] * m[2] * m[7] -
-    m[8] * m[3] * m[6];
- 
-    inv[11] = -m[0] * m[5] * m[11] +
-    m[0] * m[7] * m[9] +
-    m[4] * m[1] * m[11] -
-    m[4] * m[3] * m[9] -
-    m[8] * m[1] * m[7] +
-    m[8] * m[3] * m[5];
- 
-    inv[15] = m[0] * m[5] * m[10] -
-    m[0] * m[6] * m[9] -
-    m[4] * m[1] * m[10] +
-    m[4] * m[2] * m[9] +
-    m[8] * m[1] * m[6] -
-    m[8] * m[2] * m[5];
- 
-    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
- 
-    if (det == 0)
-        return false;
- 
-    det = 1.0 / det;
- 
-    for (i = 0; i < 16; i++)
-        invOut[i] = inv[i] * det;
- 
-    return true;
-}

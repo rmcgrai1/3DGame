@@ -1,4 +1,5 @@
 // GraphicsOGL.h
+// Ryan McGrail
 
 #ifndef GRAPHICSOGL_H
 #define GRAPHICSOGL_H
@@ -34,14 +35,10 @@ class GraphicsOGL {
 		~GraphicsOGL();
 
 
-		bool gluInvertMatrix(const float [16], float [16]);
 		void idle();
 		void display();
 
 		void logMessage(string);
-		void playSound(string);
-		void playSound(string,float,float,float,float,float,float);
-
 
 		void setDepthTest(bool);
 		void setCulling(bool);
@@ -167,9 +164,6 @@ class GraphicsOGL {
 		//PROJECTION
 			void setOrtho();
 			void setPerspective();
-
-		//TIME
-			unsigned long getTime();
 
 	private:
 		void initialize3D(int, char* []);

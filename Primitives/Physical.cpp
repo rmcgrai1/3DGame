@@ -30,6 +30,7 @@ Physical :: Physical(float myX, float myY, float myZ) : Instantiable() {
 	direction = 0;
 
 	onGround = true;
+	onHeightmap = true;
 }
 
 // Update Function
@@ -41,8 +42,16 @@ void Physical :: update(GraphicsOGL* gl, float deltaTime) {
 	// Update Physics
 	updateMotion(deltaTime);
 	// Update Collisions
-	collideHeightmap(gl, gl->getHeightmap());
-	collidePieces();
+	bool onHM, onP = false;	
+	onHM = collideHeightmap(gl, gl->getHeightmap());
+
+	if(this == gl->getPlayer())
+		onP = collidePieces();
+
+	if(onHM)
+		onHeightmap = true;
+	else if(onP)
+		onHeightmap = false;
 }
 	
 // Draw Function
@@ -136,7 +145,7 @@ void Physical :: placeOnGround() {
 		floorZ = z;
 
 		// Run Landing Function (Might Bounce, Play Sound?)
-		if(zVel != GRAVITY_ACCELERATION && zVel != -2*GRAVITY_ACCELERATION)
+		if(zVel < 2*GRAVITY_ACCELERATION)
 			land();
 
 		// If Z Vel Not Bouncing after Land(), Make Sure it's Set to 0!
@@ -180,9 +189,11 @@ bool Physical :: collideHeightmap(GraphicsOGL* gl, Heightmap* hm) {
 			
 			// Assume Player is On Ground
 			placeOnGround();
-		}
 
-		return true;
+			return true;
+		}
+		else
+			return false;
 	}
 }
 

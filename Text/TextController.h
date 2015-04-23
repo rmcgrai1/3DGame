@@ -5,12 +5,6 @@
 #ifndef TEXTCONTROLLER_H
 #define TEXTCONTROLLER_H
 
-#include <vector>
-#include <string>
-#include "../Graphics/GraphicsOGL.h"
-#include "TextInterpreter.h"
-#include "../Primitives/Drawable.h"
-using namespace std;
 
 	// Initialize Format Struct
 	typedef struct Format {
@@ -21,6 +15,14 @@ using namespace std;
 		int bold;		// Bold
 		int underline;		// Underline
 	} Format;
+
+
+#include <vector>
+#include <string>
+#include "../Graphics/GraphicsOGL.h"
+#include "TextInterpreter.h"
+#include "../Primitives/Drawable.h"
+using namespace std;
 
 
 class TextInterpreter;

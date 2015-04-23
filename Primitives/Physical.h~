@@ -1,4 +1,5 @@
 // Physical.h
+// Ryan McGrail
 
 // The Physical class is used for any object that will undergo basic physics. It can collide with other objects,
 // and will automatically travel based on its xy- and z- velocity and direction. Not everything that can collide
@@ -49,6 +50,7 @@ class Physical : public Instantiable {
 
 								// COLLISION FUNCTIONS
 		bool collideHeightmap(GraphicsOGL*, Heightmap*);			// Collide with Heightmap
+		bool collidePieces();										// Collide w/ Pieces
 
 								// VIRTUAL FUNCTIONS
 		virtual void land() = 0;				// What Happens when Landing
@@ -71,10 +73,10 @@ class Physical : public Instantiable {
 		float zP;						// Previous Z Coordinate
 		float vel;						// XY Velocity
 		float zVel;						// Z Velocity
-		float direction;					// Direction
-		float floorZ;
+		float direction;				// Direction
+		float floorZ;					// Previous Ground z
 
-		bool onGround;
+		bool onGround;					// Is Object on Ground?
 };
 
 #endif

@@ -13,6 +13,11 @@
 
 Camera :: Camera() {
 	camX = camY = camZ = toX = toY = toZ = newCamX = newCamY = newCamZ = camDir = 0;
+
+	// Temp
+	camZ = 270;
+	toZ = 270;
+	newCamZ = 270;
 }
 		
 void Camera :: setProjectionPrep(float cX, float cY, float cZ, float tX, float tY, float tZ) {
@@ -67,7 +72,7 @@ void Camera :: setProjection(GraphicsOGL* gl) {
 	bgX += .25*d*add;*/
 		camX = cX;	focusX = camX;
 		camY = cY;	focusY = camY;
-		camZ = cZ;
+		//camZ = cZ;
 
 	camDir = calcPtDir(camX,camY,toX,toY);
 

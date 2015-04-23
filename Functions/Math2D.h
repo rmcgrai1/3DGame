@@ -25,7 +25,7 @@
 // GEOMETRIC
 	float calcPtDis(float, float, float, float);								// Calculate 2D Distance Btwn 2 Points
 	float calcLineDis(float, float, float, float, float, float);				// Calculate 2D Distance to Line
-	float calcLinePt(float, float, float, float, float, float, float, float);	// Calculate Nearest Point on Line
+	void calcLinePt(float, float, float, float, float, float, float&, float&);	// Calculate Nearest Point on Line
 
 // TRIG
 	float calcLenX(float, float);												// Calculate X Distance along Direction

@@ -64,7 +64,7 @@ Texture* TextureExt :: getFrame(int ind) {
 	return frameList.at(ind % getFrameNumber());
 }
 Texture* TextureExt :: getFrame(float ind) {
-	return frameList.at(modf(ind, getFrameNumber()));	
+	return frameList.at(mod(ind, getFrameNumber()));	
 }
 
 

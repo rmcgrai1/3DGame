@@ -39,7 +39,7 @@ class Character : public Physical {
 		float getHP();
 		float getMaxHP();
 		float getDestroyFraction();
-		float getTarget();
+		Character* getTarget();
 		float getTargetShift();
 
 		void drawStatWindow(GraphicsOGL*, float);
@@ -90,7 +90,6 @@ class Character : public Physical {
 		float destroyToY;
 		float destroyToZ;
 		float destroyShrTimer;
-
 
 		float wXRot;
 		float wYRot;

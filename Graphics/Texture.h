@@ -29,7 +29,7 @@ class Texture {
 		void unbind(GLenum);						// Unbind Texture from Specific TextureUnit
 		
 	private:
-		load(string, bool);							// Load Texture
+		void load(const string&, bool);							// Load Texture
 
 		string name;								// Name of Texture
 		string fileName;							// Name of File

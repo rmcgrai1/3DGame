@@ -77,6 +77,7 @@ class Physical : public Instantiable {
 		float floorZ;					// Previous Ground z
 
 		bool onGround;					// Is Object on Ground?
+		bool onHeightmap;
 };
 
 #endif
