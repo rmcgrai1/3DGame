@@ -43,3 +43,9 @@ The spacebar will allow the player to jump.
 ####Inventory
 The inventory can be accessed with the 'i' button and exited out of with the same key. The inventory does not have anything that can be accessed 
 at this time but it can be seen and the items can be moved around from one part to another.
+
+#Bugs:
+- character sinks through ground at certain seams
+- smokerings are not always created when player is walking
+- trees/shadows disappear too soon at edge
+- randomly slows down tremendously
