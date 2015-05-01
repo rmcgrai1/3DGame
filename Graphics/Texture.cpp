@@ -11,26 +11,18 @@ using namespace std;
 
 // Constructors
 Texture::Texture(string fileName) {
-
 	name = fileName.c_str();
-
 	load(fileName, false);
 }
-
 Texture::Texture(string fileName, bool isFont) {
-
 	name = fileName.c_str();
 	load(fileName, isFont);
 }
-
 Texture::Texture(string myName, const string& fileName) {
-
 	name = myName.c_str();
 	load(fileName, false);
 }
-
 Texture::Texture(string myName, const string& fileName, bool isFont) {
-
 	name = myName.c_str();
 	load(fileName, isFont);
 }

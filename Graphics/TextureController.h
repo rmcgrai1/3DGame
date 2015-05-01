@@ -1,5 +1,5 @@
 // TextureController.h
-
+// Ryan McGrail
 
 #ifndef TEXTURECONTROLLER_H
 #define TEXTURECONTROLLER_H
@@ -15,14 +15,14 @@ using namespace std;
 
 class TextureController {
 	public:
-		static void initialize();
-		static Texture* getTexture(string);
+		static void initialize();							// Initialize Textures
+		static Texture* getTexture(string);					// Get Texture
 
 	private:
-		TextureController();
-		static void addTexture(string,string);
-		static map<string, Texture*> textureMap;
-		static int numTextures;
+		TextureController();								// Constructor (This Should NOT be Instantiated!)
+		static void addTexture(string,string);				// Add Texture
+		static map<string, Texture*> textureMap;			// Texture Map
+		static int numTextures;								// Number of Textures
 };
 
 #endif

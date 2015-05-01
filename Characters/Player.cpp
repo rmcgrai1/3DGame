@@ -1,5 +1,5 @@
 // Player.cpp
-
+// Ryan McGrail
 
 #include <deque>
 #include <GL/freeglut.h>
@@ -19,145 +19,112 @@
 using namespace std;
 
 
-float nCDir = 0;
 float jumpSpeed = sqrt(abs(2*Physical::GRAVITY_ACCELERATION*24));
 
-
+// Constructor
 Player :: Player(float x, float y, float z) : Character(x,y,z) {
-	Player::camDis = 70;
+	camDis = 70;
+	camDir = 0;
 }
 
 void Player :: update(GraphicsOGL* gl, float deltaTime) {
 
-	gl->logMessage("Player.cpp, update()");
-
-
 	Character :: update(gl, deltaTime);
 
-	// Update User Control of Player
-
+	// Update User Control of Player (If NOT Knocked Back)
 	if(knockbackTimer == -1)
-		updateControl(gl,deltaTime);
-
-
-
-	/*glEnable(GL_LIGHT0);
-	GLfloat lightpos[] = {x, y, z, 1};
-	//GLfloat lightpos[] = {0,0,-1, 0};
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);*/
-
-
-
-	float dir = nCDir;
+		updateControl(gl,deltaTime);	
 
 	// Place Camera on Heightmap
-		Heightmap* h = gl->getHeightmap();
-		float cX, cY, cZ;
-		cX = x-calcLenX(camDis,nCDir);
-		cY = y-calcLenY(camDis,nCDir);
+	Heightmap* h = gl->getHeightmap();
+	float cX, cY, cZ, dir = camDir;
 
-		if(onHeightmap)
-			cZ = h->getHeightXY(cX,cY);
-		else
-			cZ = floorZ;
+	// Get Camera Position
+	cX = x-calcLenX(camDis,camDir);
+	cY = y-calcLenY(camDis,camDir);
 
-		if(target == NULL || !gl->getInputController()->checkLetter('q'))
-			gl->setProjectionPrep(cX,cY,cZ+8+10,x,y,floorZ+8);
-		else {
-			float tS = targetShift*.1, toX, toY, toZ;
-			toX = tS*(target->getX()) + (1-tS)*(x);
-			toY = tS*(target->getY()) + (1-tS)*(y);
-			toZ = floorZ+8;
+	// If on Heightmap, Camera Z is Heightmap Z
+	if(onHeightmap)
+		cZ = h->getHeightXY(cX,cY);
+	// Otherwise, Use Player's Floor Z
+	else
+		cZ = floorZ;
 
-			//direction = calcPtDir(x,y,target->getX(),target->getY());
-
-			gl->setProjectionPrep(cX,cY,cZ+8+10,toX,toY,toZ);
-		}
+	// Set Camera Position Behind Player 
+	gl->setProjectionPrep(cX,cY,cZ+8+10,x,y,floorZ+8);
 }
 
+// Draw Player
 void Player :: draw(GraphicsOGL* gl, float deltaTime) {
-
-	gl->logMessage("Player.cpp, draw()");
 
 	Character :: draw(gl, deltaTime);
 }
 
 void Player :: updateControl(GraphicsOGL* gl, float deltaTime) {
-	int PrevzState = 0;
+
 	InputController* i = gl->getInputController();
-
-	float dir = i->getWASDDir(), cDir = gl->getCamDir(), aDir, d;
-
-	//flight
-	/*int zState = i->checkLetter('z'); // get current state of the key
-	if(zState && !PrevzState) { // if key just pressed down
-		hopZVel += 0;
-		zVel = 0;
-		hopZ = 0;
-		z += 10;
-		floorZ = z;
-		flight = !flight; // toggle
-	}
-	PrevzState = zState;*/ // record current key state in previous key state for next iteration
-
-
-	aDir = dir-90;
+	float dir = i->getWASDDir(), cDir = gl->getCamDir(), d;
 
 	// If Jump Button Pressed...
 	if(i->checkKey(' ')) {
+		// If on Ground, Jump
 		if(onGround) {
 			zVel = jumpSpeed;
 			onGround = false;
 		}
 	}
-	else if(!onGround && zVel > 0) {
+	// Otherwise, if In Air, Limit Jumping Height
+	else if(!onGround && zVel > 0)
 		zVel += (0 - zVel)/3;
-	}
 
-	// If a Button is Held...
+	// If a Moving Button is Held...
 	if(dir != -1) {
+	
+		// Move Player, Increase Speed
 		isMoving = true;
 		vel += ((1 + i->getShift()*2) - vel)/(3 + (vel > 1)*10);
 
+		// Rotate Camera Angle Based on Held Direction
 		if(dir == 90 || dir == -90) {
-			nCDir = cDir;
+			camDir = cDir;
 			d = cDir - 90 + dir;	
 		}
 		else if(dir == 0 || dir == 180) {
 			d = cDir - 90 + dir;	
-			nCDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
+			camDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
 		}
 		else if(dir == 45 || dir == 135) {
 			d = cDir - 90 + dir;	
-			nCDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
+			camDir = cDir + .2*calcTurnToDir(cDir,cDir-90+dir);
 		}
 		else {
 			d = cDir - 90 + dir;	
-			nCDir = cDir - .2*calcTurnToDir(cDir,180+cDir-90+dir);
+			camDir = cDir - .2*calcTurnToDir(cDir,180+cDir-90+dir);
 		}
 
+		// Face Held Direction
 		direction = d;
 		faceDirection(d);
 	}
+	// Otherwise, Slow to Stop
 	else {
 		vel += (0 - vel)/(4 + vel*2);
 		isMoving = false;
 	}
 
-	if(vel > .01) {
+	// If Moving, Hop
+	if(vel > .01)
 		hop();
-	}
 	else
 		vel = 0;
 
-	
+	// Get Direction from Center of Screen to Mouse
 	float mouseDir = calcPtDir(320,240, i->getMouseX(), i->getMouseY());
+	
+	// Set Direction of Sword
 	toolDirection(cDir-90 + -mouseDir);
 
+	// If Left Mouse Clicked, Attack
 	if(i->checkLeftMouse())
 		attack();
-}
-
-void Player :: land() {
-	Character :: land();
 }

@@ -1,5 +1,5 @@
 // Shader.h
-
+// Ryan McGrail
 
 #ifndef SHADER_H
 #define SHADER_H
@@ -12,14 +12,14 @@ using namespace std;
 
 class Shader {
 	public:
-		Shader(string);
-		GLuint getProgram();
-		string getName();
+		Shader(string);								// Constructor
+		GLuint getProgram();						// Get Shader Program
+		string getName();							// Get Shader Name
 
 	private: 
-		void addSubShader(const char*, GLenum);
-		GLuint program;
-		string name;
+		void addSubShader(const char*, GLenum);		// Add Subshader (Vertex or Fragment)
+		GLuint program;								// Shader Program
+		string name;								// Shader Name
 };
 
 #endif

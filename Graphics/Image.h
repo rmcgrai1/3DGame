@@ -1,5 +1,5 @@
 // Image.h
-
+// Ryan McGrail
 
 #ifndef IMAGE_H
 #define IMAGE_H
@@ -13,22 +13,18 @@ using namespace std;
 
 class Image {
 	public:
-		Image(string);
-		int getWidth();
-		int getHeight();
-		void* getData();
-		int getValue(int, int);
-		void getPixelData();		
-		void interleave(unsigned char*);
+		Image(string);								// Constructor
+		int getWidth();								// Getting Image Width
+		int getHeight();							// Getting Image Height
+		void* getData();							// Getting Image Data Buffer
+		int getValue(int, int);						// Getting Grayscale Value of Pixel
+		void interleave(unsigned char*);			// Interleaving RGBA Data for OpenGL
 
 	private:
+		CImg<unsigned char> image;					// CImg Image
 
-
-		CImg<unsigned char> image;
-		//CImg<unsigned char> iImg;
-
-		int width;
-		int height;
+		int width;									// Width
+		int height;									// Height
 };
 
 #endif

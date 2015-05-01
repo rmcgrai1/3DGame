@@ -1,4 +1,5 @@
 // ShaderController.cpp
+// Ryan McGrail
 
 #include <string>
 #include <map>
@@ -9,18 +10,22 @@
 #include "ShaderController.h"
 using namespace std;
 
+// Constructor
 ShaderController :: ShaderController() {
 	initialize();
 }
 
-
+// Get Shader w/ Name
 Shader* ShaderController :: getShader(string name) {
 	return shaderMap[name];
 }
+
+// Get Shader Program w/ Name
 GLuint ShaderController :: getProgram(string name) {
 	return getShader(name)->getProgram();
 }
 
+// Initialize Shaders
 void ShaderController :: initialize() {
 	addShader("Diffuse");
 	addShader("Invert");
@@ -40,6 +45,8 @@ void ShaderController :: initialize() {
 	addShader("pineBark");
 	addShader("Piece");
 }
+
+// Load/Add New Shader
 void ShaderController :: addShader(string name) {
 	shaderMap[name] = new Shader(name);
 }

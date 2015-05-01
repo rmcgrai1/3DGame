@@ -1,7 +1,0 @@
-BUGS:
-
-- character sinks through ground at certain seams
-- smokerings are not always created when player is walking
-- trees/shadows disappear too soon at edge
-- randomly slows down tremendously
-- 

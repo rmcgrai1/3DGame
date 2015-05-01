@@ -1,5 +1,5 @@
 // Camera.h
-
+// Ryan McGrail
 
 #ifndef CAMERA_H
 #define CAMERA_H
@@ -9,35 +9,34 @@
 class GraphicsOGL;
 class Camera {
 	public:
-		Camera();
-		float getCamDir();		
-		void setProjection(GraphicsOGL*);
-		void setProjectionPrep(float, float, float, float, float, float);
+		Camera();																			// Constructor
+		float getCamDir();																	// Get XY Direction of Camera
+		void setProjection(GraphicsOGL*);													// Set Projection
+		void setProjectionPrep(float, float, float, float, float, float);					// Prep Values for Setting Projection
 
-		float getX();
-		float getY();
-		float getZ();
+		float getX();																		// Get X Position of Camera
+		float getY();																		// Get Y Position of Camera
+		float getZ();																		// Get Z Position of Camera
 
-		void getNormal(float[3]);
-		void getPosition(float[3]);
-		void getShaderPosition(float[3]);
-		void getDirection(float[3]);
+		void getNormal(float[3]);															// Get XYZ Direction of Camera, Normalized
+		void getPosition(float[3]);															// Get XYZ Position of Camera
+		void getShaderPosition(float[3]);													// Get XYZ Position of Camera for Shaders (Water Shader)
+		void getDirection(float[3]);														// Get XYZ Direction of Camera for Shaders
 
 	private:
 
-		float camX;
+		float camX;																			// CURRENT Position of Camera
 		float camY;
 		float camZ;
-		float focusX;
-		float focusY;
-		float focusZ;
-		float newCamX;
-		float newCamY;
-		float newCamZ;
-		float toX;
+
+		float toX;																			// CURRENT Position Camera is Looking At
 		float toY;
 		float toZ;
-		float camDir;
+
+		float focusZ;																		// NEW Position Camera will be Looking At, Z (To Smoothly Move Camera Focus)
+		float newCamZ;																		// New Position of Camera, Z (To Smoothly Move Camera)
+
+		float camDir;																		// XY Direction of Camera
 };
 
 #endif

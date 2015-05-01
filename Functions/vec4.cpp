@@ -8,6 +8,8 @@ using namespace std;
 
 // Constructor
 vec4 :: vec4(float nA1, float nA2, float nA3, float nA4) {
+
+	// Set Values in Array
 	array[0] = nA1; array[1] = nA2; array[2] = nA3; array[3] = nA4;
 }
 

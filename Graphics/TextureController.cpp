@@ -1,4 +1,5 @@
 // TextureController.cpp
+// Ryan McGrail
 
 #include <iostream>
 #include <string>
@@ -11,16 +12,21 @@
 using namespace std;
 
 
+// Static Variables
 int TextureController :: numTextures = 0;
 map<string,Texture*> TextureController :: textureMap;
 
+
+// Private Constructor
 TextureController :: TextureController() {
 }
 	
+// Getting Texture from Map
 Texture* TextureController :: getTexture(string name) {
 	return textureMap[name];
 }
 
+// Initialize Textures
 void TextureController :: initialize() {
 	addTexture("Grass","Resources/Images/grass.png");
 	addTexture("Sand","Resources/Images/sand.png");
@@ -35,9 +41,11 @@ void TextureController :: initialize() {
 	addTexture("Heart3","Resources/Images/heart3.png");
 	addTexture("Heart4","Resources/Images/heart4.png");
 }
+
+// Adding Textures
 void TextureController :: addTexture(string name, string fileName) {
+
+	// Load Texture, Increment Number of Textures
 	textureMap[name] = new Texture(fileName,false);
 	numTextures++;
-
-	cout << "Imported texture " << name << " from file " << fileName << "." << endl;
 }

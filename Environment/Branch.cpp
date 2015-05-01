@@ -1,5 +1,5 @@
 // Branch.cpp
-
+// Ryan McGrail
 
 #include "../Functions/Math2D.h"
 #include <stdlib.h>
@@ -11,6 +11,7 @@
 using namespace std;
 
 
+// Constructor
 Branch :: Branch(int rec, int numB, float l, float d, float zD) {
 	rec++;
 	numBranches = numB;
@@ -18,10 +19,11 @@ Branch :: Branch(int rec, int numB, float l, float d, float zD) {
 	dir = d;
 	zDir = zD;
 
-	
+	// If 10 Levels of Recursion, STOP
 	if(rec == 10)
 		numBranches = 0;
 
+	// Recursively Add Branches
 	for(int i = 0; i < numBranches; i++) {
 		int bNB;
 		if(len > 2)
@@ -31,18 +33,18 @@ Branch :: Branch(int rec, int numB, float l, float d, float zD) {
 		float bL, bD, bZD, f;
 		f = 16/(16-len);
 
-		//cout << f << endl;
 
-		//bNB *= f;
-
+		// Determine New Branch Length, Branch Direction, Branch ZDirection
 		bL = (.3 + ((rand() % 100)/100.)*.3)*l;
 		bD = d + (((rand() % 100)/100.)-.5)*60*f;
 		bZD = zD + (((rand() % 100)/100.)-.5)*60*f;
 
+		// Add Branch
 		subbranches.push_back(new Branch(rec,bNB, bL, bD, bZD));
 	}
 }
-	
+
+// Draw Branches as 3D Lines
 void Branch :: draw(GraphicsOGL* gl, float x, float y, float z) {
 
 	float x2, y2, z2;

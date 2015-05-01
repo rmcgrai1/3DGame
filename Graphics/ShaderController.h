@@ -1,5 +1,5 @@
 // ShaderController.h
-
+// Ryan McGrail
 
 #ifndef SHADERCONTROLLER_H
 #define SHADERCONTROLLER_H
@@ -15,14 +15,14 @@ using namespace std;
 
 class ShaderController {
 	public:
-		ShaderController();
-		Shader* getShader(string);
-		GLuint getProgram(string);
+		ShaderController();						// Constructor
+		Shader* getShader(string);				// Getting Shader w/ Name
+		GLuint getProgram(string);				// Getting Shader Program w/ Name
 
 	private:
-		void initialize();
-		void addShader(string);
-		map<string, Shader*> shaderMap;
+		void initialize();						// Initializing Shaders
+		void addShader(string);					// Adding Shader
+		map<string, Shader*> shaderMap;			// Map of Shaders
 };
 
 #endif

@@ -25,21 +25,15 @@ class Sound {
 		ALuint playMusic();																	// Play as Music (Looping)
 		ALuint playSound();																	// Play Sound w/o Source, Position
 		void playSound(ALuint src);															// Play Sound w/ Source
-		void playSound(int index);															// Play Sound at Index
 		ALuint playSound(double x, double y, double z, double vX, double vY, double vZ);	// Play Sound at Position, with Velocity
-		void pauseSound(int index);															// Pause Sound at Index
-		void stopSound(int index);															// Stop Sound at Index
 		void clean();																		// Remove Sources that Stopped Playing
 		int getNumPlaying();																// Get # of this Sound Playing Currently
 
 		void kill();																		// Kill all Sources
-		void killSource(ALuint src);														// Kill Specific Source
 
 
 	private:
 		int loadALData(string fileName);													// Load AL Data from File
-		void killALData();																	// Delete AL Data
-
 
 		bool valid;																			// If Sound Exists, Can be Played
 		float volume;																		// Volume

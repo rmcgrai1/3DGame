@@ -1,5 +1,5 @@
 // Character.cpp
-
+// Ryan McGrail
 
 #include <deque>
 #include <string>
@@ -39,109 +39,103 @@ using namespace std;
 #define TARGET_DISTANCE_MAX 200
 
 
+// Static Character list
 SortedList<Character*> Character :: characterList;
 
 // Gravity for Hopping
-float Character::GRAVITY_HOP_ACCELERATION = -.125*.75; //GRAVITY_ACCELERATION*.75;
+float Character::GRAVITY_HOP_ACCELERATION = -.125*.75;
 
 // Calculate Jumping Speed for Hopping
 float hopHeight = 3;
 float hopSpeed = sqrt(abs(2*Character::GRAVITY_HOP_ACCELERATION*hopHeight));
+
+// Height of Character
 float h = 8;
 
 
+// Constructor
 Character :: Character(float x, float y, float z) : Physical(x,y,z) {
 
+	// Randomize Color
 	appearanceR = rnd();
 	appearanceG = rnd();
 	appearanceB = rnd();
+	
+	// Randomize Scale
 	appearanceXScale = rnd(.9,1.1);
 	appearanceYScale = rnd(.9,1.1);
 	appearanceZScale = rnd(.9,1.1);
 
+	// Radius
 	size = 6;
 
+	// Randomize Stats
 	float baseHP = rnd()*100;
 	float baseAtk = rnd()*100;
 	float baseDef = rnd()*100;
-
 	level = ceil(rnd()*50);
 	hp = maxHP = (baseHP + 50)*level/50 + 10;//3.*level/10;
 	atk = (baseAtk)*level/50 + 5;
 	def = (baseDef)*level/50 + 5;
 
+	// Initialize Hop Variables
 	hopX = 0;
-	faceDir = 0;
-	toolDir = 0;
-
-	isHurt = false;
-
-	attackTimer = -1;
-
-	knockbackTimer = -1;
-	knockbackDir = 0;
-
-	target = NULL;
-	targetShift = 0;
-	targetTimer = -1;
-
-	destroyShrTimer = destroyTimer = destroyToX = destroyToY = destroyToZ = -1;
-
 	hopZ = 0;
 	hopZVel = 0;
 	hopSc = 1;
 	hopDir = 1;
+	
+	// Initialize Directions
+	faceDir = 0;
+	toolDir = 0;
 
+	// Initialize Attack Timer
+	attackTimer = -1;
+
+	// Initialize Knockback Vars
+	isHurt = false;
+	knockbackTimer = -1;
+	knockbackDir = 0;
+
+	// Initialize Target Vars
+	target = NULL;
+	targetShift = 0;
+	targetTimer = -1;
+
+	// Initialize Destroy Vars
+	destroyShrTimer = destroyTimer = destroyToX = destroyToY = destroyToZ = -1;
+
+	// Randomize Shape
 	shape = floor(rnd()*9);
 
-	
+	// Initialize Weapon Rots
 	wXRot = 0;
 	wYRot = 0;
 	wZRot = 0;
 
-
-	
+	// Get Sword Texture
 	swordHiltTex = TextureController::getTexture("bark");
 
+	// Add to Character List
 	characterList.add(this);
 }
 
-float Character :: calcDamage(float attackPower, Character* attacker, Character* defender) {
-	
-	float modifier = 1.*1*1*1*(.85 + .15*rnd());
 
-	return ((2.*attacker->level + 10)/250*(attacker->atk/defender->def)*attackPower + 2)*modifier;
-}
-
-float Character :: getSize() {
-	return size;
-}
-
-float Character :: getHP() {
-	return hp;
-}
-
-float Character :: getMaxHP() {
-	return maxHP;
-}
-
-float Character :: getDestroyFraction() {
-	if(destroyTimer == -1)
-		return -1;
-	else if(destroyTimer > -1)
-		return 1 - destroyTimer/DESTROY_TIMER_MAX;
-	else
-		return destroyShrTimer;
-}
-
+// Taking Damage
 void Character :: damage(Character* attacker, float dDir) {
+	// If Not Knocked Back or Dead,
 	if(hp > 0 && knockbackTimer == -1) {
+	
+		// Damage and Knockback
 		hp -= calcDamage(50,attacker,this);
 		knockback(dDir);
 		isHurt = true;
 
+		// If Dead, Start Dying
 		if(hp <= 0) {
 			SoundController::playSound("exploding",this);
+			
+			//Start Dying Animation
 			destroyTimer = DESTROY_TIMER_MAX;
 			destroyToX = x + calcLenX(5,dDir);
 			destroyToY = y + calcLenY(5,dDir);
@@ -261,7 +255,7 @@ void Character :: damage(Character* attacker, float dDir) {
 		}
 	}
 	
-	
+	// Destroy
 	void Character :: destroy() {
 		
 		float dX,dY,dZ, si, sm;
@@ -290,12 +284,14 @@ void Character :: damage(Character* attacker, float dDir) {
 		characterList.destroy(this);
 	}
 
+// Attacking
 void Character :: attack() {
+	// If Already Attacking, Quit
 	if(attackTimer > -1)
 		return;
 
+	// Play Attacking Sound
 	SoundController::playSound("swordSwing",this);
-	//new AttackSwing(x,y,z,toolDirection);
 
 	attackTimer = ATTACK_TIMER_MAX;
 
@@ -313,8 +309,10 @@ void Character :: attack() {
 		float dis = calcPtDis(atkX,atkY,tX,tY);
 		float tS = t->getSize()*5;
 
+		// If within Attacking Distance...
 		if(dis < (atkR + tS)) {
 			float dir = calcPtDir(atkX,atkY,tX,tY);
+			// If Sword is Facing Tree, Damage it
 			if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
 				SoundController::playSound("swordHitWood",this);
 				t->damage(dir);
@@ -324,19 +322,24 @@ void Character :: attack() {
 		}
 	}
 
+	// Attack Characters
 	for(int i = 0; i < characterList.size(); i++) {
 		Character* c = characterList[i];
 
+		// Ensure Character we're Attacking isn't Ourself!
 		if(c != this) {
-
 			float cX = c->getX(), cY = c->getY();
 			float cS = 6, safety = 3;
 
+			// If Not Above or Below...
 			if(z+h >= c->z+safety && z <= c->z+h-safety) {
 				float dis = calcPtDis(atkX,atkY,cX,cY);
 
+				// If Within Attacking Distance...
 				if(dis < (size + c->size + cS)) {
 					float dir = calcPtDir(atkX,atkY,cX,cY);
+					
+					// If Facing Character, Attack
 					if(abs(calcAngleDiff(dir, toolDir)) < atkAng) {
 						SoundController::playSound("swordHitFlesh",this);
 						SoundController::playSound("attackCollision",this);
@@ -352,105 +355,93 @@ void Character :: attack() {
 
 }
 
+// Collide w/ Trees
 void Character :: collideTree() {
+
+	// Loop Through Trees
 	for(int i = 0; i < Tree::treeList.size(); i++) {
 		Tree* t = Tree::treeList[i];
 
+		// Get Tree Position, Distance, Radius
 		float tX = t->getX(), tY = t->getY();
 		float dis = calcPtDis(x,y,tX,tY);
 		float tS = t->getSize()*5;
 
+		// If Inside Tree...
 		if(dis < (size + tS)) {
 			float dir = calcPtDir(x,y,tX,tY);
 
-			float cNX, cNY, vNX, vNY;
-			cNX = calcLenX(1, dir);
-			cNY = calcLenY(1, dir);
-
+			// Move Player Out of Tree
 			float aX, aY;
 			aX = calcLenX(tS+size, dir);
 			aY = calcLenY(tS+size, dir);
-
 			x = tX - aX;
 			y = tY - aY;
 
+			// Slow Player
 			float friction = .5;
 			vel *= friction;
 		}
 	}
 }
 
+// Collide w/ Characters
 void Character :: collideCharacter() {
+
+	// Loop through Characters
 	for(int i = 0; i < characterList.size(); i++) {
 		Character* c = characterList[i];
 
+		// If Character is Not This, then Collide w/ It
 		if(c != this) {
 			float dis = calcPtDis(x,y,c->x,c->y);
 
+			// If Close Enough to Collide w/
 			if(dis < (size + c->size)) {
 
 				float safety = 2;
+				// Landing on Top
 				if(z <= c->z+h+safety && zP >= c->z+h-safety) {
+				
+					// Move Along w/ Character as it Moves
 					x += c->x-c->xP;
 					y += c->y-c->yP;
 					z += c->z-c->zP;
 					zP = c->z+h;
+					
+					// Consider this Ground
 					placeOnGround();
 
+					// Allow "Steering"
 					c->direction = toolDir;
 					c->faceDir = toolDir;
 					c->toolDir = toolDir;
 				}
+				// Colliding w/ Side
 				else if(z+h >= c->z && z <= c->z+h) {
 					float dir = calcPtDir(x,y,c->x,c->y);
+					
+					// Dtermine Halfway Point
 					float hX, hY;
 					hX = (x + c->x)/2;
 					hY = (y + c->y)/2;
 
-
-					float cNX, cNY, vNX, vNY;
-					cNX = calcLenX(1, dir);
-					cNY = calcLenY(1, dir);
-
-					vNX = calcLenX(1, direction);
-					vNY = calcLenY(1, direction);
-
-					float pref, p;
-					pref = abs(cNX*vNX + cNY*vNY);
-
-					if(pref > .5)
-						p = 1;
-					else
-						p = 0;
-
+					// Move Characters
 					float aX, aY;
 					aX = calcLenX(1, dir);
 					aY = calcLenY(1, dir);
-
-
+					
 					x = hX - aX*size;
 					y = hY - aY*size;
 					c->x = hX + aX*c->size;
 					c->y = hY + aY*c->size;
 				}
-
-				/*if(vel > c->vel) {
-					c->x = x + aX;
-					c->y = y + aY;
-				}
-				else {
-					x = c->x - aX;
-					y = c->y - aY;
-				}*/
-
-				//float friction = .5;
-				//vel *= friction;
-				//c->vel *= friction;
 			}
 		}
 	}
 }
 
+// Drawing Character
 void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	Heightmap* hm = gl->getHeightmap();
@@ -465,8 +456,9 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		xyRot = 0;
 	}
 
-
 	float destShrSc;
+	
+	// When Knocked Back, Move Weapon Up (upZ) and Scale Model Vertically (scZ)
 	float upF = knockbackTimer/KNOCKBACK_TIMER_MAX;
 	float upZ = 10*pow(sin(upF*3.14159),.125)*pow(1-upF,.8);
 	float scZ = .5*sin(upF*6*3.14159);
@@ -528,19 +520,21 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	// Set Drawing Color to Character Color
 	gl->setColor(255*appearanceR,255*appearanceG,255*appearanceB);
 
-	
+	// Translate Model
 	gl->transformTranslation(destShX,destShY,destShZ);
 	gl->transformTranslation(x,y,z+dHopZ);
 	
 	if(onGround/*&& hopZ <= 0*/) {
-
+		// If on Heightmap, Rotate to Ground
 		if(onHeightmap) {
 			gl->transformRotationZ(setupRot);	
 			gl->transformRotationX(xyRot);
 			gl->transformRotationZ(-setupRot);
 		}
 		
+		// Rotate for Shape Direction
 		gl->transformRotationZ(faceDir);
+		// Rotate for Hopping
 		gl->transformRotationX(-dHopX*10);		
 		gl->transformRotationY(-dHopZVel*10);		
 		gl->transformTranslation(-dHopZVel,dHopX,0);	
@@ -548,27 +542,37 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	else
 		gl->transformRotationZ(faceDir);
 
-	//gl->transformTranslation(-hopZVel,hopX,0);
+	// Scale for Hops
 	gl->transformScale(dHopSc,dHopSc,1/dHopSc + scZ);
+	// Appearance Scale
 	gl->transformScale(appearanceXScale,appearanceYScale,appearanceZScale);
 
+	// Scale Player when Dying
 	gl->transformTranslation(0,0,1.*h/2);
 	gl->transformScale(destShrSc);
 	gl->transformTranslation(0,0,-1.*h/2);
 
+	// Pass Character Direction for Lighting Effect on Model
 	gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
+	
+	// If Dying, Turn Red
 	if(destroyTimer > -1)
 		gl->setShaderVariable("iHit", destShPerc);
+	// If Hurt, Flash Red
 	else if(isHurt)
 		gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
+	// Otherwise, Normal Color
 	else
 		gl->setShaderVariable("iHit",0);
 
+	// Pass Model Matrix to Shader (Needed for Shadows!!)
 	gl->passModelMatrix();
 
+	// Pass Character Position to Shader
 	float charPos[3] = {x,y,z};
 	gl->setShaderVec3("charPos", charPos);
 
+	// For Each Shape, Draw Corresponding Shape
 	if(shape == SH_PRISM_6)
 		gl->draw3DPrism(0,0,0,size,h,6);
 	else if(shape == SH_PRISM_5)
@@ -590,94 +594,85 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->draw3DFrustem(0,0,h/2,size,0,h/2,4);
 	}
 
+	// Clear Transformations
 	gl->transformClear();
 
-
-	
-	// DRAW HELD WEAPON
-	
+	// DRAW HELD WEAPON	
+		// If PC is Not Slow, Turn on Sword Shader
 		if(!gl->isPCSlow()) {
+			// Turn on Shader
 			gl->enableShader("Blade");
+			
+			// Pass Shadows, Lights to Shader
 			gl->passShaderShadows();
 			gl->passShaderLights();
 
+			// Set Light Gray Color
 			gl->setColor(200,200,200);
+			
+			// Pass Character Direction for Sheen of Weapon
 			gl->setShaderVariable("cDirection", faceDir/180.*3.14159);
+			
+			// If Dying, Turn Red
 			if(destroyTimer > -1)
 				gl->setShaderVariable("iHit", destShPerc);
+			// If Hurt, Flash Red
 			else if(isHurt)
 				gl->setShaderVariable("iHit", abs(sin(knockbackTimer)));
+			// Otherwise, No Red
 			else
 				gl->setShaderVariable("iHit",0);
 		}
 			// Draw Weapon
 			gl->transformTranslation(x,y,z+dHopZ);
 		
-			if(onGround/*&& hopZ <= 0*/) {
+			if(onGround) {
+				// If On Heightmap, Rotate to Ground
 				if(onHeightmap) {
 					gl->transformRotationZ(setupRot);	
 					gl->transformRotationX(xyRot);
 					gl->transformRotationZ(-setupRot);
 				}
 
-
-
+				// Position for Hopping
 				gl->transformRotationZ(faceDir);		
 				gl->transformTranslation(-dHopZVel,dHopX,0);	
 				gl->transformTranslation(-3*dHopZVel,3*dHopX,0);
 				gl->transformRotationZ(-faceDir);		
 			}
 			
-			if(attackTimer == -1)
-				gl->transformRotationZ(toolDir);
-			else {
-				//Animation #1
-				// Stab
-				/*gl->transformRotationZ(toolDir);
 
-				float timerPerc = pow(attackTimer/ATTACK_TIMER_MAX,2.);
-
-
-				gl->transformTranslation(7,-6,3);
-				gl->transformRotationY(90*timerPerc);
-				gl->transformTranslation(-7,6,-3);
-
-				gl->transformRotationZ(90*timerPerc);*/
-
-				//Animation #2
-				gl->transformRotationZ(toolDir);
-
-
+			// Rotate to Direction of Weapon
+			gl->transformRotationZ(toolDir);
+			// If Attacking...
+			if(attackTimer != -1)
+				// Calculate Timer Percentages for Animation
 				float timerPerc = attackTimer/ATTACK_TIMER_MAX;			
 					float mTimerPerc = pow(abs(sin(3.14159*(1-timerPerc))),.3);
-
-				//timerPerc = min(1.,1-2*timerPerc);
-
 				float tTimerPerc = min(1.,attackTimer/(ATTACK_TIMER_MAX*.75));
 				tTimerPerc = 1.-tTimerPerc;
 
+				// Calculate New Weapon Rotations
 				float nXRot, nYRot, nZRot;
 				nXRot = mTimerPerc*(20*cos(3.14159*tTimerPerc));
 				nYRot = mTimerPerc*(90 + 5*cos(3.14159*tTimerPerc));
-
-				//tTimerPerc += (1 - tTimerPerc)/pow(1+timerPerc,.5);
 				nZRot = mTimerPerc*(180*(-.5 + tTimerPerc));
 
 				float f = 1+2*(1.-mTimerPerc);
 
+				// Calculate Weapon Rotation, Smooth
 				wXRot += (nXRot - wXRot)/f;
 				wYRot += (nYRot - wYRot)/f;
 				wZRot += (nZRot - wZRot)/f;
 
-				gl->transformRotationZ(wZRot);
-
+				// Move Sword in Slashing Motion
+				gl->transformRotationZ(wZRot);				
 				gl->transformTranslation(7,-6,3);
 				gl->transformRotationY(wYRot);
 				gl->transformRotationX(wXRot);
 				gl->transformTranslation(-7,6,-3);
 
 			}
-
 
 			// Translate Weapon to Player's Hand
 			gl->transformTranslation(7,-6,3 + upZ);
@@ -708,19 +703,18 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			gl->draw3DCone(0,0,7,1,3,3);
 			gl->draw3DFrustem(0,0,2,.8,1,5,3);
 
-
-
 	// Return Transformation to Normal
 	gl->transformClear();
 
-
-
+	// Disable Shaders, Return Color to White
 	gl->disableShaders();
 	gl->setColor(255,255,255);
 }
 
+// Draw Stats Window
 void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 
+	// Determine Starting Position
 	float oX, oY, dX, dY, w = 200, h = 200;
 	dX = oX = 640-w*perc;
 	dY = oY = 480-h;
@@ -729,6 +723,7 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 
 	string diff, shp;
 
+	// Get Skill Rank as Text
 	if(level < 10)
 		diff = "Weak";
 	else if(level < 20)
@@ -740,6 +735,7 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 	else
 		diff = "Legend";
 	
+	// Get Shape Text
 	switch(shape) {
 		case SH_PRISM_6: 
 			shp = "Hex"; break;
@@ -761,129 +757,183 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 			shp = "Diamond"; break;
 	}
 	
+	// Draw Name
 	gl->setColor(255,255,255);
 	gl->drawString(dX,dY,"  " + diff + " " + shp);
 		dY += 25;
 
 
+	// Get Stats as Integers, to Prevent Decimal Points
 	int at, de, he, mHe;
 	at = atk;	
 	de = def;
 	he = hp;
 	mHe = maxHP;
 
+	// Print Stats
+	// Level
 	gl->drawString(dX,dY,"Lvl: " + to_string(level));
 		dY += 15;
+	// Attack
 	gl->drawString(dX,dY,"Atk: " + to_string(at));
 		dX += w/2-16;
+	// Defense
 	gl->drawString(dX,dY,"Def: " + to_string(de));
 		dX = oX+16;
 		dY += 15;
+	// HP Fraction
 	gl->drawString(dX,dY,"HP: " + to_string(he) + " / " + to_string(mHe));
-
 		dY += 15;
+	// Draw Health Bar
 	gl->drawHealth(dX,dY,he,mHe);
-
 		dY += 15;
 	
-
+	// Draw Outline
 	gl->setColor(20,20,20);
 	gl->drawRect(oX,oY,oX+w,oY+h);
-
 	gl->setColor(180,180,180);
 	gl->drawRect(oX+1,oY+1,oX+w-1,oY+h-1);
 
+	// Draw Background
 	gl->setColor(20,20,20,200);
 	gl->fillRect(oX,oY,oX+w,oY+h);
 }
 
 
+// Smoothly Rotate Shape
 void Character :: faceDirection(float dir) {
 	faceDir += calcTurnToDir(faceDir,dir);
 }
-
+// Smoothly Rotate Weapon
 void Character :: toolDirection(float dir) {
 	toolDir = dir;//+= calcTurnToDir(toolDir,dir);
 }
 
+// Knockback w/ Direction
 void Character :: knockback(float kDir) {
-
-	if(knockbackTimer == -1) {
-		knockbackDir = kDir;
-		knockbackTimer = KNOCKBACK_TIMER_MAX;
-
-		zVel = 1.5;
-	}
+	knockback(1,kDir);
 }
 
+// Knockback w/ Fraction, Direction
 void Character :: knockback(float f, float kDir) {
 
+	// If not Knocked Back At the Moment
 	if(knockbackTimer == -1) {
+		// Set Knockback Direction, Timer
 		knockbackDir = kDir;
 		knockbackTimer = f*KNOCKBACK_TIMER_MAX;
 
+		// Set Z Velocity
 		zVel = f*1.5;
 	}
 }
 
+// Calculate Damage
+float Character :: calcDamage(float attackPower, Character* attacker, Character* defender) {
+	
+	float modifier = 1.*1*1*1*(.85 + .15*rnd());
+	return ((2.*attacker->level + 10)/250*(attacker->atk/defender->def)*attackPower + 2)*modifier;
+}
 
-void Character :: updateHop(GraphicsOGL* gl, float deltaT) {
-	float hopZVelP = hopZVel;
-	float chAmt = 10;
 
-	if(onGround) {
-		hopZVel += GRAVITY_HOP_ACCELERATION;
-		hopZ += hopZVel;
-		if(hopZ <= 0) {
-			if(hopZVel != GRAVITY_HOP_ACCELERATION) {
-				new SmokeRing(x,y,z,2,8,4,1.3*min(1.f,vel));
-				SoundController::playSound("fsGrass",this);
+
+// PRIVATE FUNCTIONS
+	void Character :: updateHop(GraphicsOGL* gl, float deltaT) {
+		float hopZVelP = hopZVel;
+		float chAmt = 10;
+
+		// If On Ground, Hop
+		if(onGround) {
+			hopZVel += GRAVITY_HOP_ACCELERATION;
+			hopZ += hopZVel;
+			if(hopZ <= 0) {
+				if(hopZVel != GRAVITY_HOP_ACCELERATION) {
+					new SmokeRing(x,y,z,2,8,4,1.3*min(1.f,vel));
+					SoundController::playSound("fsGrass",this);
+				}
+
+				hopZ = hopZVel = 0;
+
+				if(hopZVelP != 0)
+					hopSc *= 1.3;
 			}
 
-			hopZ = hopZVel = 0;
+			hopSc += (1 - hopSc)/3;
 
-			if(hopZVelP != 0)
-				hopSc *= 1.3;
+			// Move Character Back and Forth
+			if(isMoving)
+				hopX += ((2*hopDir*(hopHeight-hopZ)/hopHeight) - hopX)/chAmt;
+		}
+		// Otherwise, Unhop
+		else {
+			hopZ = 0;
+			hopZVel = 0;
+			hopSc += (1 - hopSc)/3;
 		}
 
-		hopSc += (1 - hopSc)/3;
-
-		if(isMoving)
-			hopX += ((2*hopDir*(hopHeight-hopZ)/hopHeight) - hopX)/chAmt;
-	}
-	else {
-		hopZ = 0;
-		hopZVel = 0;
-		hopSc += (1 - hopSc)/3;
+		// If Not Moving or In Air, Move Player to Center
+		if(!isMoving || !onGround)
+			hopX += (0 - hopX)/chAmt;
 	}
 
-	if(!isMoving || !onGround)
-		hopX += (0 - hopX)/chAmt;
-}
+	// Perform Hop
+	void Character :: hop() {
+		// If "On Ground" in Terms of Hopping
+		if(hopZ == 0) {
+			// If Moving Slowly, Perform Normal Hops
+			if(vel <= 1)
+				hopZVel = (.75 + .25*vel)*hopSpeed*(1. + .1*(rnd()-.5));
+			// If Running, Perform Fast Hops
+			else
+				hopZVel = (1 - .25/3*vel)*hopSpeed*(1. + .1*(rnd()-.5));
 
-void Character :: hop() {
-	if(hopZ == 0) {
-		if(vel <= 1)
-			hopZVel = (.75 + .25*vel)*hopSpeed*(1. + .1*(rnd()-.5));
+			// Negate Hopping Direction (To Hop Left and Right)
+			hopDir *= -1;
+		}
+	}
+
+	// Landing on Ground
+	void Character :: land() {
+
+		// Squish Character
+		hopSc *= 2;
+		// Create Smoke Ring
+		new SmokeRing(x,y,z,4,13,7,2);
+		// Play Grass Sound
+		SoundController::playSound("fsGrass");
+	}
+
+
+
+// ACCESSOR/MUTATOR
+	float Character :: getSize() {
+		return size;
+	}
+
+	float Character :: getHP() {
+		return hp;
+	}
+
+	float Character :: getMaxHP() {
+		return maxHP;
+	}
+
+	// Get Destroy Animation Progress as Fraction	
+	float Character :: getDestroyFraction() {
+		if(destroyTimer == -1)
+			return -1;
+		else if(destroyTimer > -1)
+			return 1 - destroyTimer/DESTROY_TIMER_MAX;
 		else
-			hopZVel = (1 - .25/3*vel)*hopSpeed*(1. + .1*(rnd()-.5));
-
-		hopDir *= -1;
+			return destroyShrTimer;
 	}
-}
 
+	// Get Target
+	Character* Character :: getTarget() {
+		return target;
+	}
 
-void Character :: land() {
-
-	hopSc *= 2;
-	new SmokeRing(x,y,z,4,13,7,2);
-	SoundController::playSound("fsGrass");
-}
-
-Character* Character :: getTarget() {
-	return target;
-}
-
-float Character :: getTargetShift() {
-	return targetShift;
-}
+	// Get Target Window Fraction Onscreen
+	float Character :: getTargetShift() {
+		return targetShift;
+	}
