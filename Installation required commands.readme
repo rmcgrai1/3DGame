@@ -33,4 +33,13 @@ sudo apt-get update
 sudo apt-get install libopenal-dev
 sudo apt-get install libalut-dev
 
+#Game Play 
+Intro Screen, in order to leave the intro is to press 'u' or the spacebar.
 
+####Moving
+the keys WASD will allow the player to move. The sword can be moved around with the mouse and clicking the mouse will allow the player to attack. 
+The spacebar will allow the player to jump. 
+
+####Inventory
+The inventory can be accessed with the 'i' button and exited out of with the same key. The inventory does not have anything that can be accessed 
+at this time but it can be seen and the items can be moved around from one part to another.
