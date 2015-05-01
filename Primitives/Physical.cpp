@@ -45,9 +45,11 @@ void Physical :: update(GraphicsOGL* gl, float deltaTime) {
 	bool onHM, onP = false;	
 	onHM = collideHeightmap(gl, gl->getHeightmap());
 
+	// Only Collide w/ Pieces if it's the Player
 	if(this == gl->getPlayer())
 		onP = collidePieces();
 
+	// Colliding w/ Heightmap or Pieces?
 	if(onHM)
 		onHeightmap = true;
 	else if(onP)

@@ -1,6 +1,5 @@
 // Drawable.h
-
-//														|
+// Ryan McGrail
 
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
@@ -14,31 +13,31 @@ class Heightmap;
 class GraphicsOGL;
 class Drawable2 : public Updateable {
 	public:
-		static void drawAll(GraphicsOGL*, float);
-		virtual void update(GraphicsOGL*, float);
-		virtual void draw(GraphicsOGL*, float);
-		virtual bool checkOnScreen(GraphicsOGL*);
-		bool getOnScreen();
+		static void drawAll(GraphicsOGL*, float);		// Drawing All Objects
+		virtual void update(GraphicsOGL*, float);		// Updating
+		virtual void draw(GraphicsOGL*, float);			// Drawing
+		virtual bool checkOnScreen(GraphicsOGL*);		// Check if Onscreen
+		bool getOnScreen();								// Get if Onscreen
 
-		void setVisible(int);
-		void destroy();
-		static void removeDestroyed();
+		void setVisible(int);							// Set Visibility
+		void destroy();									// Destroy Object
+		static void removeDestroyed();					// Remove Destroyed Objects
 
 	protected:
-		Drawable2();
-		Drawable2(int);
+		Drawable2();									// Constructor
+		Drawable2(int);									// Constructor w/ Type
 
-		int visible;
-		bool isOnScreen;
-		float fidelity;
+		int visible;									// Should Draw?
+		bool isOnScreen;								// Is Object Onscreen?
+		float fidelity;									// Drawing Fidelity (Decreases w/ Distance)
 
-		static int TYPE_NONE;
-		static int TYPE_ENVIRONMENT;
-		static int TYPE_OBJECT;
-		static int TYPE_HUD;
+		static int TYPE_NONE;							// Null Type
+		static int TYPE_ENVIRONMENT;					// Environment Type
+		static int TYPE_OBJECT;							// Object Type
+		static int TYPE_HUD;							// Hud Type
 
 	private:
-		static SortedList<Drawable2*> drawableList;
+		static SortedList<Drawable2*> drawableList;		// List of Drawable Objects
 };
 
 #endif

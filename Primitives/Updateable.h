@@ -1,5 +1,5 @@
 // Updateable.h
-
+// Ryan McGrail
 
 #ifndef UPDATEABLE_H
 #define UPDATEABLE_H
@@ -10,25 +10,24 @@
 class GraphicsOGL;
 class Updateable {
 	public:
-		static void updateAll(GraphicsOGL*, float);
-		virtual void update(GraphicsOGL*, float);
-		virtual void destroy();
-
-		static void removeDestroyed();
+		static void updateAll(GraphicsOGL*, float);		// Updating All Objects
+		virtual void update(GraphicsOGL*, float);		// Updating
+		virtual void destroy();							// Destroying Object
+		static void removeDestroyed();					// Removing Destroyed Works
 
 	protected:
-		Updateable();
-		Updateable(int);
+		Updateable();									// Constructor
+		Updateable(int);								// Constructor w/ Type
 
 		int oType;
 
-		static deque<Updateable*> updateableList;
-		static deque<Updateable*> removeUList;
+		static deque<Updateable*> updateableList;		// List of Updatable Objects
+		static deque<Updateable*> removeUList;			// List of Objects to be Removed
 
-		static const int TYPE_NONE = -1;
-		static const int TYPE_MENU = 0;
+		static const int TYPE_NONE = -1;				// Null Type
+		static const int TYPE_MENU = 0;					// Menu Type
 
-		bool doUpdates;
+		bool doUpdates;									// Should Object be Updated?
 };
 
 #endif

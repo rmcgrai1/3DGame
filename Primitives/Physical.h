@@ -20,64 +20,64 @@ class GraphicsOGL;
 class Physical : public Instantiable {
 
 	public:
-								// PARENT FUNCTIONS
-		virtual void update(GraphicsOGL*, float);		// Update Function
-		virtual void draw(GraphicsOGL*, float);			// Draw Function
-		virtual void destroy();
-		virtual bool checkOnScreen(GraphicsOGL*);
+																// PARENT FUNCTIONS
+		virtual void update(GraphicsOGL*, float);					// Update Function
+		virtual void draw(GraphicsOGL*, float);						// Draw Function
+		virtual void destroy();										// Destroy Object
+		virtual bool checkOnScreen(GraphicsOGL*);					// Check if Object is Onscreen
 
 		void placeOnGround();
-								// ACCESSOR/MUTATOR FUNCTIONS
-		void setX(float);					// Set X
-		void setY(float);					// Set Y
-		void setZ(float);					// Set Z
-		void setZVelocity(float);
-		float getX();						// Get X
-		float getY();						// Get Y
-		float getZ();						// Get Z
-		float getXPrev();
-		float getYPrev();
-		float getZPrev();
-		float getVelocity();
-		float getDirection();
-		float getZVelocity();
-								// CONSTANTS
-		static const float GRAVITY_ACCELERATION;		// Acceleration due to Gravity
+																// ACCESSOR/MUTATOR FUNCTIONS
+		void setX(float);											// Set X
+		void setY(float);											// Set Y
+		void setZ(float);											// Set Z
+		void setZVelocity(float);									// Set Z Velocity
+		float getX();												// Get X
+		float getY();												// Get Y
+		float getZ();												// Get Z
+		float getXPrev();											// Get X Previous
+		float getYPrev();											// Get Y Previous
+		float getZPrev();											// Get Z Previous
+		float getVelocity();										// Get Velocity
+		float getDirection();										// Get Direction
+		float getZVelocity();										// Get Z Velocity
+																// CONSTANTS
+		static const float GRAVITY_ACCELERATION;					// Acceleration due to Gravity
 
 	private:
-								// UPDATE FUNCTIONS
-		void updateMotion(float);				// Update Physical Motion
+																// UPDATE FUNCTIONS
+		void updateMotion(float);									// Update Physical Motion
 
-								// COLLISION FUNCTIONS
+																// COLLISION FUNCTIONS
 		bool collideHeightmap(GraphicsOGL*, Heightmap*);			// Collide with Heightmap
 		bool collidePieces();										// Collide w/ Pieces
 
-								// VIRTUAL FUNCTIONS
-		virtual void land() = 0;				// What Happens when Landing
+																// VIRTUAL FUNCTIONS
+		virtual void land() = 0;									// What Happens when Landing
 
 
 	protected:
-								// CONSTRUCTOR(S)
-		Physical(float, float, float);				// Position Constructor
+																// CONSTRUCTOR(S)
+		Physical(float, float, float);								// Position Constructor
 		
 
 
 
 
-								// VARIABLES
-		float x;						// X Coordinate
-		float y;						// Y Coordinate
-		float z;						// Z Coordinate
-		float xP;						// Previous X Coordinate
-		float yP;						// Previous Y Coordinate
-		float zP;						// Previous Z Coordinate
-		float vel;						// XY Velocity
-		float zVel;						// Z Velocity
-		float direction;				// Direction
-		float floorZ;					// Previous Ground z
+																// VARIABLES
+		float x;													// X Coordinate
+		float y;													// Y Coordinate
+		float z;													// Z Coordinate
+		float xP;													// Previous X Coordinate
+		float yP;													// Previous Y Coordinate
+		float zP;													// Previous Z Coordinate
+		float vel;													// XY Velocity
+		float zVel;													// Z Velocity
+		float direction;											// Direction
+		float floorZ;												// Previous Ground z
 
-		bool onGround;					// Is Object on Ground?
-		bool onHeightmap;
+		bool onGround;												// Is Object on Ground?
+		bool onHeightmap;											// Is Object on Heightmap?
 };
 
 #endif
