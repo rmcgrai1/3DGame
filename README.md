@@ -67,7 +67,11 @@ The inventory can be accessed with the 'i' button and exited out of with the sam
 at this time but it can be seen and the items can be moved around from one part to another.
 
 #Bugs:
+- runs slowly over PuTTy, on computers without graphics cards
 - character sinks through ground at certain seams
+- character can walk through/fall through building
+- smokerings make water invisible if they are in front of them
 - smokerings are not always created when player is walking
 - trees/shadows disappear too soon at edge
 - randomly slows down tremendously
+- enemies don't always see player
