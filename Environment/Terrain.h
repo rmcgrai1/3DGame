@@ -1,5 +1,5 @@
 // Terrain.h
-
+// Ryan McGrail
 
 #ifndef TERRAIN_H
 #define TERRAIN_H
@@ -15,23 +15,23 @@ using namespace std;
 
 class Terrain : public Drawable2 {
 	public:
-		Terrain(int,int, float, string, float);
+		Terrain(int,int, float, string, float);				// Constructor
 
-		void update(GraphicsOGL*, float);
-		void draw(GraphicsOGL*, float);
-		void drawFirst(GraphicsOGL*, float);
-		void drawLast(GraphicsOGL*, float);
+		void update(GraphicsOGL*, float);					// Updating
+		void draw(GraphicsOGL*, float);						// Drawing
+		void drawFirst(GraphicsOGL*, float);				// Things to Draw Before Anything Else
+		void drawLast(GraphicsOGL*, float);					// Things to Draw After Everything Else
 
-		float getSeaLevel();
-		Heightmap* getHeightmap();
+		float getSeaLevel();								// Getting Sealevel Height
+		Heightmap* getHeightmap();							// Getting Heightmap Object
 
 	private:
-		int width;
-		int height;
-		float seaLevel;
+		int width;											// Width of Terrain
+		int height;											// Height of Terrain
+		float seaLevel;										// Sealevel Height
 
-		Heightmap* heightmap;
-		Water* water;
+		Heightmap* heightmap;								// Heightmap Object
+		Water* water;										// Water Object
 };
 
 #endif

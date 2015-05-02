@@ -1,5 +1,5 @@
 // Heightmap.cpp
-
+// Ryan McGrail
 
 #include "../Graphics/Camera.h"
 #include <iostream>
@@ -17,16 +17,20 @@
 #include "../Graphics/Image.h"
 using namespace std;
 
+// Constructor, Scale and Resolution (Test Heightmap)
 Heightmap :: Heightmap(float xS, float yS, float resolution) {
 	xSize = xS;
 	ySize = yS;
 
 	scale = 1/resolution;
 
+	// Get # of X and Ys
 	xNum = xS*resolution; yNum = yS*resolution;
 
+	// Create Heightmap
 	heightGrid = new float*[yNum];
 
+	// Create Heightmap, z = x*y
 	for(int i = 0; i < yNum; i++) {
 		heightGrid[i] = new float[xNum];
 
@@ -34,17 +38,20 @@ Heightmap :: Heightmap(float xS, float yS, float resolution) {
 			setHeight(i,j,i*j);
 	}
 
+	// No TExtures
 	texGrass = NULL;
 	texSand = NULL;
 
+	// Generating Normals of Heightmap
 	generateNormals();
 }
 
+// Constructor, Scale and Image
 Heightmap :: Heightmap(float xS, float yS, float zS, string fileName) {
 	xSize = xS;
 	ySize = yS;
 
-
+	// Import Image
 	hmImg = new Image(fileName);
 
 	// Determine XY Scale
@@ -53,7 +60,6 @@ Heightmap :: Heightmap(float xS, float yS, float zS, string fileName) {
 	// Set # of Points
 	xNum = hmImg->getWidth();
 	yNum = hmImg->getHeight();
-
 
 	// Create Array
 	heightGrid = new float*[yNum];
@@ -68,16 +74,16 @@ Heightmap :: Heightmap(float xS, float yS, float zS, string fileName) {
 			setHeight(i,j,hmImg->getValue(j,i)/255.*zS);
 	}
 
+	// Load Textures
 	texGrass = TextureController::getTexture("Grass");
 	texSand = TextureController::getTexture("Sand");
 	texDirt = TextureController::getTexture("Dirt");
 
+	// Generate Normals
 	generateNormals();
 }
 
-//		Heightmap(float, float, int**);
-//		Heightmap(float, float, float**);
-
+// Get Specific Height at Vertex
 float Heightmap :: getHeightIJ(int i, int j) {
 	if(i < 0 || j < 0 || i >= yNum || j >= xNum)
 		return -1;
@@ -85,6 +91,7 @@ float Heightmap :: getHeightIJ(int i, int j) {
 		return heightGrid[i][j];
 }
 
+// Calculate Interpolated Height at Point
 float Heightmap :: getHeightXY(float x, float y) {
 
 	//if(x <= 0 || y <= 0 || x > xSize-1 || y > ySize-1)
@@ -123,7 +130,7 @@ float Heightmap :: getHeightXY(float x, float y) {
 	return (1-xP)*(1-yP)*h1 + (xP)*(1-yP)*h2 + (1-xP)*(yP)*h3 + (xP)*(yP)*h4;
 }
 
-
+// Get Normal at Point
 void Heightmap :: getNormal(float x, float y, float vec[3]) {
 	float h1, h2, h3, h4;
 	int jC, jF, iC, iF;
@@ -193,19 +200,18 @@ void Heightmap :: getNormal(float x, float y, float vec[3]) {
 		vec[0] = Dx;	vec[1] = Dy;	vec[2] = Dz;
 }
 
+// Calculate Rotations to Rotate Model to Floor at Position
 void Heightmap :: getFloorRotations(float x, float y, float& setupRot, float& xyRot) {
-	float nX, nY, nZ, xyDis, xRot, yRot, normal[3];	
+	float nX, nY, nZ, xyDis, normal[3];	
 	getNormal(x,y,normal);
 	
 		nX = normal[0];
 		nY = normal[1];
 		nZ = normal[2];
 
-
 	xyDis = sqrt(nX*nX + nY*nY);
-	xRot = 90 - (180-(90+calcPtDir(0,0,nX,nZ)));
-	yRot = calcPtDir(0,0,nY,nZ);
 
+	// Calculate Setup Z Rotation and XY Rotation
 	setupRot = 90+calcPtDir(0,0,nX,nY);
 	xyRot = 90-calcPtDir(0,0,xyDis,nZ);
 }
@@ -216,6 +222,8 @@ void Heightmap :: generateNormals() {
 	normGrid = new float**[yNum];
 
 	float s = scale;
+	// List of Directions
+	float dList[6] = {30,60,135,210,240,315};
 
 	for(int y = 0; y < yNum; y++) {
 		normGrid[y] = new float*[xNum];
@@ -223,9 +231,7 @@ void Heightmap :: generateNormals() {
 		for(int x = 0; x < xNum; x++) {
 			normGrid[y][x] = new float[3];
 
-
-			float dList[6] = {30,60,135,210,240,315};
-
+			// Calculate Running Average of Normal
 			float nX=0,nY=0,nZ=0;
 			for(int i = 0; i < 4; i++) {
 				float curNorm[3];
@@ -233,33 +239,22 @@ void Heightmap :: generateNormals() {
 				aX = calcLenX(3,d);
 				aY = calcLenY(3,d);
 
+				// Generate Normal at Points around Vertex
 				getNormal(x*scale+aX,y*scale+aY,curNorm);
 
+				// Add to Normal
 				nX += curNorm[0];
 				nY += curNorm[1];
 				nZ += curNorm[2];
 			}
 
+			// Set Normal
 			normGrid[y][x][0] = nX;
 			normGrid[y][x][1] = nY;
 			normGrid[y][x][2] = nZ;
 			
-		        // The ? : and ifs are necessary for the border cases.
-
-			/*float sx = getHeightIJ(y, x<xNum-1 ? x+1 : x) - getHeightIJ(y, x > 0 ? x-1 : x);
-			if (x == 0 || x == xNum-1)
-			    sx *= 2;
-
-			float sy = getHeightIJ(y<yNum-1 ? y+1 : y, x) - getHeightIJ(y > 0 ? y-1 : y,x);
-			if (y == 0 || y == yNum -1)
-			    sy *= 2;
-
-			normGrid[y][x][0] = -sx*scale;
-			normGrid[y][x][1] = sy*scale;
-			normGrid[y][x][2] = 1;//*xzScale;*/
-
+			// Normalize Vector
 			float len = -sqrt(sqr(normGrid[y][x][0]) + sqr(normGrid[y][x][1]) + sqr(normGrid[y][x][2]));
-
 			normGrid[y][x][0] /= len;
 			normGrid[y][x][1] /= len;
 			normGrid[y][x][2] /= len;
@@ -267,9 +262,7 @@ void Heightmap :: generateNormals() {
 	}
 }
 
-
-//bool isWall(float, float);
-		
+// Drawing
 void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	Camera* cam = gl->getCamera();
@@ -278,14 +271,13 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 	
 	float leftX, rightX, topY, botY;
 
-	gl->logMessage("Heightmap.cpp, draw()");
-
+	// Enable Lighting
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	//GLfloat lightpos[] = {x, y, z, 1};
 	GLfloat lightpos[] = {0,.6,-.8, 0};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
+	// If PC is Not Too Slow, Enable Shader
 	if(!gl->isPCSlow()) {
 		gl->enableShader("Terrain");
 		gl->passShaderShadows();
@@ -293,6 +285,7 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 		gl->passShaderLights();
 	}
 
+	// Enable Textures
 	if(texGrass != NULL) {
 		glEnable(GL_TEXTURE_2D);
 	
@@ -303,17 +296,14 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 
 	Drawable2 :: draw(gl, deltaTime);
 
+	// Enable Proper Blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-
-	
 	float num = xSize/32.;
 
-
 	// Draw Heightmap as Triangle Strips
-
 	for(int i = 0; i < yNum-1; i++) {
 
 		glBegin(GL_TRIANGLE_STRIP);
@@ -331,26 +321,24 @@ void Heightmap :: draw(GraphicsOGL* gl, float deltaTime) {
 		glEnd();
 	}
 
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);
-	
-
+	// Disable Shaders
 	gl->disableShaders();
 
+	// Disable Lighting
 	glDisable(GL_LIGHTING);
-	// Added to make 2d images render correctly
-	if(texGrass != NULL) {
+
+	// Unbind Textures
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
+	if(texGrass != NULL)
 		texGrass->unbind();
-	}
-	if(texSand != NULL) {
+	if(texSand != NULL)
 		texSand->unbind();
-	}
-	texDirt->unbind();
-	// Added to make 2d images render correctly
+	if(texDirt != NULL)
+		texDirt->unbind();
 }
 
+// Set Height at Position
 void Heightmap :: setHeight(int i, int j, float height) {
 	heightGrid[i][j] = height;
 }
-
-//		void load(string);
