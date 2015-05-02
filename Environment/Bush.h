@@ -1,4 +1,5 @@
 // Bush.h
+// Ryan McGrail
 
 #ifndef BUSH_H
 #define BUSH_H
@@ -8,12 +9,12 @@
 
 class Bush : public Tree {
 	public:
-		Bush(float, float,float,float,float,float);
-		void update(GraphicsOGL*, float);
-		void draw(GraphicsOGL*, float);
+		Bush(float, float,float,float,float,float);		// Constructor
+		void update(GraphicsOGL*, float);				// Updating
+		void draw(GraphicsOGL*, float);					// Drawing
 
 	private:
-		float colRed;
+		float colRed;									// Colors
 		float colGreen;
 		float colBlue;
 };

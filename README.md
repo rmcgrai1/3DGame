@@ -55,6 +55,10 @@ sudo apt-get install libopenal-dev
 
 sudo apt-get install libalut-dev
 
+#Comments
+
+The comments were made in Notepad++ on Windows, and do not always show up well in the terminal. If this is an issue, try opening up the file in Notepad++, where the formatting will show up properly.
+
 #Game Play 
 Intro Screen, in order to leave the intro is to press 'u' or the spacebar.
 

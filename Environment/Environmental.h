@@ -1,4 +1,5 @@
 // Environmental.h
+// Ryan McGrail
 
 #ifndef ENVIRONMENTAL_H
 #define ENVIRONMENTAL_H
@@ -9,27 +10,27 @@
 class Environmental : public Instantiable {
 
 	public:
-		Environmental(float,float);
-		Environmental(float,float,float);
-		virtual void update(GraphicsOGL*, float);
-		virtual void draw(GraphicsOGL*, float);
-		virtual void damage(float) = 0;
-		virtual bool checkOnScreen(GraphicsOGL*);
+		Environmental(float,float);						// Constructor, XY
+		Environmental(float,float,float);				// Constructor, XYZ
+		virtual void update(GraphicsOGL*, float);		// Updating
+		virtual void draw(GraphicsOGL*, float);			// Drawing
+		virtual void damage(float) = 0;					// Damaging Environmental Object
+		virtual bool checkOnScreen(GraphicsOGL*);		// Checking if Onscreen
 
-		float getX();
+		float getX();									// Getting Position
 		float getY();
 		float getZ();
 
 	protected:
-		float x;
+		float x;										// Position
 		float y;
 		float z;
 
-		float health;
+		float health;									// Health
 
 	private:
-		void placeOnGround(GraphicsOGL*);
-		bool onGround;
+		void placeOnGround(GraphicsOGL*);				// Placing on Ground
+		bool onGround;									// Has Been Placed?
 };
 
 #endif

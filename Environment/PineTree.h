@@ -1,4 +1,5 @@
 // PineTree.h
+// Ryan McGrail
 
 #ifndef PINETREE_H
 #define PINETREE_H
@@ -8,12 +9,12 @@
 
 class PineTree : public Tree {
 	public:
-		PineTree(float, float,float,float,float,float);
-		void update(GraphicsOGL*, float);
-		void draw(GraphicsOGL*, float);
+		PineTree(float, float,float,float,float,float);		// Constructor
+		void update(GraphicsOGL*, float);					// Updating
+		void draw(GraphicsOGL*, float);						// Drawing
 
 	private:
-		float colRed;
+		float colRed;										// Color
 		float colGreen;
 		float colBlue;
 };

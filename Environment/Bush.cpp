@@ -1,4 +1,5 @@
 // Bush.cpp
+// Ryan McGrail
 
 #include "../Graphics/GraphicsOGL.h"
 #include "Bush.h"
@@ -7,50 +8,31 @@
 #include "../Graphics/Texture.h"
 
 
-
-
-
+// Constructor
 Bush :: Bush(float nX, float nY, float size, float colR, float colG, float colB) : Tree(nX,nY,size) {
 
+	// Setting Color
 	colRed = colR;
 	colGreen = colG;
 	colBlue = colB;
 
+	// Disable Shadows
 	hasShadow = false;
 }
 
+// Updating
 void Bush :: update(GraphicsOGL* gl, float deltaT) {
 	Tree :: update(gl, deltaT);
 }
 
+// Drawing
 void Bush :: draw(GraphicsOGL* gl, float deltaT) {
 
 	int fidelity = 10;
 	float R = 20, G = 255, B = 50;
 
 
-	//DRAW SHADOW
-	float xyDis, nX, nY, nZ, xRot, yRot, setupRot, xyRot;
-
-	/*	gl->getHeightmap()->getFloorRotations(x,y,setupRot,xyRot);
-	float grndZ = z;
-
-	gl->setCulling(true);
-	gl->setDepthTest(false);
-		gl->transformTranslation(x,y,grndZ);
-		gl->transformRotationZ(setupRot);
-		gl->transformRotationX(xyRot);	
-
-		gl->transformScale(size);	
-
-		float s = 32;
-		gl->draw3DFloor(-s,-s,s,s,0,gl->getTextureController()->getTexture("Shadow"));
-
-		gl->transformClear();
-	gl->setCulling(false);
-	gl->setDepthTest(true);*/
-
-
+	// If Hurt, Shake Bush
 	float aX = 0, aY = 0;
 	if(damageShakeTimer > -1) {
 		aX = 2.*(((getTime()*rand())%100)/100. - .5);
@@ -61,6 +43,7 @@ void Bush :: draw(GraphicsOGL* gl, float deltaT) {
 	float m;
 	m = 20;
 
+	// Transform to Position
 	gl->transformClear();
 	gl->transformTranslation(x+aX,y+aY,z-3);
 		gl->transformRotationZ(fallXYDir);
@@ -68,22 +51,15 @@ void Bush :: draw(GraphicsOGL* gl, float deltaT) {
 		gl->transformRotationZ(-fallXYDir);
 	gl->transformScale(size*5,size*5,size*7);
 
-	
-	/*float bR, bG, bB;
-		bR = 255*(colGreen);
-		bG = 255*(1-colGreen);
-		bB = 255*(1-colGreen);
 
-	gl->setColor(bR,bG,bB);*/
-
-	/*gl->enableShader("pineBark");
-	gl->draw3DPrism(0,0,0,4,30, fidelity, barkTex);
-	gl->draw3DCone(0,0,0,5,30, fidelity, barkTex);*/
+	// Enable Shader if PC Not SLow
 	if(!gl->isPCSlow())
 		gl->enableShader("pineBranch");
 
+	// If Hurt, Set Color to Red
 	if(damageShakeTimer > -1)
 		gl->setColor(255*colRed, .2*255*colGreen, .2*255*colBlue);
+	// Otherwise, Set Color
 	else
 		gl->setColor(255*colRed, 255*colGreen, 255*colBlue);
 
@@ -95,22 +71,22 @@ void Bush :: draw(GraphicsOGL* gl, float deltaT) {
 	dR = 5;
 	
 	gl->setShaderVariable("iDark", 0);
+	
+	// Draw 3D Sphere for Base of Bush
 	gl->draw3DSphere(dX,dY,dZ,dR, fidelity, branchTex);
+	// Draw Sub-bushes
 	for (int i = 0; i <= 3; i++) {
-		//dR -= 2;
-
 		float d = 1.*i/3.*360;
 		dX = calcLenX(3,d);
 		dY = calcLenY(3,d);
 
-		
 		gl->setShaderVariable("iDark", 0);
 
 		gl->draw3DSphere(dX,dY,dZ-2,dR, fidelity, branchTex);
 	}
 
+	// Reset OpenGL Drawing to Normal
 	gl->setColor(255,255,255);
 	gl->disableShaders();
-
 	gl->transformClear();
 }

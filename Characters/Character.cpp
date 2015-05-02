@@ -147,7 +147,7 @@ void Character :: damage(Character* attacker, float dDir) {
 // INHERITED FUNCTIONS
 	void Character :: update(GraphicsOGL* gl, float deltaTime) {
 
-
+		// If Dying, Move Up to Destroy Position
 		if(destroyTimer > -1) {
 			x += (destroyToX - x)/10;
 			y += (destroyToY - y)/10;
@@ -155,6 +155,7 @@ void Character :: damage(Character* attacker, float dDir) {
 
 			destroyTimer -= deltaTime;
 
+			// If Destroying Timer Done, Play Death Sound
 			if(destroyTimer <= -1) {
 				SoundController::playSound("death",this);
 				destroyTimer = -2;
@@ -162,6 +163,7 @@ void Character :: damage(Character* attacker, float dDir) {
 			}
 			return;
 		}
+		// Shrink Player Quickly Before Exploding
 		else if(destroyTimer == -2) {
 
 			destroyShrTimer += (0 - destroyShrTimer)/1.5;
@@ -176,11 +178,14 @@ void Character :: damage(Character* attacker, float dDir) {
 		// Update Physics/Collisions
 		Physical :: update(gl, deltaTime);
 
+		// Collide w/ Trees & Characters
 		collideTree();
 		collideCharacter();
 
+		// Updating Hopping
 		updateHop(gl, deltaTime);
 
+		// If Attacking, Decrease Timer
 		if(attackTimer > -1) {
 			attackTimer -= deltaTime;
 			if(attackTimer <= -1)
@@ -197,56 +202,66 @@ void Character :: damage(Character* attacker, float dDir) {
 
 
 		// FIND TARGET
+		// If TargetTimer > -1, Already Have Target
 		if(targetTimer > -1) {
 
+			// Move Stats Window on Screen
 			targetShift += (1 - targetShift)/10;
 
+			// If Target Still Exists, 
 			if(target != NULL)
+				// If Not Dead,
 				if(target->getHP() > 0) {
+					// If Close, Keep Target Timer Up (Keep them as Target)
 					if(calcPtDis(x,y,target->getX(),target->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,target->getX(),target->getY()),camDir)) < camFOV)
 						targetTimer = TARGET_TIMER_MAX;	
 				}
 				else
 					targetTimer = -1;
 
+			// Decrease Target Timer Over Time (If Reaches -1, Target is Too Far Away or Offscreen)
 			targetTimer -= deltaTime;
 			if(targetTimer <= -1)
 				targetTimer = -1;
 		}
 		else {
+			// If Target Not Null, Move Stats Offscreen
 			if(target != NULL) {
 				targetShift += (0 - targetShift)/10;
 			
 				if(targetShift < .05)
 					target = NULL;
 			}
-			else {
-				
+			// Otherwise, Try to Find Target
+			else for(int i = 0; i < characterList.size(); i++) {
+				Character* c = characterList[i];
 
-				for(int i = 0; i < characterList.size(); i++) {
-					Character* c = characterList[i];
+				// Ignore if Character is Self
+				if(c == this)
+					continue;
 
-					if(c == this)
-						continue;
-
-					if(calcPtDis(x,y,c->getX(),c->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,c->getX(),c->getY()),camDir)) < camFOV) {
-						targetTimer = TARGET_TIMER_MAX;
-						target = c;
-						break;
-					}
+				// If Character is Close and Onscreen, Make as New Target
+				if(calcPtDis(x,y,c->getX(),c->getY()) < TARGET_DISTANCE_MAX && abs(calcAngleDiff(calcPtDir(camX,camY,c->getX(),c->getY()),camDir)) < camFOV) {
+					targetTimer = TARGET_TIMER_MAX;
+					target = c;
+					break;
 				}
 			}
 		}
 
+		// Animate Knockback
 		if(knockbackTimer > -1) {
+		
+			// Force Direction to Face Away from Knockback
 			faceDirection(knockbackDir+180);
 			toolDirection(knockbackDir+180);
-
 			direction = knockbackDir;
 			vel = 1.5;
 
+			// Lower Knockback Timer
 			knockbackTimer -= deltaTime;
 
+			// If Timer < -1, End Animation
 			if(knockbackTimer <= -1) {
 				vel = 0;
 				isHurt = false;
@@ -524,7 +539,7 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 	gl->transformTranslation(destShX,destShY,destShZ);
 	gl->transformTranslation(x,y,z+dHopZ);
 	
-	if(onGround/*&& hopZ <= 0*/) {
+	if(onGround) {
 		// If on Heightmap, Rotate to Ground
 		if(onHeightmap) {
 			gl->transformRotationZ(setupRot);	
@@ -804,9 +819,9 @@ void Character :: drawStatWindow(GraphicsOGL* gl, float perc) {
 void Character :: faceDirection(float dir) {
 	faceDir += calcTurnToDir(faceDir,dir);
 }
-// Smoothly Rotate Weapon
+// Rotate Weapon
 void Character :: toolDirection(float dir) {
-	toolDir = dir;//+= calcTurnToDir(toolDir,dir);
+	toolDir = dir;
 }
 
 // Knockback w/ Direction
@@ -831,6 +846,7 @@ void Character :: knockback(float f, float kDir) {
 // Calculate Damage
 float Character :: calcDamage(float attackPower, Character* attacker, Character* defender) {
 	
+	// (Formula from Pokemon)
 	float modifier = 1.*1*1*1*(.85 + .15*rnd());
 	return ((2.*attacker->level + 10)/250*(attacker->atk/defender->def)*attackPower + 2)*modifier;
 }
@@ -844,20 +860,28 @@ float Character :: calcDamage(float attackPower, Character* attacker, Character*
 
 		// If On Ground, Hop
 		if(onGround) {
+			// Accelerate and Apply Velocity
 			hopZVel += GRAVITY_HOP_ACCELERATION;
 			hopZ += hopZVel;
+			
+			// If Hit Ground, 
 			if(hopZ <= 0) {
+				// If REALLY Just Landing on Ground
 				if(hopZVel != GRAVITY_HOP_ACCELERATION) {
+					// Create Smoke Ring, Play Footstep Sound
 					new SmokeRing(x,y,z,2,8,4,1.3*min(1.f,vel));
 					SoundController::playSound("fsGrass",this);
 				}
 
+				// Set Z and Vel to 0
 				hopZ = hopZVel = 0;
 
+				// Increase Scale of Player
 				if(hopZVelP != 0)
 					hopSc *= 1.3;
 			}
 
+			// Return Scale to 1
 			hopSc += (1 - hopSc)/3;
 
 			// Move Character Back and Forth

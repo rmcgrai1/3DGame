@@ -1,5 +1,5 @@
 // Tree.h
-
+// Ryan McGrail
 
 #ifndef TREE_H
 #define TREE_H
@@ -12,35 +12,35 @@
 
 class Tree : public Environmental {
 	public:
-		Tree(float,float,float);
-		virtual void update(GraphicsOGL*, float);
-		virtual void draw(GraphicsOGL*, float);
-		void destroy();
-		void damage(float);
+		Tree(float,float,float);						// Constructor
+		virtual void update(GraphicsOGL*, float);		// Updating
+		virtual void draw(GraphicsOGL*, float);			// Drawing
+		void destroy();									// Destroying Object
+		void damage(float);								// Applying Damage, Updating Falling Direction
 
-		static SortedList<Tree*> treeList;
+		static SortedList<Tree*> treeList;				// List of Trees
 
-		float getSize();
-		bool getHasShadow();
+		float getSize();								// Size of Tree
+		bool getHasShadow();							// Check if Tree Has Shadow
 
 	protected:
-		Branch* root;
-		float size;
-		float toSize;
+		Branch* root;									// Root Branch
+		float size;										// Current Size
+		float toSize;									// To Size
 
-		bool hasShadow;
+		bool hasShadow;									// Does Tree have Shadow?
 
-		bool isGrowing;
+		bool isGrowing;									// Growing Vars
 		float growWobble;
 
-		float fallXYDir;
+		float fallXYDir;								// Falling Vars
 		float fallZDir;
 		float fallZVel;
 
-		Texture* branchTex;
-		Texture* barkTex;
+		Texture* branchTex;								// Branch Texture
+		Texture* barkTex;								// Bark Texture
 
-		float damageShakeTimer;
+		float damageShakeTimer;							// Timer for Shaking Animation
 };
 
 #endif
