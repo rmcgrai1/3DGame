@@ -14,7 +14,7 @@
 Camera :: Camera() {
 
 	// Initialize Variables
-	camX = camY = camZ = toX = toY = toZ = newCamX = newCamY = newCamZ = camDir = 0;
+	camX = camY = camZ = toX = toY = toZ = newCamZ = camDir = 0;
 	camZ = 270;
 	toZ = 270;
 	newCamZ = 270;
@@ -24,8 +24,8 @@ Camera :: Camera() {
 void Camera :: setProjectionPrep(float cX, float cY, float cZ, float tX, float tY, float tZ) {
 
 	// Set New Camera Position
-	newCamX = cX;
-	newCamY = cY;
+	camX = cX;
+	camY = cY;
 	newCamZ = cZ;
 	
 	// Set New Camera Focus Point
@@ -34,7 +34,7 @@ void Camera :: setProjectionPrep(float cX, float cY, float cZ, float tX, float t
 	toZ = tZ;
 	
 	// Update Camera Direction
-	camDir = calcPtDir(newCamX, newCamY, toX, toY);
+	camDir = calcPtDir(camX, camY, toX, toY);
 }
 
 // Get Camera XY Direction		
@@ -44,7 +44,7 @@ float Camera :: getCamDir() {
 
 // Set Projection for 3D Camera
 void Camera :: setProjection(GraphicsOGL* gl) {
-	float cX = newCamX, cY = newCamY, cZ = newCamZ;
+	float cX = camX, cY = camY, cZ = newCamZ;
 	float camSpeed = 5;
 
 	// Calculate Some Delta Zs to Smoothly Move Camera and for Sound Positioning

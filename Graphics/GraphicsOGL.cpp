@@ -329,9 +329,9 @@ void GraphicsOGL :: initialize3D(int argc, char* argv[]) {
 	glutMainLoop();	
 }
 
-// Check If FPS < 30, PC is Too Slow
+// Check If FPS < 30, PC is Too Slow (Hardwired to False to Prevent Flickering!)
 int GraphicsOGL :: isPCSlow() {
-	return (avgFPS < 30);
+	return false; //(avgFPS < 30);
 }
 
 // Updating Script for OpenGL

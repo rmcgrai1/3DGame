@@ -1,8 +1,8 @@
 # 3DGame
 
-The game is an open world that can be explored enemies can be fought and many things can happen
+The game is an open world adventure game inspired by MineCraft, The Legend of Zelda, and Skyrim. You can wander around, chop down trees, and battle enemies in sword-based combat. The game is still very early in development, but most of the basic elements are in place, such as image-loading, fonts and text-drawing, 3D graphics, shaders, and enemies.
 
-##set up git
+##Setting up Git
 sudo apt-get update
 
 sudo apt-get install git
@@ -31,48 +31,52 @@ cat ~/.ssh/id_rsa.pub
 ssh -T git@github.com
 
 ####type "yes" when the RSA fingerprint message appears
-##clone github repository
+##Cloning GitHub Repository
 
 git clone https://github.com/rmcgrai1/3DGame.git
 
 cd 3DGame
 
-###install dependencies
-sudo apt-get install g++##Not needed in last 2 tries, but required in first installation
+## Installing Dependencies
 
-sudo apt-get install libX11-dev##Not needed in first 2 tries, but needed last time
-
-sudo apt-get install libpng-dev##Not needed in first 2 tries, but needed last time
-
-sudo apt-get install freeglut3-dev
-
-##OPENAL
 sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
 
 sudo apt-get update
+
+sudo apt-get install g++
+
+sudo apt-get install libX11-dev
+
+sudo apt-get install libpng-dev
+
+sudo apt-get install freeglut3-dev
 
 sudo apt-get install libopenal-dev
 
 sudo apt-get install libalut-dev
 
-#Comments
+## Comments
 
-The comments were made in Notepad++ on Windows, and do not always show up well in the terminal. If this is an issue, try opening up the file in Notepad++, where the formatting will show up properly.
+The comments were made in Notepad++ on Windows, and do not always show up well in the terminal. If this is an issue, try opening up the file in Notepad++, where the formatting is sure to show up properly.
 
 #Game Play 
-Intro Screen, in order to leave the intro is to press 'u' or the spacebar.
+####Intro Screen
+On the intro Screen, a textbox will display a general introduction to the game. In order to close this box, press the 'u' key.
 
-####Moving
-the keys WASD will allow the player to move. The sword can be moved around with the mouse and clicking the mouse will allow the player to attack. 
-The spacebar will allow the player to jump. 
+####Controls
+- WASD keys: moving the player
+- mouse cursor: aiming the sword
+- left mouse button: swinging the sword 
+- spacebar: jumping 
 
 ####Inventory
 The inventory can be accessed with the 'i' button and exited out of with the same key. The inventory does not have anything that can be accessed 
-at this time but it can be seen and the items can be moved around from one part to another.
+at this time, but items can be moved by clicking them and then clicking a new inventory slot.
 
 #Bugs:
 - runs slowly over PuTTy, on computers without graphics cards
 - character sinks through ground at certain seams
+- inventory is sometimes dark
 - character can walk through/fall through building
 - smokerings make water invisible if they are in front of them
 - smokerings are not always created when player is walking

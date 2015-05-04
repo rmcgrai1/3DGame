@@ -660,10 +660,10 @@ void Character :: draw(GraphicsOGL* gl, float deltaTime) {
 			// Rotate to Direction of Weapon
 			gl->transformRotationZ(toolDir);
 			// If Attacking...
-			if(attackTimer != -1)
+			if(attackTimer != -1) {
 				// Calculate Timer Percentages for Animation
-				float timerPerc = attackTimer/ATTACK_TIMER_MAX;			
-					float mTimerPerc = pow(abs(sin(3.14159*(1-timerPerc))),.3);
+				float timerPerc = attackTimer/ATTACK_TIMER_MAX;
+				float mTimerPerc = pow(abs(sin(3.14159*(1-timerPerc))),.3);
 				float tTimerPerc = min(1.,attackTimer/(ATTACK_TIMER_MAX*.75));
 				tTimerPerc = 1.-tTimerPerc;
 
