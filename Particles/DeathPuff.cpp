@@ -2,7 +2,7 @@
 // Ryan McGrail
 
 // (These are the puffs that appear when a character dies.)
-
+   
 #include "../Functions/Math2D.h"
 #include <iostream>
 #include <cmath>
